@@ -7,7 +7,7 @@
 #   bash scripts/invite-buyer.sh --revoke <github_username>          # for refunds
 #
 # Requires seller creds at ~/.config/tawkit/seller-creds.env:
-#   REPO_OWNER=andienguyen-ecoligo
+#   REPO_OWNER=nghiahsgs
 #   REPO_NAME=taw-kit
 #   SHEET_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
 #   SELLER_EMAIL=namkent1612000@gmail.com
