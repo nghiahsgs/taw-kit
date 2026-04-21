@@ -60,7 +60,7 @@ allow_patterns='
 ^git[[:space:]]+(status|log|diff|branch|show|remote|config --get|stash list)
 ^git[[:space:]]+add[[:space:]]
 ^git[[:space:]]+commit[[:space:]]+-m[[:space:]]
-^(vercel|netlify|shipkit|cloudflared)[[:space:]]
+^(vercel|netlify|cloudflared|docker|rsync|ssh)[[:space:]]
 ^(next|vite|tsc|eslint|prettier)[[:space:]]
 ^ls([[:space:]]|$)
 ^pwd([[:space:]]|$)

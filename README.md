@@ -2,37 +2,147 @@
 
 > Opinionated Claude Code kit for non-developers — ship real products with `/taw <describe what you want>`.
 
-`/taw build me an online shop selling cosmetics` → clarify → plan → code → test → deploy → live URL.
+```
+/taw build me an online shop selling cosmetics
+  → clarify (3-5 questions)
+  → plan (5 bullets, you approve)
+  → code + test + review
+  → deploy (Vercel, Docker, or VPS)
+  → live URL
+```
+
+---
+
+## What you get
+
+- **24 skills, 5 agents, 4 hooks** — installed into `~/.claude/`
+- **`tawkit` CLI** — install, update, doctor, uninstall, scaffold from preset
+- **5 presets** — landing page, online shop, CRM, blog, dashboard
+- **3 deploy targets** — Vercel (default), Docker image, or VPS over SSH
+- **Commercial license** — build and sell as many products as you want
+
+---
 
 ## Install
 
+### Before you start
+
+You need these on your machine:
+
+| Tool | Why | Install |
+|------|-----|---------|
+| **Claude Code** | The CLI that runs the skills | [docs.claude.com/claude-code](https://docs.claude.com/claude-code) |
+| **Node.js ≥ 20** | Your generated projects run on it | [nodejs.org](https://nodejs.org) |
+| **git** | Used by the installer | `brew install git` / `apt install git` |
+| **GitHub CLI (`gh`)** | Used to clone the private repo | `brew install gh` / `apt install gh` |
+| **Anthropic API key** | You pay Anthropic directly for Claude usage | [console.anthropic.com](https://console.anthropic.com) |
+
+**OS:** macOS, Linux, or Windows via WSL2.
+
+### Option A — One-liner (recommended)
+
 ```bash
-curl -fsSL https://install.tawkit.vn | bash
+curl -fsSL https://install.tawkit.dev | bash
 ```
 
-This one-liner will: check prerequisites (git, node ≥20, claude, gh) → log into GitHub → clone your private repo into `~/.taw-kit/` → install skills and agents into `~/.claude/` → run `tawkit doctor`.
+This will:
 
-Step-by-step walkthrough: [`docs/quickstart.md`](./docs/quickstart.md)
+1. Detect your OS (macOS / Linux / WSL).
+2. Check that prerequisites are installed (warn if missing).
+3. Log you into GitHub if you're not already.
+4. Clone the private taw-kit repo to `~/.taw-kit/`.
+5. Install skills, agents, hooks, and templates into `~/.claude/`.
+6. Symlink `tawkit` into `/usr/local/bin/` (asks for sudo once).
+7. Run `tawkit doctor` to confirm everything works.
 
-## Try it
+The whole thing takes about 30 seconds.
 
-After install, open Claude Code in a new folder and type:
+### Option B — Manual (if you don't trust `curl | bash`)
+
+```bash
+# 1. Clone the private repo (you need an invite to taw-kit/taw-kit)
+gh repo clone <your-org>/taw-kit ~/.taw-kit
+
+# 2. Run the installer
+bash ~/.taw-kit/scripts/install.sh
+
+# 3. Verify
+tawkit doctor
+```
+
+### Option C — Verify without installing
+
+Prefer to read the script before running it?
+
+```bash
+curl -fsSL https://install.tawkit.dev -o /tmp/taw-install.sh
+less /tmp/taw-install.sh          # review
+bash /tmp/taw-install.sh          # run if you're satisfied
+```
+
+---
+
+## First run
+
+Open Claude Code in a fresh folder:
+
+```bash
+mkdir my-first-product && cd my-first-product
+claude
+```
+
+Inside Claude Code:
 
 ```
 /taw build me a landing page for my online course
 ```
 
-Or start from a built-in preset:
+taw-kit will ask you 3–5 clarifying questions, render a plan, and wait for your approval. Type `yes` and it runs the full pipeline: plan → research → code → test → security review → deploy. About 15–20 minutes end-to-end.
 
-```
+Or start from a preset:
+
+```bash
 tawkit new shop-online
 ```
 
-## Docs
+---
 
-- **Quickstart:** [`docs/quickstart.md`](./docs/quickstart.md)
-- **Troubleshooting:** [`docs/troubleshooting.md`](./docs/troubleshooting.md)
-- **Architecture:** [`docs/en/architecture.md`](./docs/en/architecture.md)
+## Deploy choices
+
+After the code is written, `/taw-deploy` asks where to ship:
+
+```
+Where do you want to deploy?
+  1. vercel  — Free cloud hosting, fastest to set up (recommended)
+  2. docker  — Build a Docker image; run it on any host you own
+  3. vps     — Deploy to your own VPS over SSH (systemd + nginx)
+```
+
+| Target | Setup effort | Cost | Best for |
+|--------|--------------|------|----------|
+| **Vercel** | Zero | Free tier fits small shops | Non-devs, prototypes, landing pages |
+| **Docker** | Need Docker installed | Free (you host it) | Portable delivery to clients, cloud-agnostic |
+| **VPS** | Need SSH + systemd comfort | Cost of your VPS | Full control, heavy traffic, data residency needs |
+
+You can change targets later — `/taw-deploy --target=docker` on an already-deployed project generates a Dockerfile without touching your Vercel deployment.
+
+---
+
+## Keep it updated
+
+```bash
+tawkit update
+```
+
+This pulls the latest taw-kit from GitHub, re-runs install, and prints a changelog.
+
+## Verify installation
+
+```bash
+tawkit doctor
+```
+
+Runs 10 checks: Claude Code installed, git/node versions, `~/.claude/` writable, hooks executable, API auth, UTF-8 locale, etc.
 
 ## Uninstall
 
@@ -41,16 +151,23 @@ tawkit uninstall          # remove skills/agents/hooks from ~/.claude, keep ~/.t
 tawkit uninstall --full   # also remove the cloned repo at ~/.taw-kit/
 ```
 
-Uninstall only touches files installed by taw-kit (identified by the `.taw-kit-owned` marker and fixed agent/hook names). Your personal skills in `~/.claude/skills/` are **not affected**.
+Uninstall only touches files installed by taw-kit (identified by the `.taw-kit-owned` marker and fixed agent/hook names). **Your personal skills in `~/.claude/skills/` are never touched.**
 
-## System requirements
+---
 
-- macOS, Linux, or Windows (via WSL2)
-- Node.js ≥ 20
-- Claude Code CLI
-- Git + GitHub CLI (`gh`)
-- Anthropic API key (bring your own)
+## Docs
+
+- **Quickstart:** [docs/quickstart.md](./docs/quickstart.md) — 5 minutes from zero to a live URL
+- **Troubleshooting:** [docs/troubleshooting.md](./docs/troubleshooting.md) — top 20 errors with fixes
+- **Architecture:** [docs/en/architecture.md](./docs/en/architecture.md) — how the orchestrator works (for devs)
+- **Video scripts:** [docs/video-script.md](./docs/video-script.md) — ready-to-shoot onboarding scripts
+
+---
 
 ## License
 
-Commercial — see [LICENSE](./LICENSE). Do not share the repo; do not upload to other marketplaces.
+Commercial — see [LICENSE](./LICENSE). You own the products you build with taw-kit 100%. The kit itself cannot be redistributed or resold.
+
+## Support
+
+Contact in your order email.

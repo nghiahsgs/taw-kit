@@ -28,7 +28,7 @@ Plan:
 1. Next.js + Tailwind + shadcn/ui (lean stack, easy to edit)
 2. 3 sections: hero + features + email form
 3. Supabase stores email leads (table: `leads`)
-4. Deploy to Vercel via Shipkit, URL like <slug>.vercel.app
+4. Deploy to Vercel (or Docker / VPS on request), URL like <slug>.vercel.app
 5. Estimated 10-15 minutes
 ```
 

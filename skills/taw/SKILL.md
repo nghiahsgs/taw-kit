@@ -50,7 +50,7 @@ Plan:
 1. Set up Next.js + Tailwind + Supabase
 2. Build 4 pages: home, menu, cart, thank-you
 3. Connect Polar for payments
-4. Deploy to Vercel via Shipkit
+4. Deploy to Vercel (default) / Docker / VPS
 5. Estimated time: 15-20 minutes
 ```
 
@@ -122,6 +122,6 @@ NEVER write API keys, tokens, or secrets into `.taw/` files. Redact before write
 
 - User-visible strings: simple English. Internal reasoning/SKILL.md: English.
 - Single approval gate only (Step 4). Do NOT add more user prompts during Step 5 unless a blocking decision is required.
-- Default stack: Next.js 14 App Router + Tailwind + shadcn/ui + Supabase + Polar + Shipkit deploy. Override only if user explicitly asks.
+- Default stack: Next.js 14 App Router + Tailwind + shadcn/ui + Supabase + Polar. Deploy default is Vercel; user may pick Docker or VPS via `/taw-deploy --target=`. Override only if user explicitly asks.
 - If context grows past 150k tokens during agent chain, compact via `.taw/artifacts/` on disk and summarize.
 - If `/taw` is invoked with empty args, ask: "What do you want to build? Give me a short description." and then re-enter Step 1.

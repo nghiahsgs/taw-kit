@@ -11,7 +11,7 @@ By purchasing or using taw-kit, you agree to these Terms of Service and the [EUL
 taw-kit provides a bundled set of Claude Code skills, agents, hooks, scripts, and templates that operate on the Licensee's local machine. taw-kit does NOT provide:
 
 - Server-side AI inference (Licensee must bring their own Anthropic API key)
-- Hosting or deployment infrastructure (Licensee uses their own Vercel/Shipkit/Supabase accounts)
+- Hosting or deployment infrastructure (Licensee uses their own Vercel/Supabase accounts, Docker registry, or VPS)
 - Data storage (all project data stays on Licensee's machine or in Licensee's third-party accounts)
 
 ## 3. Acceptable use
@@ -25,7 +25,7 @@ Licensee may NOT use taw-kit to:
 
 ## 4. Third-party services
 
-taw-kit integrates with Anthropic (Claude API), GitHub (repo hosting), Polar (payments), Supabase (database), Vercel/Shipkit (deploy), and others. Licensee is responsible for complying with those services' terms. taw-kit is not responsible for outages, price changes, or policy changes in third-party services.
+taw-kit integrates with Anthropic (Claude API), GitHub (repo hosting), Polar (payments), Supabase (database), Vercel (deploy), and optionally Docker registries or your own VPS. Licensee is responsible for complying with those services' terms. taw-kit is not responsible for outages, price changes, or policy changes in third-party services.
 
 ## 5. Privacy
 

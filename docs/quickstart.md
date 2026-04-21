@@ -85,7 +85,7 @@ Plan:
 1. Set up Next.js + Tailwind + Supabase
 2. Build 4 pages: home, menu, cart, thank-you
 3. Connect Polar for payments
-4. Deploy to Vercel via Shipkit
+4. Deploy to Vercel (default) — or Docker / VPS if you prefer
 5. Estimated 15-20 minutes
 
 Does this plan look good? (type: yes / edit / cancel)

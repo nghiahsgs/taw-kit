@@ -13,7 +13,7 @@ Returns the freshest official documentation snippet for a targeted topic so the 
 
 ## When to invoke
 
-- New release of a framework listed in the taw-kit default stack (Next.js, Tailwind, shadcn/ui, Supabase, Polar, Shipkit)
+- New release of a framework listed in the taw-kit default stack (Next.js, Tailwind, shadcn/ui, Supabase, Polar)
 - Error message points to an API shape that may have changed
 - Orchestrator needs a concrete code example, not a paraphrase
 - User asks in VN: "có version mới chưa?" / "còn syntax cũ không?"

@@ -74,7 +74,7 @@ NARRATION: "taw-kit asks 5 follow-ups. Shop name: 'Handmade Linh'. Logo: 'pick a
 
 ### [4:30–5:30] Approve the plan
 VISUAL: 5-bullet plan appears. Scroll each bullet. Type `yes`.
-NARRATION: "The plan covers it: Next.js with Tailwind and Supabase, 4 main pages, Polar integration, deploy to Vercel via Shipkit, ETA 25 minutes. Looks right. yes."
+NARRATION: "The plan covers it: Next.js with Tailwind and Supabase, 4 main pages, Polar integration, deploy to Vercel, ETA 25 minutes. Looks right. yes."
 
 ### [5:30–7:00] Planner + Researcher
 VISUAL: Fast-forward. `✓ Done: detailed plan ready`, then `✓ Done: Supabase + Polar docs fetched` (two researchers in parallel).
@@ -89,8 +89,8 @@ VISUAL: `✓ Done: build tested`, then `✓ Done: security reviewed`. Green chec
 NARRATION: "The last two workers run fast. Tester runs the build and a smoke test to make sure nothing crashes. Reviewer scans for security issues — any exposed keys, any risky patterns. About 2 minutes total."
 
 ### [11:30–13:00] Deploy
-VISUAL: "Deploying via Shipkit..." then "Done! https://handmade-linh.vercel.app". Click the link. Browser opens.
-NARRATION: "Final step: deploy. taw-kit calls Shipkit MCP to push to Vercel. 1 to 2 minutes, and it hands back a real URL. I click. Here it is — Handmade Linh is live on the internet."
+VISUAL: "Deploying to Vercel..." then "Done! https://handmade-linh.vercel.app". Click the link. Browser opens.
+NARRATION: "Final step: deploy. taw-kit pushes to Vercel via the official CLI. 1 to 2 minutes, and it hands back a real URL. I click. Here it is — Handmade Linh is live on the internet."
 
 ### [13:00–14:30] Walkthrough of the real shop
 VISUAL: Scroll the homepage; see 8 sample products; click one; add to cart; open cart; click checkout; QR appears. Switch to admin tab, log in with Google, post one more product.

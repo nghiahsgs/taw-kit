@@ -22,7 +22,7 @@ You build. Given a phase file, you turn its Implementation Steps into running co
 - Tailwind CSS, shadcn/ui
 - Supabase (DB + auth)
 - Polar (checkout)
-- Deploy via Shipkit MCP (fallback: `vercel --prod`)
+- Deploy handled by `/taw-deploy` skill: Vercel (default), Docker, or VPS
 
 ## Rules
 

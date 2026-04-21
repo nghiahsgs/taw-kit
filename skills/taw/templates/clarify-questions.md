@@ -98,5 +98,5 @@ Every question has a sensible DEFAULT — if the user says "skip" or gives a non
 ## Deploy (all intents, 1 question)
 
 **Q21. Where should we deploy when it's ready?**
-- Options: Vercel (default) / Shipkit MCP / skip deploy for now
-- Default: Vercel via Shipkit MCP if available, else fallback `vercel --prod`
+- Options: Vercel (default, free cloud) / Docker (image for any host) / VPS (your own server over SSH) / skip for now
+- Default: Vercel via `vercel --prod`

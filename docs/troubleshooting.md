@@ -169,12 +169,21 @@
 
 ---
 
-### Shipkit MCP unreachable
-**Symptom:** `Shipkit MCP not responding`.
-**Cause:** MCP server not installed or not running.
+### Docker build fails
+**Symptom:** `docker build` exits with a step failure.
+**Cause:** Usually a missing package, outdated base image, or BuildKit cache issue.
 **Fix:**
-1. taw-kit auto-falls-back to Vercel CLI — no action needed.
-2. If you want Shipkit specifically: install and start the Shipkit MCP server, then retry.
+1. Run with clean cache: `docker build --no-cache -t <name>:latest .`.
+2. Confirm `.dockerignore` excludes `node_modules` and `.env*`.
+3. `/taw-fix` handles common Dockerfile issues automatically.
+
+### VPS deploy: "Permission denied (publickey)"
+**Symptom:** SSH rejects the connection during `/taw-deploy --target=vps`.
+**Cause:** Your VPS doesn't have your public key, or `.taw/vps.env` has the wrong user.
+**Fix:**
+1. Copy your key: `ssh-copy-id $VPS_USER@$VPS_HOST`.
+2. Double-check `VPS_USER` and `VPS_HOST` in `.taw/vps.env`.
+3. Test the raw connection: `ssh $VPS_USER@$VPS_HOST echo ok`.
 
 ---
 

@@ -15,7 +15,7 @@ You look things up so fullstack-dev does not have to guess. One focused question
 - "Latest Supabase RLS policy syntax for a shop `orders` table"
 - "Polar webhook event shape for `order.created`"
 - "shadcn/ui Form component with react-hook-form + Zod"
-- "Vercel deployment URL pattern via Shipkit MCP"
+- "Vercel deployment URL pattern" / "Dockerfile for Next.js 14" / "systemd unit for Node.js on Ubuntu VPS"
 
 ## Method
 

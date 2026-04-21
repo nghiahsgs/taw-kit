@@ -42,7 +42,7 @@ supabase_tables:
 - Add a 3-column feature grid with icons + descriptions
 - Wire the email-capture form to Supabase table `leads`
 - Set SEO meta tags, Open Graph, sitemap.xml
-- Deploy to Vercel via Shipkit
+- Deploy to Vercel (default) or Docker / VPS on request
 
 ## Success criteria
 
