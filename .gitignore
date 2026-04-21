@@ -1,0 +1,15 @@
+.DS_Store
+node_modules/
+dist/
+build/
+.env
+.env.*
+*.key
+license.key
+.claude-local/
+.taw-local/
+.claude/session-state/
+.claude/agent-memory/
+*.log
+.idea/
+.vscode/
