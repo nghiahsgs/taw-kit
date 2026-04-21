@@ -33,6 +33,15 @@ tawkit new shop-online
 - **Vietnamese (primary):** [`docs/vi/quickstart.md`](./docs/vi/quickstart.md), [`docs/vi/troubleshooting.md`](./docs/vi/troubleshooting.md)
 - **English (architecture):** [`docs/en/architecture.md`](./docs/en/architecture.md)
 
+## Gỡ bỏ
+
+```bash
+tawkit uninstall          # gỡ skills/agents/hooks khỏi ~/.claude, giữ ~/.taw-kit/
+tawkit uninstall --full   # gỡ luôn repo clone tại ~/.taw-kit/
+```
+
+Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.taw-kit-owned` + tên agent/hook cố định). Skill cá nhân của bạn trong `~/.claude/skills/` **không bị ảnh hưởng**.
+
 ## Yêu cầu hệ thống
 
 - macOS, Linux, hoặc Windows (qua WSL2)

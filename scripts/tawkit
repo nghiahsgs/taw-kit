@@ -26,6 +26,8 @@ tawkit — bo cong cu vibe coding cho nguoi khong chuyen
 CACH DUNG:
   tawkit install          Cai toan bo skills, agents, hooks vao ~/.claude/
   tawkit update           Cap nhat kit len phien ban moi nhat
+  tawkit uninstall        Go bo taw-kit khoi may (giu skill ca nhan cua ban)
+  tawkit uninstall --full Go luon repo clone ~/.taw-kit/
   tawkit doctor           Kiem tra may co cai dat du thu khong
   tawkit new <preset>     Tao du an moi tu preset co san
   tawkit --help           Hien thi tro giup nay
@@ -49,6 +51,10 @@ case "${1:-}" in
   update)
     shift
     exec bash "$TAW_ROOT/scripts/update.sh" "$@"
+    ;;
+  uninstall)
+    shift
+    exec bash "$TAW_ROOT/scripts/uninstall.sh" "$@"
     ;;
   doctor)
     shift
