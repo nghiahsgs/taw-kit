@@ -74,7 +74,8 @@ derive_subject() {
   [ -z "$stat" ] && { echo "auto-save (no diff)"; return; }
 
   n_files=$(printf '%s\n' "$stat" | wc -l | tr -d ' ')
-  n_added=$(git diff --cached --name-status 2>/dev/null | grep -c '^A' || echo 0)
+  n_added=$(git diff --cached --name-status 2>/dev/null | grep -c '^A' 2>/dev/null | head -n1 | tr -d ' ')
+  [ -z "$n_added" ] && n_added=0
   verb="update"; [ "$n_added" -gt 0 ] && verb="add"
 
   # Top-changed file = highest (added+deleted) lines. Fallback to first file.
