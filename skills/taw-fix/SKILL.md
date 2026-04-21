@@ -1,57 +1,104 @@
 ---
 name: taw-fix
 description: >
-  Auto-diagnose and fix broken builds, runtime errors, and TypeScript errors in
-  taw-kit projects. Translates errors to Vietnamese for non-dev users.
+  Diagnose and auto-fix broken builds or runtime errors in taw-kit projects.
+  Reads .taw/checkpoint.json for last error, runs build, parses output, applies
+  fix, re-runs build. Retries up to 3 times total. All user messages in Vietnamese.
   Trigger phrases: "loi roi", "bi loi", "khong chay duoc", "fix giup toi",
-  "website bi hong", "co loi xuat hien".
-argument-hint: "[error message or 'tu dong kiem tra']"
+  "website bi hong", "co loi xuat hien", "build fail", "sua loi giup toi".
+argument-hint: "[paste error] | auto"
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
-# taw-fix — Auto Diagnose & Fix
+# taw-fix — Diagnose & Auto-Fix
 
-## Purpose
+You are the taw-fix skill. When invoked, diagnose and fix the broken project.
+All strings shown to the user MUST be Vietnamese. Internal reasoning is English.
 
-When the build breaks or an error appears, this skill reads the error output,
-locates the root cause in project files, proposes a fix, applies it, and
-re-runs the build to confirm resolution — all explained in Vietnamese.
+## Step 1 — Locate the error
 
-## Trigger Phrases (VN + EN)
+Check sources in order:
+1. If user pasted an error message in the invocation args, use that directly.
+2. Else read `.taw/checkpoint.json`; extract `last_error` field.
+3. If both are empty, run `npm run build 2>&1 | tail -60` and capture output.
+4. If still no error found, emit: "Tôi không thấy lỗi nào. Bạn thử chạy lại thử xem, hoặc dán thông báo lỗi vào đây."
 
-Vietnamese: "loi roi", "khong chay duoc", "bi loi", "fix giup toi", "website bi hong"
-English: "/taw-fix", "fix the error", "something broke", "build failed"
-
-## Invocation Pattern
-
-```
-/taw-fix
-/taw-fix khong chay duoc tren Vercel
-/taw-fix loi TypeScript o trang chu
+Write the raw error text to `.taw/fix-session.json`:
+```json
+{"error_raw": "<captured text>", "attempt": 1, "status": "diagnosing"}
 ```
 
-## What This Skill Does
+## Step 2 — Classify the error
 
-1. Captures last build/runtime error from terminal or Vercel logs.
-2. Activates `debug` skill: read stack trace, grep relevant files, identify root cause.
-3. Activates `sequential-thinking` skill for multi-step diagnosis on complex errors.
-4. Proposes fix in ≤3 steps; shows plain-Vietnamese explanation to user.
-5. Applies the fix to the relevant file(s).
-6. Re-runs `npm run build` to verify resolution.
-7. If error persists after 2 attempts: activates `approval-plan` to ask user for more context.
-8. Translates final status to Vietnamese via `error-to-vi`.
+Read the error text and assign exactly ONE category:
 
-## Fix Strategy Priority
+| Category | Signals |
+|----------|---------|
+| `missing-dep` | "Cannot find module", "Module not found", "ERR_MODULE_NOT_FOUND" |
+| `type-error` | "Type error", "TS", "is not assignable", "Property does not exist" |
+| `env-missing` | "undefined", "process.env", "NEXT_PUBLIC_" missing, Supabase 401 |
+| `port-busy` | "EADDRINUSE", "address already in use" |
+| `syntax-error` | "SyntaxError", "Unexpected token", "Expected ')'", "Unexpected identifier" |
+| `supabase` | "relation does not exist", "JWT", "RLS", "permission denied for table" |
+| `build-memory` | "JavaScript heap out of memory", "ENOMEM" |
+| `runtime-crash` | "TypeError: Cannot read", "undefined is not a function", "null reference" |
+| `unknown` | anything else |
 
-1. Type errors → check TypeScript types, missing imports, null safety.
-2. Module not found → check `package.json`, run `npm install`.
-3. Supabase errors → check `.env.local` keys, RLS policy, table schema.
-4. Build size / memory → check `next.config.js`, remove unused imports.
-5. Runtime crashes → check `try/catch` coverage, undefined access.
+## Step 3 — Apply known fix
 
-## Non-Dev Guarantees
+Execute the fix for the classified category:
 
-- All error messages shown to user are in Vietnamese.
-- User sees a simple "Da sua xong!" or "Can them thong tin" — not a stack trace.
-- No destructive file changes without showing the diff first.
+**missing-dep:** Extract package name from error. Run `npm install <package>`. Confirm with: "Đã cài gói còn thiếu."
 
-> Implementation: see phase-04
+**type-error:** Grep for the flagged file + line. Read that section. Apply minimal type annotation or null-check. Confirm with: "Đã sửa lỗi kiểu dữ liệu."
+
+**env-missing:** Check `.env.local`. If key is missing, prompt: "Bạn cần thêm khóa `<KEY>` vào file `.env.local`. Giá trị lấy từ đâu?" — wait for reply, then write the key.
+
+**port-busy:** Run `lsof -ti tcp:3000 | xargs kill -9 2>/dev/null`. Confirm: "Đã giải phóng cổng 3000."
+
+**syntax-error:** Grep for the flagged file. Read ±10 lines around the error line. Apply the fix (close bracket, fix quote, etc.). Confirm: "Đã sửa lỗi cú pháp."
+
+**supabase:** Remind user: "Kiểm tra cài đặt RLS trong Supabase dashboard cho bảng `<table>`. Hoặc chạy lại migration." If table missing, guide to run `npx supabase db push`.
+
+**build-memory:** Add `NODE_OPTIONS=--max-old-space-size=4096` to the build script in `package.json`. Confirm: "Đã tăng giới hạn bộ nhớ build."
+
+**runtime-crash:** Add null-check guard at the identified call site. Confirm: "Đã thêm kiểm tra null."
+
+**unknown:** Run `npm run build 2>&1 | tail -80` and show last 20 lines to user with: "Tôi chưa nhận ra lỗi này. Đây là chi tiết:"
+
+## Step 4 — Re-run build
+
+After applying fix, run:
+```bash
+npm run build 2>&1 | tail -30
+```
+
+- If exit code 0: emit success message and go to Step 6.
+- If still failing: increment attempt counter in `.taw/fix-session.json` and loop back to Step 2 with new error output.
+- If attempt reaches 3 with no green build: go to Step 5.
+
+## Step 5 — Revert fallback (attempt 3 failed)
+
+1. Find last green git SHA: `git log --oneline | head -10` — show to user.
+2. Emit: "Build vẫn lỗi sau 3 lần thử. Muốn quay lại phiên bản hoạt động trước không? (gõ: yes / không)"
+3. On `yes`: run `git reset --hard <sha>` then `npm run build`.
+4. On `không`: emit "OK, để tôi dừng ở đây. Bạn dán thêm lỗi vào thì tôi thử tiếp."
+5. Update `.taw/checkpoint.json`: `{"status": "fix-failed", "last_error": "<error>"}`.
+
+## Step 6 — Done
+
+Emit:
+```
+Xong! Build đã xanh trở lại.
+Thay đổi đã áp dụng: <1-line summary in VN>
+Bạn muốn deploy không? Gõ: /taw-deploy
+```
+
+Update `.taw/checkpoint.json`: `{"status": "running", "last_fix": "<category>"}`.
+
+## Constraints
+
+- NEVER apply a destructive change (delete file, reset) without explicit user approval.
+- NEVER log env var values; redact before writing to any file.
+- Max 3 fix attempts total before offering revert.
+- If `.taw/checkpoint.json` is absent, proceed with live build run (Step 1, branch 3).
