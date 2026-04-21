@@ -10,6 +10,10 @@
 #                          → overwrite (ours)
 #   - hooks/*.sh           → overwrite (ours; names start with taw-kit patterns)
 #
+# Prune: skills with the `.taw-kit-owned` marker that no longer exist in the
+# repo source are removed. This keeps the live install in sync after the kit
+# drops or renames a skill. User-authored skills (no marker) are never touched.
+#
 # Usage: bash scripts/lib/copy-skills.sh <TAW_ROOT>
 
 set -eu
@@ -38,18 +42,31 @@ _copy_skill() {
   touch "$dst/$MARKER"
 }
 
+# --- Copy skills from repo into live install ---
 for d in "$TAW_ROOT"/skills/*/; do
   [ -d "$d" ] || continue
   _copy_skill "${d%/}"
 done
 
-# Agents — always overwrite (we own these names)
+# --- Prune: owned skills that disappeared from the repo source ---
+pruned=0
+for d in "$CLAUDE_DIR"/skills/*/; do
+  [ -d "$d" ] || continue
+  name="$(basename "${d%/}")"
+  [ -f "$d/$MARKER" ] || continue           # not ours, skip
+  [ -d "$TAW_ROOT/skills/$name" ] && continue  # still in repo, keep
+  rm -rf "$d"
+  pruned=$((pruned+1))
+done
+[ "$pruned" -gt 0 ] && ok "pruned $pruned skill(s) no longer in taw-kit"
+
+# --- Agents — always overwrite (we own these names) ---
 for a in "$TAW_ROOT"/agents/*.md; do
   [ -f "$a" ] || continue
   cp "$a" "$CLAUDE_DIR/agents/$(basename "$a")"
 done
 
-# Hooks — always overwrite; preserve exec bit
+# --- Hooks — always overwrite; preserve exec bit ---
 for h in "$TAW_ROOT"/hooks/*.sh; do
   [ -f "$h" ] || continue
   cp "$h" "$CLAUDE_DIR/hooks/$(basename "$h")"
