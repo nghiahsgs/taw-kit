@@ -25,7 +25,7 @@ warn() { printf '%s[warn]%s %s\n' "$C_YEL" "$C_OFF" "$*" >&2; }
 fail() { printf '%s[err]%s %s\n' "$C_RED" "$C_OFF" "$*" >&2; exit "${2:-1}"; }
 
 # --- Owner / repo constants ---
-REPO_OWNER="${TAW_REPO_OWNER:-andienguyen-ecoligo}"
+REPO_OWNER="${TAW_REPO_OWNER:-nghiahsgs}"
 REPO_NAME="${TAW_REPO_NAME:-taw-kit}"
 CLONE_DEST="$HOME/.taw-kit"
 BUY_URL="https://taw-kit.dev/buy"
