@@ -100,7 +100,9 @@ npm run build 2>&1 | tail -20
 ## Step 6 — Commit and done
 
 ```bash
-git add -A && git commit -m "feat: <feature_request slug>"
+Invoke `git-auto-commit` with:
+  type=feat, scope=<inferred from feature_request>, subject=<feature slug in simple EN>
+  (no [P<n>] tag — taw-add is out-of-phase)
 ```
 
 Emit:

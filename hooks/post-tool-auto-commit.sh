@@ -53,7 +53,7 @@ if git diff --quiet && git diff --cached --quiet; then
   exit 0
 fi
 
-# Stage everything not sensitive, commit with timestamp
+# Stage everything not sensitive
 git add -A >/dev/null 2>&1 || true
 
 # Double-check after add (race)
@@ -63,7 +63,62 @@ if git diff --cached --name-only | grep -Eq "$sensitive_patterns"; then
   exit 0
 fi
 
-msg="taw: auto-save $(date +%s)"
+# Derive a meaningful subject from the staged diff so history is traceable.
+# Pattern: "chore(auto): <verb> <top-path> (+N file[s])"
+# - verb: "add" if any new file, "update" otherwise
+# - top-path: the most-changed file's top-2 path segments (e.g. "src/ViewProfile")
+# - +N only appended when >1 file changed
+derive_subject() {
+  local stat top_path verb n_files n_added
+  stat="$(git diff --cached --numstat 2>/dev/null)"
+  [ -z "$stat" ] && { echo "auto-save (no diff)"; return; }
+
+  n_files=$(printf '%s\n' "$stat" | wc -l | tr -d ' ')
+  n_added=$(git diff --cached --name-status 2>/dev/null | grep -c '^A' || echo 0)
+  verb="update"; [ "$n_added" -gt 0 ] && verb="add"
+
+  # Top-changed file = highest (added+deleted) lines. Fallback to first file.
+  top_path="$(printf '%s\n' "$stat" \
+    | awk '{a=$1; d=$2; if(a=="-")a=0; if(d=="-")d=0; print (a+d)"\t"$3}' \
+    | sort -rn | head -n1 | cut -f2)"
+  [ -z "$top_path" ] && top_path="$(printf '%s\n' "$stat" | head -n1 | awk '{print $3}')"
+
+  # Shorten: keep up to 2 leading segments + basename-without-ext
+  local short
+  short="$(printf '%s' "$top_path" | awk -F/ '{
+    if (NF<=2) print $0;
+    else print $1"/"$(NF-1)"/"$NF
+  }')"
+  short="${short%.*}"
+
+  if [ "$n_files" -gt 1 ]; then
+    echo "$verb $short (+$((n_files-1)) file$([ $((n_files-1)) -gt 1 ] && echo s))"
+  else
+    echo "$verb $short"
+  fi
+}
+
+subject="$(derive_subject)"
+msg="chore(auto): ${subject}"
+
+# Amend-chain: if the previous commit is also an auto-save (chore(auto): ... or
+# legacy "taw: auto-save ..."), fold this into it. Keeps history clean during
+# rapid edits. Any intentional commit (feat/fix/etc via git-auto-commit) breaks
+# the chain and the next auto-save starts a new commit.
+prev_subject="$(git log -1 --pretty=%s 2>/dev/null || true)"
+case "$prev_subject" in
+  "chore(auto):"*|"taw: auto-save"*)
+    # Only amend if previous commit is unpushed (safe to rewrite)
+    if git log '@{push}..HEAD' --oneline 2>/dev/null | grep -q .; then
+      if git commit --amend --no-verify -m "$msg" >/dev/null 2>&1; then
+        log "amended into previous auto-save: $msg"
+        echo "$now" > "$stamp_file" 2>/dev/null || true
+        exit 0
+      fi
+    fi
+    ;;
+esac
+
 if git commit --no-verify -m "$msg" >/dev/null 2>&1; then
   log "committed: $msg"
   echo "$now" > "$stamp_file" 2>/dev/null || true
