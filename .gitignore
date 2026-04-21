@@ -10,6 +10,8 @@ license.key
 .taw-local/
 .claude/session-state/
 .claude/agent-memory/
+.taw/
+
 *.log
 .idea/
 .vscode/
