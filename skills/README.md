@@ -1,7 +1,7 @@
 ---
 # taw-kit Skills Catalog (v0.1)
 
-24 skills bundled with taw-kit — 5 user-facing `/taw*` commands and 19 internal
+25 skills bundled with taw-kit — 5 user-facing `/taw*` commands and 20 internal
 skills invoked automatically by the orchestrator. Non-dev users only ever type
 `/taw`, `/taw-fix`, `/taw-deploy`, `/taw-add`, or `/taw-new`.
 
@@ -33,3 +33,4 @@ skills invoked automatically by the orchestrator. Non-dev users only ever type
 | `approval-plan` | Render a 3-5 bullet plan and wait for user confirmation | taw, taw-add, taw-fix |
 | `payment-integration` | Polar checkout + webhook + VietQR bank transfer fallback | fullstack-dev, taw |
 | `debug` | Read stack trace, grep files, hypothesize root cause, propose fix | taw-fix |
+| `terse-internal` | Caveman-style terse output for agent-internal work (cuts ~60-70% tokens). Never activates for user-facing VN text | planner, researcher, fullstack-dev, tester, reviewer, debug |
