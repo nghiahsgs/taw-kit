@@ -1,100 +1,100 @@
-# Error Messages (Vietnamese)
+# Error Messages
 
 Load during Step 6 (error recovery) of `/taw`. Pick the template matching the failure mode.
 
 ## Principles
 
-- Luôn dùng tiếng Việt, tone thân thiện, KHÔNG dùng jargon tiếng Anh nguyên bản.
-- Luôn đề xuất 1 next action cụ thể (không để user bơ vơ).
-- KHÔNG log raw stack trace vào user-visible output — save vào `.taw/checkpoint.json` thay vì in ra.
+- Simple English, friendly tone. No unexplained jargon.
+- Always propose ONE concrete next action — don't leave the user stuck.
+- DO NOT print raw stack traces to user-visible output — save them to `.taw/checkpoint.json` instead.
 
 ---
 
 ## Template: Build failed (npm run build error)
 
 ```
-❌ Build bị lỗi sau 2 lần thử. Đã lưu lại thông tin lỗi.
-Bạn có thể:
-  1. Gõ `/taw-fix` để tôi thử phân tích và sửa tự động
-  2. Mở file `.taw/checkpoint.json` xem chi tiết
-  3. Hủy và bắt đầu lại với mô tả khác: `/taw <mô tả mới>`
+Build failed after 2 attempts. Error details saved.
+You can:
+  1. Type `/taw-fix` to let me analyze and auto-fix
+  2. Open `.taw/checkpoint.json` to see the details
+  3. Cancel and restart with a different description: `/taw <new description>`
 ```
 
 ## Template: Install failed (npm install error)
 
 ```
-❌ Cài package bị lỗi. Thường do mạng hoặc đụng phiên bản.
-Thử:
-  1. Kiểm tra internet
-  2. Chạy `npm cache clean --force` rồi `/taw-fix`
-  3. Nếu vẫn không được, gõ `/taw-fix --deep` (tôi sẽ xóa node_modules và cài lại)
+Package install failed. Usually a network or version conflict.
+Try:
+  1. Check your internet
+  2. Run `npm cache clean --force`, then `/taw-fix`
+  3. If that still fails, type `/taw-fix --deep` (I'll wipe node_modules and reinstall)
 ```
 
 ## Template: Deploy failed
 
 ```
-⚠️ Code đã build thành công nhưng deploy lỗi.
-Dự án vẫn chạy được ở máy bạn (gõ `npm run dev`).
-Thử deploy lại: `/taw-deploy`
-Hoặc deploy thủ công: `vercel --prod`
+Build succeeded, but deploy failed.
+Your project still runs locally (type `npm run dev`).
+Retry deploy: `/taw-deploy`
+Or deploy manually: `vercel --prod`
 ```
 
 ## Template: Missing env var
 
 ```
-❌ Thiếu biến môi trường: <VAR_NAME>.
-Bạn cần tạo file `.env.local` với dòng:
+Missing environment variable: <VAR_NAME>.
+You need to create `.env.local` with this line:
   <VAR_NAME>=<value>
-Hướng dẫn lấy <VAR_NAME>: <docs-link>
-Sau đó gõ lại `/taw-fix`.
+How to get <VAR_NAME>: <docs-link>
+Then type `/taw-fix` again.
 ```
 
 ## Template: API key invalid (Claude rate limit or bad key)
 
 ```
-❌ API key Claude của bạn không hợp lệ hoặc hết hạn mức.
-Kiểm tra:
-  1. `ANTHROPIC_API_KEY` trong biến môi trường
-  2. Số dư trong console.anthropic.com
-  3. Thử lại sau vài phút nếu bị rate limit
+Your Claude API key is invalid or out of quota.
+Check:
+  1. `ANTHROPIC_API_KEY` in your environment
+  2. Your balance at console.anthropic.com
+  3. Wait a few minutes if you've been rate-limited
 ```
 
 ## Template: Disk space
 
 ```
-❌ Máy bạn hết dung lượng. Dự án Next.js cần ~500MB cho node_modules.
-Thử:
-  1. Xóa node_modules cũ: `find . -name node_modules -exec rm -rf {} +`
-  2. Đổi thư mục dự án sang ổ khác
+Your machine is out of disk space. A Next.js project needs ~500MB for node_modules.
+Try:
+  1. Remove old node_modules: `find . -name node_modules -exec rm -rf {} +`
+  2. Move the project to a different drive
 ```
 
 ## Template: Git conflict
 
 ```
-⚠️ Git có thay đổi chưa commit. Tôi không ghi đè lên công sức bạn.
-Gõ `git status` để xem.
-Nếu muốn tiếp tục, commit trước hoặc stash: `git stash`
+Git has uncommitted changes. I don't want to overwrite your work.
+Type `git status` to see them.
+To continue, commit first or stash: `git stash`
 ```
 
 ## Template: Unknown error (catchall)
 
 ```
-❌ Có lỗi không rõ: <1-line summary tiếng Việt>
-Đã lưu chi tiết vào `.taw/checkpoint.json`.
-Thử `/taw-fix` hoặc gửi file checkpoint cho support qua Discord.
+Something unexpected went wrong: <1-line summary>
+Details saved to `.taw/checkpoint.json`.
+Try `/taw-fix`, or send the checkpoint file to support.
 ```
 
 ## Template: Clarification timeout
 
 ```
-Tôi đợi hơi lâu rồi. Bạn muốn tiếp tục không?
-  - Gõ `yes` để tiếp tục với default
-  - Gõ `/taw <mô tả mới>` để bắt đầu lại
+You've been quiet for a while. Want to continue?
+  - Type `yes` to proceed with defaults
+  - Type `/taw <new description>` to start over
 ```
 
 ## Template: User interrupted (Ctrl+C mid-run)
 
 ```
-⚠️ Tôi bị ngắt giữa chừng ở bước: <step name>
-Đã lưu checkpoint. Gõ `/taw-fix` để tiếp tục từ điểm dừng.
+I was interrupted mid-step: <step name>
+Checkpoint saved. Type `/taw-fix` to pick up from where we stopped.
 ```

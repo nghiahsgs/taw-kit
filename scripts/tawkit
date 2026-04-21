@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # tawkit — main entry point
 # Usage:
-#   tawkit install | update | doctor | new <preset> | --help | --version
+#   tawkit install | update | uninstall | doctor | new <preset> | --help | --version
 
 set -eu
 
@@ -19,27 +19,27 @@ export TAW_ROOT
 # shellcheck source=lib/log.sh
 . "$TAW_ROOT/scripts/lib/log.sh"
 
-show_help_vi() {
+show_help() {
   cat <<'EOF'
-tawkit — bo cong cu vibe coding cho nguoi khong chuyen
+tawkit — vibe-coding toolkit for non-developers
 
-CACH DUNG:
-  tawkit install          Cai toan bo skills, agents, hooks vao ~/.claude/
-  tawkit update           Cap nhat kit len phien ban moi nhat
-  tawkit uninstall        Go bo taw-kit khoi may (giu skill ca nhan cua ban)
-  tawkit uninstall --full Go luon repo clone ~/.taw-kit/
-  tawkit doctor           Kiem tra may co cai dat du thu khong
-  tawkit new <preset>     Tao du an moi tu preset co san
-  tawkit --help           Hien thi tro giup nay
-  tawkit --version        Hien thi phien ban
+USAGE:
+  tawkit install          Install all skills, agents, and hooks into ~/.claude/
+  tawkit update           Update the kit to the latest version
+  tawkit uninstall        Remove taw-kit (your personal skills stay intact)
+  tawkit uninstall --full Remove everything, including the repo clone at ~/.taw-kit/
+  tawkit doctor           Check that your machine has everything set up
+  tawkit new <preset>     Scaffold a new project from a preset
+  tawkit --help           Show this help
+  tawkit --version        Show the installed version
 
-VI DU:
-  tawkit install                   # lan dau
-  tawkit doctor                    # khi nghi ngo co loi
-  tawkit new shop-online           # tao shop online nhanh
-  tawkit update                    # moi khi co phien ban moi
+EXAMPLES:
+  tawkit install                   # first-time setup
+  tawkit doctor                    # when something feels off
+  tawkit new shop-online           # scaffold an online shop fast
+  tawkit update                    # when a new version ships
 
-Tai lieu day du: https://taw-kit.dev/docs
+Full docs: https://taw-kit.dev/docs
 EOF
 }
 
@@ -63,34 +63,34 @@ case "${1:-}" in
   new)
     shift
     if [ $# -eq 0 ]; then
-      err "thieu ten preset. vi du: tawkit new shop-online"
+      err "missing preset name. Example: tawkit new shop-online"
       exit 1
     fi
     preset="$1"
     if [ ! -f "$TAW_ROOT/presets/$preset.md" ]; then
-      err "preset khong ton tai: $preset"
-      info "xem danh sach preset: ls $TAW_ROOT/presets/"
+      err "preset not found: $preset"
+      info "list available presets: ls $TAW_ROOT/presets/"
       exit 1
     fi
     # Hand off to Claude Code's /taw-new skill
     if ! command -v claude >/dev/null 2>&1; then
-      err "Claude Code chua duoc cai. Xem: https://docs.claude.com/claude-code"
+      err "Claude Code is not installed. See: https://docs.claude.com/claude-code"
       exit 3
     fi
     exec claude --skill taw-new --arg "$preset"
     ;;
   --help|-h|help)
-    show_help_vi
+    show_help
     ;;
   --version|-v|version)
     cat "$TAW_ROOT/VERSION"
     ;;
   '')
-    show_help_vi
+    show_help
     ;;
   *)
-    err "lenh khong hop le: $1"
-    show_help_vi
+    err "unknown command: $1"
+    show_help
     exit 1
     ;;
 esac

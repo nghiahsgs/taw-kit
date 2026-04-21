@@ -23,6 +23,20 @@ if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   exit 0
 fi
 
+# Debounce: skip if we auto-committed in the last N seconds. This avoids the
+# "10 commits per minute" spam when Claude is doing rapid-fire edits. Tune with
+# TAW_AUTOCOMMIT_DEBOUNCE_SECONDS (default 60).
+DEBOUNCE="${TAW_AUTOCOMMIT_DEBOUNCE_SECONDS:-60}"
+stamp_file=".git/.taw-last-autocommit"
+now="$(date +%s)"
+if [ -f "$stamp_file" ]; then
+  last="$(cat "$stamp_file" 2>/dev/null || echo 0)"
+  if [ $((now - last)) -lt "$DEBOUNCE" ]; then
+    log "debounced (last commit was $((now - last))s ago; threshold ${DEBOUNCE}s)"
+    exit 0
+  fi
+fi
+
 # Block if sensitive files are staged or would be added
 sensitive_patterns='^\.env($|\.)|\.key$|credentials|service[-_]account|/\.pem$'
 candidates="$(git status --porcelain 2>/dev/null | awk '{print $2}')"
@@ -52,6 +66,7 @@ fi
 msg="taw: auto-save $(date +%s)"
 if git commit --no-verify -m "$msg" >/dev/null 2>&1; then
   log "committed: $msg"
+  echo "$now" > "$stamp_file" 2>/dev/null || true
 else
   log "commit failed (hook, probably nothing staged after filters)"
 fi

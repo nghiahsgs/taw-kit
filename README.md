@@ -1,28 +1,28 @@
 # taw-kit
 
-> Opinionated Claude Code kit for Vietnamese non-developers — ship real products with `/taw <mô tả bằng tiếng Việt>`.
+> Opinionated Claude Code kit for non-developers — ship real products with `/taw <describe what you want>`.
 
-`/taw làm cho tôi 1 shop online bán mỹ phẩm` → clarify → plan → code → test → deploy → live URL.
+`/taw build me an online shop selling cosmetics` → clarify → plan → code → test → deploy → live URL.
 
-## Install (sau khi mua)
+## Install
 
 ```bash
 curl -fsSL https://install.tawkit.vn | bash
 ```
 
-One-liner này sẽ: kiểm tra prerequisites (git, node ≥20, claude, gh) → login GitHub → clone repo riêng của bạn vào `~/.taw-kit/` → cài skills và agents vào `~/.claude/` → chạy `tawkit doctor`.
+This one-liner will: check prerequisites (git, node ≥20, claude, gh) → log into GitHub → clone your private repo into `~/.taw-kit/` → install skills and agents into `~/.claude/` → run `tawkit doctor`.
 
-Chi tiết từng bước (tiếng Việt): [`docs/vi/quickstart.md`](./docs/vi/quickstart.md)
+Step-by-step walkthrough: [`docs/quickstart.md`](./docs/quickstart.md)
 
-## Dùng thử
+## Try it
 
-Sau khi cài, mở Claude Code trong một thư mục mới và gõ:
+After install, open Claude Code in a new folder and type:
 
 ```
-/taw lam cho toi landing page ban khoa hoc online
+/taw build me a landing page for my online course
 ```
 
-Hoặc bắt đầu từ preset sẵn có:
+Or start from a built-in preset:
 
 ```
 tawkit new shop-online
@@ -30,26 +30,27 @@ tawkit new shop-online
 
 ## Docs
 
-- **Vietnamese (primary):** [`docs/vi/quickstart.md`](./docs/vi/quickstart.md), [`docs/vi/troubleshooting.md`](./docs/vi/troubleshooting.md)
-- **English (architecture):** [`docs/en/architecture.md`](./docs/en/architecture.md)
+- **Quickstart:** [`docs/quickstart.md`](./docs/quickstart.md)
+- **Troubleshooting:** [`docs/troubleshooting.md`](./docs/troubleshooting.md)
+- **Architecture:** [`docs/en/architecture.md`](./docs/en/architecture.md)
 
-## Gỡ bỏ
+## Uninstall
 
 ```bash
-tawkit uninstall          # gỡ skills/agents/hooks khỏi ~/.claude, giữ ~/.taw-kit/
-tawkit uninstall --full   # gỡ luôn repo clone tại ~/.taw-kit/
+tawkit uninstall          # remove skills/agents/hooks from ~/.claude, keep ~/.taw-kit/
+tawkit uninstall --full   # also remove the cloned repo at ~/.taw-kit/
 ```
 
-Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.taw-kit-owned` + tên agent/hook cố định). Skill cá nhân của bạn trong `~/.claude/skills/` **không bị ảnh hưởng**.
+Uninstall only touches files installed by taw-kit (identified by the `.taw-kit-owned` marker and fixed agent/hook names). Your personal skills in `~/.claude/skills/` are **not affected**.
 
-## Yêu cầu hệ thống
+## System requirements
 
-- macOS, Linux, hoặc Windows (qua WSL2)
+- macOS, Linux, or Windows (via WSL2)
 - Node.js ≥ 20
 - Claude Code CLI
 - Git + GitHub CLI (`gh`)
-- API key Anthropic (user tự có)
+- Anthropic API key (bring your own)
 
 ## License
 
-Commercial — xem [LICENSE](./LICENSE). Không chia sẻ repo; không upload lên marketplace khác.
+Commercial — see [LICENSE](./LICENSE). Do not share the repo; do not upload to other marketplaces.

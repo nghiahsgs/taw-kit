@@ -1,42 +1,42 @@
 {
-  "model": "claude-opus-4-7",
-  "language": "vi",
   "note": "taw-kit defaults for Vietnamese non-dev users. Hook paths resolve via $HOME/.claude/hooks/.",
+  "env": {
+    "TAW_NO_AUTOCOMMIT": "0",
+    "TAW_KIT_VERSION": "{{TAW_KIT_VERSION}}"
+  },
   "hooks": {
     "SessionStart": [
       {
-        "command": "bash $HOME/.claude/hooks/session-start-context.sh"
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/session-start-context.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit|MultiEdit",
-        "command": "bash $HOME/.claude/hooks/post-tool-auto-commit.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/post-tool-auto-commit.sh"
+          }
+        ]
       }
     ],
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "command": "bash $HOME/.claude/hooks/permission-classifier.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $HOME/.claude/hooks/permission-classifier.sh"
+          }
+        ]
       }
     ]
-  },
-  "approvedTools": [
-    "Read",
-    "Write",
-    "Edit",
-    "MultiEdit",
-    "Glob",
-    "Grep",
-    "Task",
-    "TaskCreate",
-    "TaskUpdate",
-    "TaskList",
-    "WebFetch",
-    "WebSearch"
-  ],
-  "env": {
-    "TAW_NO_AUTOCOMMIT": "0",
-    "TAW_KIT_VERSION": "{{TAW_KIT_VERSION}}"
   }
 }

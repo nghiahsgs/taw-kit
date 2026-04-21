@@ -16,29 +16,29 @@ set -euo pipefail
 
 CREDS="${HOME}/.config/tawkit/seller-creds.env"
 if [ ! -f "$CREDS" ]; then
-  echo "[loi] khong tim thay $CREDS" >&2
-  echo "tao file voi: REPO_OWNER, REPO_NAME, SHEET_WEBHOOK_URL, SELLER_EMAIL" >&2
+  echo "[err] $CREDS not found" >&2
+  echo "create the file with: REPO_OWNER, REPO_NAME, SHEET_WEBHOOK_URL, SELLER_EMAIL" >&2
   exit 2
 fi
 # shellcheck disable=SC1090
 . "$CREDS"
 
-: "${REPO_OWNER:?REPO_OWNER chua set}"
-: "${REPO_NAME:?REPO_NAME chua set}"
+: "${REPO_OWNER:?REPO_OWNER not set}"
+: "${REPO_NAME:?REPO_NAME not set}"
 
 if ! command -v gh >/dev/null 2>&1; then
-  echo "[loi] can gh CLI. Cai: brew install gh  (Mac) hoac apt install gh" >&2
+  echo "[err] gh CLI required. Install: brew install gh  (Mac)  or  apt install gh  (Linux)" >&2
   exit 3
 fi
 if ! gh auth status >/dev/null 2>&1; then
-  echo "[loi] gh chua dang nhap. Chay: gh auth login" >&2
+  echo "[err] gh not logged in. Run: gh auth login" >&2
   exit 3
 fi
 
 _validate_gh_user() {
   local u="$1"
   if ! [[ "$u" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]{0,38}[a-zA-Z0-9])?$ ]]; then
-    echo "[loi] github username khong hop le: $u" >&2
+    echo "[err] invalid github username: $u" >&2
     exit 1
   fi
 }
@@ -49,15 +49,15 @@ _log_to_sheet() {
   curl -fsSL -X POST "$SHEET_WEBHOOK_URL" \
     -H 'Content-Type: application/json' \
     -d "{\"event\":\"$event\",\"gh_user\":\"$gh_user\",\"order_id\":\"$order_id\",\"email\":\"$email\",\"ts\":\"$(date -u +%FT%TZ)\"}" \
-    >/dev/null 2>&1 || echo "[canh bao] khong log duoc vao Sheet (bo qua)" >&2
+    >/dev/null 2>&1 || echo "[warn] sheet log failed (ignored)" >&2
 }
 
 if [ "${1:-}" = "--revoke" ]; then
   # Refund path — remove collaborator access
   gh_user="${2:-}"; _validate_gh_user "$gh_user"
-  echo "[i] revoke quyen cua $gh_user..."
+  echo "[info] revoking access for $gh_user..."
   gh api -X DELETE "/repos/$REPO_OWNER/$REPO_NAME/collaborators/$gh_user" \
-    && echo "[ok] da revoke $gh_user"
+    && echo "[ok] revoked $gh_user"
   _log_to_sheet "revoked" "$gh_user" "" ""
   exit 0
 fi
@@ -78,7 +78,7 @@ fi
 
 _validate_gh_user "$gh_user"
 
-echo "[i] moi $gh_user vao $REPO_OWNER/$REPO_NAME (pull permission)..."
+echo "[info] inviting $gh_user to $REPO_OWNER/$REPO_NAME (pull permission)..."
 gh api -X PUT "/repos/$REPO_OWNER/$REPO_NAME/collaborators/$gh_user" \
   -f permission=pull \
   >/dev/null
@@ -87,23 +87,23 @@ _log_to_sheet "invited" "$gh_user" "$order_id" "$buyer_email"
 
 cat <<EOF
 
-[ok] da moi $gh_user
+[ok] invited $gh_user
 
---- Email mau gui cho khach (copy vao Gmail) ---
-Chao ban,
+--- Email template (copy into Gmail) ---
+Hi,
 
-Cam on ban da mua taw-kit!
+Thanks for buying taw-kit!
 
-Toi vua gui loi moi vao GitHub username "$gh_user" (Order: $order_id).
-Vui long kiem tra email tu GitHub, bam "Accept invitation".
+I just sent a GitHub invitation to the username "$gh_user" (Order: $order_id).
+Please check your email from GitHub and click "Accept invitation".
 
-Sau do, mo Terminal va chay:
+Then, open Terminal and run:
 
-  curl -fsSL https://install.tawkit.vn | bash
+  curl -fsSL https://install.tawkit.dev | bash
 
-Co van de gi, reply email nay hoac gui tin nhan cho toi.
+If you run into any issue, just reply to this email.
 
 -- $SELLER_EMAIL
----------------------------------------------
+-----------------------------------------
 
 EOF

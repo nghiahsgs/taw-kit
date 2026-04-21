@@ -1,13 +1,13 @@
 ---
 name: dashboard
-description: Bảng điều khiển KPI với cards số liệu, biểu đồ, và dữ liệu từ Supabase. Yêu cầu đăng nhập.
+description: KPI dashboard with stat cards, charts, and Supabase data. Auth required.
 ---
 
 ## Pre-filled intent
 
-Tôi cần một dashboard quản trị để theo dõi các chỉ số kinh doanh quan trọng. Dashboard
-cần có các thẻ KPI (doanh thu, số đơn hàng, khách mới), biểu đồ đường và cột theo thời
-gian, bảng dữ liệu chi tiết, tất cả lấy từ Supabase. Chỉ người có tài khoản mới vào được.
+I need an admin dashboard to track key business metrics. It needs KPI cards
+(revenue, orders, new customers), line and bar charts over time, a detail table,
+all pulled from Supabase. Only authenticated users can see it.
 
 ## Pre-filled clarifications
 
@@ -18,14 +18,14 @@ kpi_cards:
   - new_customers
   - conversion_rate
 chart_types:
-  - line (doanh thu theo ngày)
-  - bar (đơn hàng theo tuần)
+  - line (revenue per day)
+  - bar (orders per week)
 date_filter: last-30-days
 auth_needed: true
 auth_method: magic-link
 data_source: supabase
 refresh_interval: manual
-language: vi
+language: en
 ```
 
 ## Stack overrides
@@ -45,16 +45,16 @@ skip_polar: true
 
 ## Expected phases
 
-- Auth gate: Supabase magic link, redirect unauthenticated users to login
-- Layout: sidebar navigation + header với user info + logout
-- KPI cards: 4 thẻ số liệu với so sánh kỳ trước (% thay đổi)
-- Biểu đồ: line chart doanh thu + bar chart đơn hàng dùng Recharts
-- Bảng chi tiết: 20 sự kiện gần nhất với phân trang
+- Auth gate: Supabase magic link, redirect unauthenticated users to /login
+- Layout: sidebar navigation + header with user info + logout
+- KPI cards: 4 stat cards with period-over-period comparison (% change)
+- Charts: line chart for revenue + bar chart for orders, via Recharts
+- Detail table: 20 most recent events with pagination
 
 ## Success criteria
 
-- Route `/dashboard` redirect về `/login` nếu chưa đăng nhập
-- KPI cards tải dữ liệu thực từ Supabase trong dưới 1 giây
-- Biểu đồ render đúng với dữ liệu mẫu seed sẵn
-- Filter ngày thay đổi dữ liệu tất cả charts + cards
-- `npm run build` xanh không lỗi
+- `/dashboard` redirects to `/login` when unauthenticated
+- KPI cards load real Supabase data in under 1s
+- Charts render correctly with seeded sample data
+- Date filter changes all charts + cards simultaneously
+- `npm run build` exits 0 cleanly

@@ -3,9 +3,11 @@ name: taw-fix
 description: >
   Diagnose and auto-fix broken builds or runtime errors in taw-kit projects.
   Reads .taw/checkpoint.json for last error, runs build, parses output, applies
-  fix, re-runs build. Retries up to 3 times total. All user messages in Vietnamese.
-  Trigger phrases: "loi roi", "bi loi", "khong chay duoc", "fix giup toi",
-  "website bi hong", "co loi xuat hien", "build fail", "sua loi giup toi".
+  fix, re-runs build. Retries up to 3 times total. User-visible messages are
+  simple English. Trigger phrases (EN + VN):
+  "fix it", "build fail", "it's broken", "something's wrong",
+  "loi roi", "bi loi", "khong chay duoc", "fix giup toi",
+  "website bi hong", "co loi xuat hien", "sua loi giup toi".
 argument-hint: "[paste error] | auto"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ---
@@ -13,7 +15,7 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 # taw-fix — Diagnose & Auto-Fix
 
 You are the taw-fix skill. When invoked, diagnose and fix the broken project.
-All strings shown to the user MUST be Vietnamese. Internal reasoning is English.
+User-visible strings are simple English. Internal reasoning is English.
 
 ## Step 1 — Locate the error
 
@@ -21,7 +23,7 @@ Check sources in order:
 1. If user pasted an error message in the invocation args, use that directly.
 2. Else read `.taw/checkpoint.json`; extract `last_error` field.
 3. If both are empty, run `npm run build 2>&1 | tail -60` and capture output.
-4. If still no error found, emit: "Tôi không thấy lỗi nào. Bạn thử chạy lại thử xem, hoặc dán thông báo lỗi vào đây."
+4. If still no error found, emit: "I don't see an error. Try running it again, or paste the error message here."
 
 Write the raw error text to `.taw/fix-session.json`:
 ```json
@@ -48,23 +50,23 @@ Read the error text and assign exactly ONE category:
 
 Execute the fix for the classified category:
 
-**missing-dep:** Extract package name from error. Run `npm install <package>`. Confirm with: "Đã cài gói còn thiếu."
+**missing-dep:** Extract package name from error. Run `npm install <package>`. Confirm with: "Installed the missing package."
 
-**type-error:** Grep for the flagged file + line. Read that section. Apply minimal type annotation or null-check. Confirm with: "Đã sửa lỗi kiểu dữ liệu."
+**type-error:** Grep for the flagged file + line. Read that section. Apply minimal type annotation or null-check. Confirm with: "Fixed the type error."
 
-**env-missing:** Check `.env.local`. If key is missing, prompt: "Bạn cần thêm khóa `<KEY>` vào file `.env.local`. Giá trị lấy từ đâu?" — wait for reply, then write the key.
+**env-missing:** Check `.env.local`. If key is missing, prompt: "You need to add the key `<KEY>` to `.env.local`. Where do I get this value?" — wait for reply, then write the key.
 
-**port-busy:** Run `lsof -ti tcp:3000 | xargs kill -9 2>/dev/null`. Confirm: "Đã giải phóng cổng 3000."
+**port-busy:** Run `lsof -ti tcp:3000 | xargs kill -9 2>/dev/null`. Confirm: "Freed up port 3000."
 
-**syntax-error:** Grep for the flagged file. Read ±10 lines around the error line. Apply the fix (close bracket, fix quote, etc.). Confirm: "Đã sửa lỗi cú pháp."
+**syntax-error:** Grep for the flagged file. Read ±10 lines around the error line. Apply the fix (close bracket, fix quote, etc.). Confirm: "Fixed the syntax error."
 
-**supabase:** Remind user: "Kiểm tra cài đặt RLS trong Supabase dashboard cho bảng `<table>`. Hoặc chạy lại migration." If table missing, guide to run `npx supabase db push`.
+**supabase:** Remind user: "Check the RLS settings in your Supabase dashboard for the `<table>` table. Or re-run the migration." If table missing, guide to run `npx supabase db push`.
 
-**build-memory:** Add `NODE_OPTIONS=--max-old-space-size=4096` to the build script in `package.json`. Confirm: "Đã tăng giới hạn bộ nhớ build."
+**build-memory:** Add `NODE_OPTIONS=--max-old-space-size=4096` to the build script in `package.json`. Confirm: "Raised the build memory limit."
 
-**runtime-crash:** Add null-check guard at the identified call site. Confirm: "Đã thêm kiểm tra null."
+**runtime-crash:** Add null-check guard at the identified call site. Confirm: "Added a null check."
 
-**unknown:** Run `npm run build 2>&1 | tail -80` and show last 20 lines to user with: "Tôi chưa nhận ra lỗi này. Đây là chi tiết:"
+**unknown:** Run `npm run build 2>&1 | tail -80` and show last 20 lines to user with: "I don't recognize this error. Here are the details:"
 
 ## Step 4 — Re-run build
 
@@ -80,18 +82,18 @@ npm run build 2>&1 | tail -30
 ## Step 5 — Revert fallback (attempt 3 failed)
 
 1. Find last green git SHA: `git log --oneline | head -10` — show to user.
-2. Emit: "Build vẫn lỗi sau 3 lần thử. Muốn quay lại phiên bản hoạt động trước không? (gõ: yes / không)"
+2. Emit: "Build still failing after 3 tries. Want to roll back to the last working version? (type: yes / no)"
 3. On `yes`: run `git reset --hard <sha>` then `npm run build`.
-4. On `không`: emit "OK, để tôi dừng ở đây. Bạn dán thêm lỗi vào thì tôi thử tiếp."
+4. On `no`: emit "OK, I'll stop here. Paste more of the error and I'll try again."
 5. Update `.taw/checkpoint.json`: `{"status": "fix-failed", "last_error": "<error>"}`.
 
 ## Step 6 — Done
 
 Emit:
 ```
-Xong! Build đã xanh trở lại.
-Thay đổi đã áp dụng: <1-line summary in VN>
-Bạn muốn deploy không? Gõ: /taw-deploy
+Done! Build is green again.
+Applied change: <1-line summary>
+Want to deploy? Type: /taw-deploy
 ```
 
 Update `.taw/checkpoint.json`: `{"status": "running", "last_fix": "<category>"}`.

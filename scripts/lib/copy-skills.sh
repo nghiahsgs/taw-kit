@@ -29,7 +29,7 @@ _copy_skill() {
   local src="$1" name; name="$(basename "$src")"
   local dst="$CLAUDE_DIR/skills/$name"
   if [ -d "$dst" ] && [ ! -f "$dst/$MARKER" ] && [[ "$name" != taw* ]]; then
-    warn "bo qua $name (co ton tai, khong thuoc taw-kit)"
+    warn "skipping $name (exists and is not owned by taw-kit)"
     return 0
   fi
   mkdir -p "$dst"
@@ -56,4 +56,4 @@ for h in "$TAW_ROOT"/hooks/*.sh; do
   chmod +x "$CLAUDE_DIR/hooks/$(basename "$h")"
 done
 
-ok "da cai skills, agents, hooks vao $CLAUDE_DIR"
+ok "installed skills, agents, and hooks into $CLAUDE_DIR"

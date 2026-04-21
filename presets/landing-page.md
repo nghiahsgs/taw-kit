@@ -1,19 +1,19 @@
 ---
 name: landing-page
-description: Trang giới thiệu sản phẩm/dịch vụ với hero, tính năng nổi bật, và form thu thập email.
+description: Marketing page with a hero, feature grid, and email-capture form.
 ---
 
 ## Pre-filled intent
 
-Tôi muốn tạo một trang landing page chuyên nghiệp để giới thiệu sản phẩm hoặc dịch vụ
-của tôi và thu thập email khách hàng tiềm năng. Trang gồm 3 phần chính: hero nổi bật
-với lời kêu gọi hành động, phần tính năng/lợi ích, và form đăng ký nhận thông tin.
+I want a professional landing page to promote my product or service and collect leads
+via email. The page has 3 main sections: a strong hero with a call-to-action, a
+features/benefits section, and a signup form.
 
 ## Pre-filled clarifications
 
 ```yaml
-product_name: "Sản phẩm của tôi"
-hero_cta: "Đăng ký ngay"
+product_name: "My product"
+hero_cta: "Sign up"
 sections:
   - hero
   - features
@@ -21,7 +21,7 @@ sections:
 email_storage: supabase
 payment_needed: false
 auth_needed: false
-language: vi
+language: en
 seo_needed: true
 ```
 
@@ -38,16 +38,16 @@ supabase_tables:
 
 ## Expected phases
 
-- Tạo trang chủ Next.js App Router với layout hero full-width
-- Xây phần tính năng dạng grid 3 cột với icon + mô tả
-- Tạo form thu thập email kết nối Supabase bảng `leads`
-- Cấu hình SEO meta tags, Open Graph, sitemap.xml
-- Deploy lên Vercel qua Shipkit
+- Build the Next.js App Router home page with a full-width hero
+- Add a 3-column feature grid with icons + descriptions
+- Wire the email-capture form to Supabase table `leads`
+- Set SEO meta tags, Open Graph, sitemap.xml
+- Deploy to Vercel via Shipkit
 
 ## Success criteria
 
-- Trang tải dưới 2 giây (Lighthouse ≥ 90)
-- Form gửi email lưu thành công vào Supabase
-- Hiển thị đúng trên mobile + desktop
-- `npm run build` xanh không lỗi
-- URL live trả về sau deploy
+- Page loads in under 2s (Lighthouse ≥ 90)
+- Form submissions save to Supabase successfully
+- Renders correctly on mobile and desktop
+- `npm run build` exits 0 cleanly
+- Live URL returned after deploy

@@ -3,32 +3,30 @@ name: taw-deploy
 description: >
   One-command deploy for taw-kit projects. Tries Shipkit MCP first
   (ensure-deploy-key → deploy → get-deployment-status), falls back to
-  `vercel --prod` CLI. Returns live URL to caller. All user messages Vietnamese.
-  Trigger phrases: "deploy len mang", "day len vercel", "cho khach xem duoc",
-  "publish website", "dua website len internet", "go live", "deploy di".
-argument-hint: "[ten-mien-tuy-chon]"
+  `vercel --prod` CLI. Returns live URL to caller. User-visible strings
+  are simple English. Trigger phrases (EN + VN): "deploy this", "push to
+  vercel", "publish the site", "go live", "deploy di", "day len vercel".
+argument-hint: "[optional-custom-domain]"
 allowed-tools: Read, Write, Bash, Grep
 ---
 
 # taw-deploy — One-Command Deploy
 
-You are the taw-deploy skill. Deploy the current taw-kit project to production
-and return the live URL. All strings shown to the user MUST be Vietnamese.
+You are the taw-deploy skill. Deploy the current taw-kit project to production and return the live URL. All strings shown to the user MUST be simple English.
 
 ## Step 1 — Pre-flight checks
 
-Run ALL checks before touching deploy infrastructure. If any check fails, stop
-and emit the corresponding VN message — do NOT proceed.
+Run ALL checks before touching deploy infrastructure. If any check fails, stop and emit the matching message — do NOT proceed.
 
 | # | Check | Command | Fail message |
 |---|-------|---------|--------------|
-| 1 | Build passes locally | `npm run build 2>&1` exit 0 | "Build đang lỗi. Chạy `/taw-fix` trước nhé." |
-| 2 | `.env.local` exists | `test -f .env.local` | "File `.env.local` chưa có. Bạn cần tạo nó với các khóa Supabase + Polar." |
-| 3 | No secrets in tracked files | `git grep -lE "(SUPABASE_SERVICE_KEY\|POLAR_SECRET\|sk-[a-zA-Z]{20})" -- '*.ts' '*.tsx' '*.js'` returns empty | "Phát hiện secret trong code! Xóa khỏi file trước khi deploy." |
-| 4 | Required env keys present | grep `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` | "Thiếu khóa Supabase trong `.env.local`." |
-| 5 | `vercel.json` or `next.config.js` exists | `test -f vercel.json -o -f next.config.js` | "Không tìm thấy cấu hình Next.js. Đây có phải dự án taw-kit không?" |
+| 1 | Build passes locally | `npm run build 2>&1` exit 0 | "Build is failing. Run `/taw-fix` first." |
+| 2 | `.env.local` exists | `test -f .env.local` | "`.env.local` is missing. You need it with your Supabase + Polar keys." |
+| 3 | No secrets in tracked files | `git grep -lE "(SUPABASE_SERVICE_KEY\|POLAR_SECRET\|sk-[a-zA-Z]{20})" -- '*.ts' '*.tsx' '*.js'` returns empty | "Secret detected in source. Remove it before deploying." |
+| 4 | Required env keys present | grep `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` | "Missing Supabase keys in `.env.local`." |
+| 5 | Config file exists | `test -f vercel.json -o -f next.config.js` | "Next.js config not found. Is this a taw-kit project?" |
 
-Emit progress: "Kiểm tra trước khi deploy... ✓"
+Emit progress: "Pre-flight checks... done"
 
 ## Step 2 — Read project name
 
@@ -36,7 +34,7 @@ Emit progress: "Kiểm tra trước khi deploy... ✓"
 node -e "console.log(require('./package.json').name)"
 ```
 
-Store as `$PROJECT_NAME`. Used for Shipkit project identifier.
+Store as `$PROJECT_NAME`. Used as the Shipkit project identifier.
 
 ## Step 3 — Try Shipkit MCP deploy
 
@@ -45,7 +43,7 @@ Execute Shipkit MCP tool calls in sequence:
 **3a. ensure-deploy-key**
 Call MCP tool `shipkit/ensure-deploy-key` with `{ "project": "$PROJECT_NAME" }`.
 - On success: proceed to 3b.
-- On MCP error (tool not found, timeout, auth): emit "Shipkit chưa kết nối, đang dùng Vercel CLI..." and jump to Step 4.
+- On MCP error (tool not found, timeout, auth): emit "Shipkit not connected; falling back to Vercel CLI..." and jump to Step 4.
 
 **3b. deploy**
 Call MCP tool `shipkit/deploy` with `{ "project": "$PROJECT_NAME", "env": "production" }`.
@@ -64,10 +62,9 @@ Poll MCP tool `shipkit/get-deployment-status` with `{ "deployment_id": "<id>" }`
 npx vercel --prod --yes 2>&1
 ```
 
-Parse stdout for the production URL (line matching `https://*.vercel.app` or custom domain).
+Parse stdout for the production URL (line matching `https://*.vercel.app` or a custom domain).
 - On success: proceed to Step 5 with the URL.
-- On failure: emit "Deploy thất bại. Chi tiết lỗi:" followed by last 15 lines of output.
-  Write `.taw/checkpoint.json`: `{"status": "deploy-failed", "last_error": "<error>"}` and stop.
+- On failure: emit "Deploy failed. Error details below:" followed by the last 15 lines of output. Write `.taw/checkpoint.json`: `{"status": "deploy-failed", "last_error": "<error>"}` and stop.
 
 ## Step 5 — Capture and persist URL
 
@@ -85,17 +82,17 @@ Update `.taw/checkpoint.json`:
 
 Emit exactly:
 ```
-Deploy thành công! 🎉
-Truy cập: <live-url>
-Muốn thêm tính năng? Gõ: /taw-add <mô tả>
-Muốn sửa lỗi? Gõ: /taw-fix
+Deploy succeeded! 🎉
+Live at: <live-url>
+Want to add a feature? Type: /taw-add <description>
+Something broken? Type: /taw-fix
 ```
 
-Return `<live-url>` as the skill's output value so callers (e.g. `/taw` Step 7) can use it.
+Return `<live-url>` as the skill's output so callers (e.g. `/taw` Step 7) can use it.
 
 ## Constraints
 
 - NEVER log Shipkit tokens, Vercel tokens, or any credentials.
 - NEVER skip pre-flight checks, even when called from `/taw` automatically.
-- If called without a taw-kit project (no `package.json`), emit: "Tôi không thấy dự án ở đây. Di chuyển vào thư mục dự án trước nhé."
-- Custom domain arg (if user passed one) is passed as `--prod --scope <domain>` to Vercel CLI. Shipkit: add `"domain": "<arg>"` to deploy call.
+- If called without a taw-kit project (no `package.json`): emit "I don't see a project here. Cd into the project folder first."
+- Custom domain arg (if the user passed one) is passed as `--prod --scope <domain>` to Vercel CLI. For Shipkit: add `"domain": "<arg>"` to the deploy call.

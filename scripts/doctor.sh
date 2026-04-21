@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # tawkit doctor — environment health check.
-# Runs 10 checks, prints VN status per check, exits with count of failures.
+# Runs 10 checks, prints status per check, exits with count of failures.
 
 set -u
 
@@ -21,7 +21,7 @@ if command -v claude >/dev/null 2>&1; then
   ver="$(claude --version 2>/dev/null | head -1 || echo 'unknown')"
   _pass "Claude Code: $ver"
 else
-  _fail "Claude Code chua cai. Huong dan: https://docs.claude.com/claude-code"
+  _fail "Claude Code not installed. Install: https://docs.claude.com/claude-code"
 fi
 
 # 2. git ≥ 2.30
@@ -29,7 +29,7 @@ if command -v git >/dev/null 2>&1; then
   gv="$(git --version | awk '{print $3}')"
   _pass "git: $gv"
 else
-  _fail "git chua cai"
+  _fail "git not installed"
 fi
 
 # 3. node ≥ 20
@@ -39,66 +39,68 @@ if command -v node >/dev/null 2>&1; then
   if [ "${major:-0}" -ge 20 ] 2>/dev/null; then
     _pass "Node.js: v$nv"
   else
-    _fail "Node.js qua cu (v$nv). Can v20 tro len. Cai: https://nodejs.org"
+    _fail "Node.js is too old (v$nv). Needs v20 or higher. Install: https://nodejs.org"
   fi
 else
-  _fail "Node.js chua cai. Cai: https://nodejs.org"
+  _fail "Node.js not installed. Install: https://nodejs.org"
 fi
 
 # 4. ~/.claude/ writable
 if [ -w "$HOME/.claude" ]; then
-  _pass "~/.claude/ ghi duoc"
+  _pass "~/.claude/ writable"
 else
-  _fail "~/.claude/ khong ghi duoc. Chay: chmod -R u+w ~/.claude"
+  _fail "~/.claude/ not writable. Run: chmod -R u+w ~/.claude"
 fi
 
 # 5. Core skill installed
 if [ -f "$HOME/.claude/skills/taw/SKILL.md" ]; then
-  _pass "skill /taw da cai"
+  _pass "/taw skill installed"
 else
-  _fail "skill /taw chua cai. Chay: tawkit install"
+  _fail "/taw skill not installed. Run: tawkit install"
 fi
 
 # 6. Hooks executable
 if [ -x "$HOME/.claude/hooks/permission-classifier.sh" ]; then
-  _pass "hooks co quyen chay"
+  _pass "hooks are executable"
 else
-  _fail "hooks khong chay duoc. Chay: chmod +x ~/.claude/hooks/*.sh"
+  _fail "hooks not executable. Run: chmod +x ~/.claude/hooks/*.sh"
 fi
 
-# 7. API key works (best-effort; skip if offline)
+# 7. Anthropic auth (env var OR claude login)
 if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
-  _pass "ANTHROPIC_API_KEY da set"
+  _pass "ANTHROPIC_API_KEY is set"
+elif command -v claude >/dev/null 2>&1 && claude auth status >/dev/null 2>&1; then
+  _pass "Claude Code authenticated (via claude login)"
 else
-  _warn_only "ANTHROPIC_API_KEY chua set (chay: export ANTHROPIC_API_KEY=...)"
+  _warn_only "No API key or claude login detected (run: claude login  OR  export ANTHROPIC_API_KEY=...)"
 fi
 
 # 8. RTK (optional)
 if command -v rtk >/dev/null 2>&1; then
-  _pass "RTK (tiet kiem token) da cai"
+  _pass "RTK (token saver) installed"
 else
-  _warn_only "RTK chua cai (tuy chon; tiet kiem 60-75% token)"
+  _warn_only "RTK not installed (optional; saves 60-75% tokens on dev ops)"
 fi
 
 # 9. Polar token (warn only)
 if [ -n "${POLAR_ACCESS_TOKEN:-}" ]; then
-  _pass "POLAR_ACCESS_TOKEN da set"
+  _pass "POLAR_ACCESS_TOKEN is set"
 else
-  _warn_only "POLAR_ACCESS_TOKEN chua set (chi can neu ban ban hang tren Polar)"
+  _warn_only "POLAR_ACCESS_TOKEN not set (only needed if you are selling on Polar)"
 fi
 
-# 10. Locale UTF-8 (critical for Vietnamese diacritics)
+# 10. Locale UTF-8
 if locale 2>/dev/null | grep -q 'UTF-8'; then
-  _pass "locale: UTF-8 (tieng Viet OK)"
+  _pass "locale: UTF-8"
 else
-  _fail "locale khong phai UTF-8. Them vao ~/.zshrc: export LANG=en_US.UTF-8"
+  _fail "locale is not UTF-8. Add to ~/.zshrc: export LANG=en_US.UTF-8"
 fi
 
 echo
 if [ "$fails" -eq 0 ]; then
-  ok "doctor: tat ca OK ($warns canh bao khong quan trong)"
+  ok "doctor: all checks passed ($warns non-critical warnings)"
   exit 0
 else
-  err "doctor: $fails loi can sua, $warns canh bao"
+  err "doctor: $fails failure(s), $warns warning(s)"
   exit "$fails"
 fi

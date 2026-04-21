@@ -1,18 +1,19 @@
 ---
 name: shop-online
-description: Cửa hàng online với danh sách sản phẩm, giỏ hàng, thanh toán Polar và COD.
+description: Online store with product list, cart, and checkout via Polar + COD.
 ---
 
 ## Pre-filled intent
 
-Tôi muốn xây một cửa hàng online để bán sản phẩm vật lý hoặc số. Cửa hàng cần có trang
-danh sách sản phẩm, trang chi tiết sản phẩm, giỏ hàng, và trang thanh toán hỗ trợ Polar
-(thẻ quốc tế) và COD (thanh toán khi nhận hàng). Quản trị sản phẩm qua Supabase dashboard.
+I want an online store to sell physical or digital products. The store needs a
+product list page, a product detail page, a cart, and a checkout that supports
+Polar (international cards) and COD (cash on delivery). Product management goes
+through the Supabase dashboard.
 
 ## Pre-filled clarifications
 
 ```yaml
-product_type: "vật lý"
+product_type: "physical"
 product_count_range: "1-50"
 payment_methods:
   - polar
@@ -21,7 +22,7 @@ cart_type: client-side
 auth_needed: false
 admin_needed: true
 shipping_needed: true
-language: vi
+language: en
 ```
 
 ## Stack overrides
@@ -39,16 +40,16 @@ polar_product_type: one-time
 
 ## Expected phases
 
-- Trang danh sách sản phẩm lấy từ Supabase với filter + search
-- Trang chi tiết sản phẩm với ảnh, mô tả, nút thêm vào giỏ
-- Giỏ hàng client-side (localStorage) với tóm tắt đơn hàng
-- Trang checkout: form thông tin giao hàng + chọn Polar hoặc COD
-- Trang admin đơn giản: xem + cập nhật trạng thái đơn hàng
+- Product list page pulls from Supabase with filter + search
+- Product detail page with image, description, add-to-cart button
+- Client-side cart (localStorage) with order summary
+- Checkout page: shipping form + Polar or COD choice
+- Simple admin page: view + update order status
 
 ## Success criteria
 
-- Thêm sản phẩm vào giỏ và checkout thành công với Polar test mode
-- Đơn COD lưu vào Supabase bảng `orders`
-- Trang sản phẩm render đúng trên mobile
-- Admin có thể xem đơn hàng mới nhất
-- `npm run build` xanh không lỗi
+- Add product to cart and check out successfully in Polar test mode
+- COD orders save to Supabase `orders` table
+- Product page renders correctly on mobile
+- Admin can see the latest orders
+- `npm run build` exits 0 cleanly

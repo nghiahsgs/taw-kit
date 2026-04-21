@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # tawkit uninstall — remove taw-kit files from ~/.claude/ without touching
-# user's own skills. Optionally also remove the cloned repo at ~/.taw-kit/.
+# the user's own skills. Optionally also remove the cloned repo at ~/.taw-kit/.
 #
 # Usage:
 #   tawkit uninstall            # remove ~/.claude/ taw-kit files, keep ~/.taw-kit/
@@ -25,18 +25,18 @@ for a in "$@"; do
     --yes|-y) ASSUME_YES=1 ;;
     --help|-h)
       cat <<EOF
-tawkit uninstall — go bo taw-kit khoi may
+tawkit uninstall — remove taw-kit from your machine
 
-Co 2 muc do:
-  tawkit uninstall           Go skills, agents, hooks khoi ~/.claude/
-                             Giu lai ~/.taw-kit/ (de cai lai nhanh sau nay)
-  tawkit uninstall --full    Go TAT CA, ke ca ~/.taw-kit/
+Two levels:
+  tawkit uninstall           Remove skills, agents, and hooks from ~/.claude/
+                             Keep ~/.taw-kit/ (for quick reinstall later)
+  tawkit uninstall --full    Remove EVERYTHING, including ~/.taw-kit/
 
-Tuy chon:
-  --yes / -y                 Khong hoi xac nhan
-  --help / -h                In huong dan nay
+Options:
+  --yes / -y                 Skip the confirmation prompt
+  --help / -h                Show this help
 
-Skills ca nhan cua ban (khong phai cua taw-kit) se khong bi dong toi.
+Your personal skills (not owned by taw-kit) are never touched.
 EOF
       exit 0 ;;
   esac
@@ -44,13 +44,13 @@ done
 
 # --- Confirm ---
 if [ "$ASSUME_YES" -eq 0 ]; then
-  info "Sap go bo taw-kit khoi $CLAUDE_DIR"
-  [ "$FULL" -eq 1 ] && warn "--full: se xoa luon $TAW_ROOT"
-  printf "Tiep tuc? (yes/no): "
+  info "About to remove taw-kit from $CLAUDE_DIR"
+  [ "$FULL" -eq 1 ] && warn "--full: will also delete $TAW_ROOT"
+  printf "Continue? (yes/no): "
   read -r ans
   case "$ans" in
-    yes|y|Yes|YES|co) ;;
-    *) info "da huy"; exit 0 ;;
+    yes|y|Yes|YES) ;;
+    *) info "cancelled"; exit 0 ;;
   esac
 fi
 
@@ -65,7 +65,7 @@ if [ -d "$CLAUDE_DIR/skills" ]; then
       removed_count=$((removed_count+1))
     fi
   done
-  ok "da go $removed_count skill cua taw-kit"
+  ok "removed $removed_count taw-kit skill(s)"
 fi
 
 # --- 2. Remove our agents by known name ---
@@ -78,8 +78,8 @@ for a in planner researcher fullstack-dev tester reviewer; do
   fi
 done
 if [ "$agent_count" -gt 0 ]; then
-  ok "da go $agent_count agent cua taw-kit"
-  warn "neu ban co ban 'planner/researcher/fullstack-dev/tester/reviewer' rieng truoc khi cai, ban do da bi ghi de luc install. Kiem tra ~/.claude_bk hoac ~/.claude_taw-test neu co."
+  ok "removed $agent_count taw-kit agent(s)"
+  warn "if you had your own 'planner/researcher/fullstack-dev/tester/reviewer' before install, those were overwritten. Check any ~/.claude backup dir you may have kept."
 fi
 
 # --- 3. Remove our hooks by known name ---
@@ -91,35 +91,36 @@ for h in session-start-context post-tool-auto-commit permission-classifier rtk-w
     hook_count=$((hook_count+1))
   fi
 done
-[ "$hook_count" -gt 0 ] && ok "da go $hook_count hook"
+[ "$hook_count" -gt 0 ] && ok "removed $hook_count hook(s)"
 
 # --- 4. Strip taw keys from settings.json ---
+# Schema: hooks.<Event>[].hooks[].command — strip inner hook entries whose
+# command references a taw-kit hook script. Drop matcher entries with empty
+# inner hooks arrays. Drop event keys with empty arrays. Drop hooks key if
+# entire object becomes empty. Strip env.TAW_* keys.
 SETTINGS="$CLAUDE_DIR/settings.json"
+TAW_HOOK_PATTERN='taw-kit|/\.claude/hooks/(session-start-context|post-tool-auto-commit|permission-classifier|rtk-wrapper)\.sh'
 if [ -f "$SETTINGS" ]; then
   if command -v jq >/dev/null 2>&1; then
     tmp="$(mktemp)"
-    # Remove hook entries referencing taw-kit hook files + env.TAW_*
-    jq '
-      .hooks |= (
-        if . == null then null
-        else
-          with_entries(
-            .value |= (
-              if type == "array" then
-                map(select((.command // "") | test("taw-kit|/\\.claude/hooks/(session-start-context|post-tool-auto-commit|permission-classifier|rtk-wrapper)\\.sh") | not))
-              else . end
-            )
+    jq --arg pat "$TAW_HOOK_PATTERN" '
+      (.hooks // empty) |= (
+        with_entries(
+          .value |= (
+            map(.hooks |= (map(select((.command // "") | test($pat) | not))))
+            | map(select((.hooks | length) > 0))
           )
-          | to_entries
-          | map(select((.value | length // 1) > 0 or (.value | type) != "array"))
-          | from_entries
-        end
+        )
+        | with_entries(select((.value | length) > 0))
       )
-      | .env |= (if . == null then null else with_entries(select(.key | startswith("TAW_") | not)) end)
+      | if (.hooks // {}) == {} then del(.hooks) else . end
+      | (.env // empty) |= with_entries(select(.key | startswith("TAW_") | not))
+      | if (.env // {}) == {} then del(.env) else . end
+      | del(.note | select(. != null and (contains("taw-kit"))))
     ' "$SETTINGS" > "$tmp" && mv "$tmp" "$SETTINGS"
-    ok "da clean settings.json (giu nguyen cac key khac)"
+    ok "cleaned settings.json (other keys preserved)"
   else
-    warn "khong co jq — settings.json khong tu dong clean. Sua tay $SETTINGS neu can"
+    warn "jq not installed — settings.json not auto-cleaned. Edit $SETTINGS manually if needed"
   fi
 fi
 
@@ -127,11 +128,11 @@ fi
 LINK="/usr/local/bin/tawkit"
 if [ -L "$LINK" ]; then
   if rm -f "$LINK" 2>/dev/null; then
-    ok "da go symlink $LINK"
+    ok "removed symlink $LINK"
   elif command -v sudo >/dev/null 2>&1 && sudo rm -f "$LINK" 2>/dev/null; then
-    ok "da go symlink $LINK"
+    ok "removed symlink $LINK"
   else
-    warn "khong go duoc $LINK. Xoa tay: sudo rm $LINK"
+    warn "could not remove $LINK. Run manually: sudo rm $LINK"
   fi
 fi
 
@@ -143,10 +144,10 @@ if [ "$FULL" -eq 1 ] && [ -d "$TAW_ROOT" ]; then
   # Safety: only remove if it's a git repo with our marker (sanity)
   if [ -d "$TAW_ROOT/.git" ] && [ -f "$TAW_ROOT/VERSION" ]; then
     rm -rf "$TAW_ROOT"
-    ok "da xoa $TAW_ROOT"
+    ok "removed $TAW_ROOT"
   else
-    warn "$TAW_ROOT khong giong clone taw-kit — bo qua (xoa tay neu muon)"
+    warn "$TAW_ROOT does not look like a taw-kit clone — skipping (delete manually if you really want to)"
   fi
 fi
 
-ok "da go bo xong. Chuc ngay vui."
+ok "uninstall complete. Have a nice day."

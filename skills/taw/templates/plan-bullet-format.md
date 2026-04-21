@@ -1,59 +1,59 @@
-# Plan Bullet Format (Vietnamese)
+# Plan Bullet Format
 
-Load during Step 3 of `/taw`. Render exactly 3–5 bullets in Vietnamese, covering the dimensions below.
+Load during Step 3 of `/taw`. Render exactly 3–5 bullets covering the dimensions below.
 
 ## Format
 
 ```
-Kế hoạch:
-1. <Stack> — <1 dòng mô tả>
-2. <Pages/Features> — <liệt kê 3–5 item>
-3. <Data/Integrations> — <DB tables + tích hợp>
+Plan:
+1. <Stack> — <1-line description>
+2. <Pages/Features> — <list of 3-5 items>
+3. <Data/Integrations> — <DB tables + integrations>
 4. <Deploy> — <target + URL pattern>
-5. <Ước tính thời gian> — <phút>
+5. <Estimated time> — <minutes>
 ```
 
 ## Rules
 
-- Bullets numbered 1–5 only. Không dùng dấu `-` hay `•`.
-- Mỗi dòng ≤ 90 ký tự.
-- Không emoji trong bullets (chỉ dùng ở Step 8 "Xong!").
-- Dùng từ tiếng Việt cho user-facing; tên framework giữ tiếng Anh (Next.js, Supabase, v.v.).
+- Bullets numbered 1–5 only. No `-` or `•`.
+- Each line ≤ 90 characters.
+- No emoji in bullets (save those for Step 8 "Done!").
+- Simple English; keep framework names as-is (Next.js, Supabase, etc.).
 
 ## Examples
 
-**Landing page bán khóa học:**
+**Landing page for an online course:**
 ```
-Kế hoạch:
-1. Next.js + Tailwind + shadcn/ui (stack gọn, dễ sửa)
-2. 3 section: hero + tính năng + form thu email
-3. Supabase lưu email leads (bảng `leads`)
-4. Deploy Vercel qua Shipkit, URL dạng <slug>.vercel.app
-5. Ước tính 10–15 phút
+Plan:
+1. Next.js + Tailwind + shadcn/ui (lean stack, easy to edit)
+2. 3 sections: hero + features + email form
+3. Supabase stores email leads (table: `leads`)
+4. Deploy to Vercel via Shipkit, URL like <slug>.vercel.app
+5. Estimated 10-15 minutes
 ```
 
-**Shop online cà phê:**
+**Online coffee shop:**
 ```
-Kế hoạch:
+Plan:
 1. Next.js + Tailwind + Supabase + Polar
-2. 4 trang: trang chủ, menu, giỏ hàng, cảm ơn
-3. Bảng `products` (6 mẫu), `orders`, `customers`
-4. Thanh toán Polar card + COD, deploy Vercel
-5. Ước tính 18–22 phút
+2. 4 pages: home, menu, cart, thank-you
+3. Tables: `products` (6 samples), `orders`, `customers`
+4. Payments via Polar (cards) + COD, deploy to Vercel
+5. Estimated 18-22 minutes
 ```
 
-**CRM quản lý khách shop mỹ phẩm:**
+**CRM for a cosmetics shop:**
 ```
-Kế hoạch:
+Plan:
 1. Next.js + Tailwind + shadcn + Supabase auth
-2. 2 trang: danh sách khách, chi tiết khách
-3. Bảng `customers` (tên, SĐT, email, ghi chú, tag, status)
-4. Import CSV + nhập tay, deploy Vercel
-5. Ước tính 12–15 phút
+2. 2 pages: customer list, customer detail
+3. Table: `customers` (name, phone, email, notes, tag, status)
+4. CSV import + manual entry, deploy to Vercel
+5. Estimated 12-15 minutes
 ```
 
 ## Anti-patterns (do NOT do)
 
-- KHÔNG liệt kê công nghệ từng cái (vd: "dùng useState + useEffect...") — user không cần biết.
-- KHÔNG promise tính năng chưa confirm (vd: "có dark mode" nếu user không hỏi).
-- KHÔNG bỏ sót "Ước tính thời gian" — user cần biết để chờ.
+- DO NOT list low-level tech (e.g. "using useState + useEffect...") — user doesn't need to know.
+- DO NOT promise features the user didn't confirm (e.g. "dark mode" if not asked).
+- DO NOT skip "Estimated time" — the user needs to know how long to wait.

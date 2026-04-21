@@ -11,8 +11,8 @@ TAW_ROOT="${TAW_ROOT:-$HOME/.taw-kit}"
 
 OS="$(bash "$TAW_ROOT/scripts/lib/detect-os.sh")"
 case "$OS" in
-  macos|linux|wsl) info "He dieu hanh: $OS" ;;
-  *) err "He dieu hanh chua ho tro: $OS. Can macOS, Linux, hoac WSL2."; exit 2 ;;
+  macos|linux|wsl) info "OS detected: $OS" ;;
+  *) err "unsupported OS: $OS. Requires macOS, Linux, or WSL2."; exit 2 ;;
 esac
 
 # --- 1. Copy skills, agents, hooks ---
@@ -34,14 +34,14 @@ if [ -f "$SETTINGS" ]; then
     jq -s '.[0] * .[1]' "$SETTINGS" "$tmp_file" > "$SETTINGS.new" \
       && mv "$SETTINGS.new" "$SETTINGS" \
       && rm -f "$tmp_file"
-    ok "da merge settings.json (giu nguyen cai cu)"
+    ok "merged settings.json (existing keys preserved)"
   else
-    warn "khong co jq — khong merge tu dong. Ban can tay copy hooks tu templates/settings.json.tmpl vao $SETTINGS"
-    info "cai jq: brew install jq (Mac) hoac sudo apt install jq (Linux)"
+    warn "jq not installed — skipping auto-merge. Copy hooks from templates/settings.json.tmpl into $SETTINGS manually"
+    info "install jq: brew install jq  (Mac)  or  sudo apt install jq  (Linux)"
   fi
 else
   printf '%s\n' "$rendered" > "$SETTINGS"
-  ok "da tao $SETTINGS"
+  ok "created $SETTINGS"
 fi
 
 # --- 3. Symlink tawkit to /usr/local/bin ---
@@ -49,17 +49,17 @@ TARGET="/usr/local/bin/tawkit"
 SOURCE="$TAW_ROOT/scripts/tawkit"
 
 if [ -w "$(dirname "$TARGET")" ] 2>/dev/null; then
-  ln -sf "$SOURCE" "$TARGET" && ok "da symlink: $TARGET -> $SOURCE"
+  ln -sf "$SOURCE" "$TARGET" && ok "symlinked $TARGET -> $SOURCE"
 elif command -v sudo >/dev/null 2>&1; then
-  info "can quyen sudo de tao symlink $TARGET"
+  info "sudo required to create symlink at $TARGET"
   if sudo ln -sf "$SOURCE" "$TARGET" 2>/dev/null; then
-    ok "da symlink: $TARGET -> $SOURCE"
+    ok "symlinked $TARGET -> $SOURCE"
   else
-    warn "symlink that bai. Them vao PATH thu cong:"
+    warn "symlink failed. Add to PATH manually:"
     info "  echo 'export PATH=\"$TAW_ROOT/scripts:\$PATH\"' >> ~/.zshrc && source ~/.zshrc"
   fi
 else
-  warn "khong tao duoc symlink. Them vao PATH thu cong:"
+  warn "cannot create symlink. Add to PATH manually:"
   info "  echo 'export PATH=\"$TAW_ROOT/scripts:\$PATH\"' >> ~/.zshrc && source ~/.zshrc"
 fi
 
@@ -67,7 +67,7 @@ fi
 chmod +x "$HOME/.claude/hooks/"*.sh 2>/dev/null || true
 
 # --- 5. Run doctor at end ---
-info "dang kiem tra cai dat..."
+info "running install checks..."
 bash "$TAW_ROOT/scripts/doctor.sh" || true
 
-ok "taw-kit da san sang. Mo Claude Code va go: /taw <mo ta san pham bang tieng Viet>"
+ok "taw-kit is ready. Open Claude Code and try: /taw <describe what you want to build>"
