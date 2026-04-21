@@ -20,7 +20,7 @@ skills invoked automatically by the orchestrator. Non-dev users only ever type
 | `supabase-setup` | Create tables, run migrations, configure RLS policies | fullstack-dev, taw |
 | `shadcn-ui` | Install and use shadcn/ui components (Button, Card, Form, Table) | fullstack-dev |
 | `nextjs-app-router` | App Router file conventions, Server/Client Components, API routes | fullstack-dev |
-| `tailwind-design` | Tailwind patterns for hero, grid, nav, card, CTA, dark mode | fullstack-dev |
+| `ui-ux-pro-max` | Design intelligence: 50 styles, 21 palettes, 50 font pairs, UX rules, stack guides | planner, fullstack-dev, reviewer |
 | `vietnamese-copy` | Vietnamese marketing copy, CTAs, email templates (on demand) | taw, taw-add |
 | `tiktok-shop-embed` | Embed TikTok Shop product cards and affiliate links | fullstack-dev, taw-add |
 | `seo-basic` | Meta tags, Open Graph, sitemap.xml, robots.txt, JSON-LD | fullstack-dev, taw |

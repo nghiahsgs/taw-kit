@@ -89,7 +89,15 @@ else
   _warn_only "POLAR_ACCESS_TOKEN not set (only needed if you are selling on Polar)"
 fi
 
-# 10. Locale UTF-8
+# 10. Python 3 (required by ui-ux-pro-max skill)
+if command -v python3 >/dev/null 2>&1; then
+  pv="$(python3 --version 2>&1 | awk '{print $2}')"
+  _pass "Python 3: $pv (needed by ui-ux-pro-max)"
+else
+  _fail "python3 not installed. Install: brew install python3 (Mac) / sudo apt install python3 (Linux)"
+fi
+
+# 11. Locale UTF-8
 if locale 2>/dev/null | grep -q 'UTF-8'; then
   _pass "locale: UTF-8"
 else

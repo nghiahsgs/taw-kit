@@ -71,11 +71,11 @@ Does this plan look good? (type: yes / edit / cancel)
 
 Use the Task tool to dispatch the following agent chain. Compact each agent's output to ≤200 tokens before next dispatch to preserve context.
 
-1. `planner` — input: `.taw/intent.json` + `.taw/plan.md`. Output: `plans/<timestamp>-<slug>/plan.md` + phase files.
+1. `planner` — input: `.taw/intent.json` + `.taw/plan.md`. Output: `plans/<timestamp>-<slug>/plan.md` + phase files. Before finalizing, planner MUST consult the `ui-ux-pro-max` skill to pick a UI style, color palette, font pairing, and page layout matching the product type. Write the chosen design tokens into `.taw/design.json`.
 2. `researcher` × 2 in PARALLEL — input: plan phase files. Output: research reports for chosen stack components. Spawn in a single message with two Task calls.
-3. `fullstack-dev` — input: research reports + plan. Output: scaffolded + implemented code; runs `npm install` and records results.
+3. `fullstack-dev` — input: research reports + plan + `.taw/design.json`. Output: scaffolded + implemented code honouring the chosen style/palette/fonts; runs `npm install` and records results.
 4. `tester` — input: the project directory. Runs `npm run build` and `npm run dev` smoke. Reports pass/fail.
-5. `reviewer` — input: recent diffs. Runs quick security/quality pass. Reports ok/issues.
+5. `reviewer` — input: recent diffs. Runs quick security/quality pass + UI checks against the `ui-ux-pro-max` pre-delivery checklist. Reports ok/issues.
 
 Between steps, emit a short progress line:
 ```

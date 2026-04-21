@@ -16,6 +16,7 @@
 ## What you get
 
 - **24 skills, 5 agents, 4 hooks** — installed into `~/.claude/`
+- **Design intelligence** — 50 UI styles, 21 palettes, 50 font pairings via [UI UX Pro Max](./THIRD-PARTY-NOTICES.md) (MIT)
 - **`tawkit` CLI** — install, update, doctor, uninstall, scaffold from preset
 - **5 presets** — landing page, online shop, CRM, blog, dashboard
 - **3 deploy targets** — Vercel (default), Docker image, or VPS over SSH

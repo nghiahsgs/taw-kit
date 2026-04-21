@@ -15,3 +15,7 @@ license.key
 *.log
 .idea/
 .vscode/
+
+# Python bytecode (from ui-ux-pro-max skill)
+__pycache__/
+*.pyc
