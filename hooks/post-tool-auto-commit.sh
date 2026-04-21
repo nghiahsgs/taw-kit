@@ -109,8 +109,15 @@ msg="chore(auto): ${subject}"
 prev_subject="$(git log -1 --pretty=%s 2>/dev/null || true)"
 case "$prev_subject" in
   "chore(auto):"*|"taw: auto-save"*)
-    # Only amend if previous commit is unpushed (safe to rewrite)
-    if git log '@{push}..HEAD' --oneline 2>/dev/null | grep -q .; then
+    # Only amend if previous commit is unpushed (safe to rewrite).
+    # No upstream configured → treat everything as local-only → safe to amend.
+    safe_to_amend=0
+    if ! git rev-parse --abbrev-ref '@{push}' >/dev/null 2>&1; then
+      safe_to_amend=1
+    elif [ -n "$(git log '@{push}..HEAD' --oneline 2>/dev/null)" ]; then
+      safe_to_amend=1
+    fi
+    if [ "$safe_to_amend" = "1" ]; then
       if git commit --amend --no-verify -m "$msg" >/dev/null 2>&1; then
         log "amended into previous auto-save: $msg"
         echo "$now" > "$stamp_file" 2>/dev/null || true
