@@ -37,8 +37,8 @@ if [ -f "$stamp_file" ]; then
   fi
 fi
 
-# Block if sensitive files are staged or would be added
-sensitive_patterns='^\.env($|\.)|\.key$|credentials|service[-_]account|/\.pem$'
+# Block if sensitive FILENAMES are staged or would be added
+sensitive_patterns='^\.env($|\.)|\.key$|\.pem$|\.p12$|\.pfx$|credentials|service[-_]account|id_rsa$|id_ed25519$|id_ecdsa$'
 candidates="$(git status --porcelain 2>/dev/null | awk '{print $2}')"
 if [ -n "$candidates" ]; then
   if printf '%s\n' "$candidates" | grep -Eq "$sensitive_patterns"; then
@@ -47,8 +47,8 @@ if [ -n "$candidates" ]; then
   fi
 fi
 
-# Nothing changed? nothing to do
-if git diff --quiet && git diff --cached --quiet; then
+# Nothing changed? nothing to do. Use porcelain so untracked new files count too.
+if [ -z "$(git status --porcelain 2>/dev/null)" ]; then
   log "no diff; skip"
   exit 0
 fi
@@ -56,11 +56,24 @@ fi
 # Stage everything not sensitive
 git add -A >/dev/null 2>&1 || true
 
-# Double-check after add (race)
+# Double-check filenames after add (race)
 if git diff --cached --name-only | grep -Eq "$sensitive_patterns"; then
   log "ABORT — sensitive file slipped into index; unstaging all"
   git reset >/dev/null 2>&1 || true
   exit 0
+fi
+
+# Scan staged CONTENT for well-known secret shapes (AWS key, GitHub PAT, OpenAI,
+# JWT, PEM header, DB URL with inline password). Patterns from public specs.
+# Set TAW_AUTOCOMMIT_CONTENT_SCAN=0 to disable (if too slow on huge diffs).
+if [ "${TAW_AUTOCOMMIT_CONTENT_SCAN:-1}" = "1" ]; then
+  content_patterns='AKIA[0-9A-Z]{16}|(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,}|sk_live_[0-9A-Za-z]{24,}|AIza[0-9A-Za-z_-]{35}|xox[abpr]-[0-9A-Za-z-]{10,}|-----BEGIN( RSA| EC| OPENSSH| PGP| DSA)? ?PRIVATE KEY-----|(mongodb|postgres|postgresql|mysql|redis)://[^:[:space:]]+:[^@[:space:]]+@|eyJ[A-Za-z0-9_=-]{10,}\.eyJ[A-Za-z0-9_=-]{10,}\.[A-Za-z0-9_=-]+'
+  offending="$(git diff --cached -U0 2>/dev/null | grep -EIn "$content_patterns" | head -n1 || true)"
+  if [ -n "$offending" ]; then
+    log "ABORT — secret-shaped content detected; unstaging all (first hit: ${offending%%:*})"
+    git reset >/dev/null 2>&1 || true
+    exit 0
+  fi
 fi
 
 # Derive a meaningful subject from the staged diff so history is traceable.

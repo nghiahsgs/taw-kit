@@ -86,14 +86,45 @@ git add -A
 git diff --cached --name-only > /tmp/taw-staged.txt
 ```
 
-Refuse to commit (reset and abort) if any of these match staged paths or content:
+Refuse to commit (reset and abort) if any of these match staged paths or content.
 
-| Blocker | Rule |
-|---------|------|
-| `.env.local`, `.env.*.local` | Always unstage: `git reset HEAD <file>` |
-| `*.key`, `*.pem`, `*.p12` | Always unstage |
-| `node_modules/**` | Always unstage |
-| Content matches `(ghp_[A-Za-z0-9]{20,}\|sk-[A-Za-z0-9]{20,}\|SUPABASE_SERVICE_ROLE_KEY=)` | Unstage offending file and warn user in VN |
+**Filename blockers** (always unstage with `git reset HEAD <file>`):
+
+| Pattern | What it is |
+|---------|------------|
+| `.env`, `.env.local`, `.env.*.local` | Env vars with secrets |
+| `*.key`, `*.pem`, `*.p12`, `*.pfx` | Private keys (PEM/PKCS#12 — RFC 7468) |
+| `id_rsa`, `id_ed25519`, `id_ecdsa` | SSH private keys |
+| `credentials.json`, `service-account*.json` | Cloud IAM credentials |
+| `node_modules/**`, `.next/**`, `dist/**`, `out/**` | Build artefacts |
+
+**Content blockers** — run on the staged diff:
+
+```bash
+git diff --cached | grep -InE "$CONTENT_PATTERN"
+```
+
+where `$CONTENT_PATTERN` is built from well-known public token formats:
+
+| Source | Pattern |
+|--------|---------|
+| AWS access key ID (AWS docs) | `AKIA[0-9A-Z]{16}` |
+| AWS secret key assignment | `aws_secret_access_key[[:space:]]*=[[:space:]]*[A-Za-z0-9/+=]{40}` |
+| GitHub PAT / OAuth (gh docs) | `(ghp\|gho\|ghu\|ghs\|ghr)_[A-Za-z0-9]{20,}` |
+| OpenAI / Anthropic-style | `sk-[A-Za-z0-9]{20,}` |
+| Google API key | `AIza[0-9A-Za-z\-_]{35}` |
+| Slack token | `xox[abpr]-[0-9A-Za-z-]{10,}` |
+| Stripe live key | `sk_live_[0-9A-Za-z]{24,}` |
+| JWT (RFC 7519 shape) | `eyJ[A-Za-z0-9_=-]{10,}\.eyJ[A-Za-z0-9_=-]{10,}\.[A-Za-z0-9_=\-]+` |
+| PEM private key header (RFC 7468) | `-----BEGIN (RSA\|EC\|OPENSSH\|PGP\|DSA)? ?PRIVATE KEY-----` |
+| DB URL with inline password | `(mongodb\|postgres\|postgresql\|mysql\|redis)://[^:]+:[^@]+@` |
+| Supabase service-role assignment | `SUPABASE_SERVICE_ROLE_KEY[[:space:]]*=[[:space:]]*[A-Za-z0-9._-]+` |
+| Generic `password = "..."` | `(password\|passwd\|pwd)[[:space:]]*=[[:space:]]*['\"][^'\"]{6,}['\"]` |
+
+On hit:
+1. Print which file + line matched (not the value).
+2. Unstage the file: `git reset HEAD <file>`.
+3. Tell user in VN: "File `<path>` có lộ secret ở dòng <n>. Đã unstage. Di chuyển giá trị vào `.env.local` trước khi commit."
 
 Check `.gitignore` exists; create minimum if missing:
 ```gitignore
