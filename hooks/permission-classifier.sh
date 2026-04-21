@@ -41,7 +41,7 @@ curl[[:space:]].*\|[[:space:]]*(sh|bash)([[:space:]]|$)
 wget[[:space:]].*\|[[:space:]]*(sh|bash)([[:space:]]|$)
 chmod 777 /
 chown -R .* /
-git push .*--force.* (origin/)?(main|master)
+git push .*( -f |--force )([^-]|$).*(origin/)?(main|master)
 DROP (DATABASE|TABLE|SCHEMA)
 '
 while IFS= read -r pat; do
