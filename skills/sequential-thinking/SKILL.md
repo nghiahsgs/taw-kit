@@ -1,72 +1,52 @@
 ---
 name: sequential-thinking
 description: >
-  Apply step-by-step structured reasoning for complex problems with revision
-  capability. Use for multi-step debugging, architecture decisions, dependency
-  analysis, and problems where scope is unclear upfront.
-argument-hint: "[problem to analyze step-by-step]"
+  Break a multi-step task into numbered reasoning steps before acting. Used by
+  taw-kit planner agent to decompose ambiguous Vietnamese prompts into
+  executable phases. Vietnamese trigger phrases: "suy nghĩ từng bước",
+  "phân tích kĩ", "chia nhỏ ra".
 ---
 
-# sequential-thinking — Structured Reasoning
+# sequential-thinking
 
-Structured problem-solving via manageable, reflective thought sequences with
-dynamic adjustment. Activated internally by planner and debug skills.
+Forces deliberate, numbered reasoning when a problem is too fuzzy to one-shot. Prevents plan holes.
 
-## When to Apply
+## When to invoke
 
-- Complex build/runtime errors with multiple possible causes
-- Architecture decisions with trade-offs (e.g. client vs server component)
-- Multi-step Supabase schema design
-- Dependency conflicts in `package.json`
-- Any problem where the solution path is not obvious upfront
+- Intent classification confidence is low (user text is ambiguous)
+- Requirements conflict (user asks for auth + no login in the same sentence)
+- Estimating effort for a feature the orchestrator has not built before
+- Whenever the output would otherwise be "let me just try and see"
 
-## Core Process
+## Method
 
-### 1. Start with Loose Estimate
-```
-Thought 1/5: [Initial analysis]
-```
-Adjust total dynamically as understanding evolves.
+Produce a numbered list where each step satisfies:
 
-### 2. Structure Each Thought
-- Build on previous context explicitly
-- Address one aspect per thought
-- State assumptions and uncertainties
-- Signal what the next thought should address
+1. **One action verb per step.** "Check", "Decide", "Write", "Invoke".
+2. **Observable output.** What file/state changes after the step?
+3. **Cheap before expensive.** Verify assumptions before spawning agents or running npm install.
+4. **Stop condition.** Each step has a pass/fail check before the next step is considered.
 
-### 3. Apply Dynamic Adjustment
-- **Expand**: More complexity found → increase total
-- **Contract**: Simpler than expected → decrease total
-- **Revise**: New insight invalidates earlier thought → mark revision
-- **Branch**: Multiple valid approaches → explore both
+## Rendering contract
 
-### 4. Revision Format
-```
-Thought 5/8 [REVISION of Thought 2]: [Corrected understanding]
-- Original: [what was stated]
-- Why revised: [new insight]
-- Impact: [what changes downstream]
-```
+Internal reasoning. The user does NOT see these steps unless they hit an error — then surface the last 3 steps as context for `/taw-fix`.
 
-### 5. Branch Format
-```
-Thought 4/7 [BRANCH A]: [Approach A — faster, less flexible]
-Thought 4/7 [BRANCH B]: [Approach B — more setup, more scalable]
-Decision: [which branch and why]
-```
+## Example
 
-### 6. Final Thought
-Mark as: `Thought N/N [FINAL]`
+User prompt: "xây blog cá nhân, kiểu như medium, có login, dùng chung tài khoản Google"
 
-Complete only when:
-- Solution is verified or decision is made
-- All critical aspects addressed
-- No blocking uncertainties remain
+Reasoning:
+1. Check intent: `blog` with social login — multi-user or single-user?
+2. Spot conflict: "cá nhân" (solo) vs "chung tài khoản Google" (multi). Decide: ask user.
+3. If solo → skip Google OAuth, use Supabase magic-link for author only.
+4. If multi → add Google provider, but this raises scope ≥ CRM level.
+5. Default assumption: solo author + Google OAuth for SSO convenience only.
+6. Load `taw` clarify template Q16 (blog storage) + custom Q (Google login for you or for readers?).
 
-## Application Modes
+Only step 6 is visible — prior steps stay in the reasoning scratchpad.
 
-**Explicit**: Use visible thought markers when user benefits from seeing reasoning
-or when debugging a complex error with the user watching.
+## Anti-patterns
 
-**Implicit**: Apply methodology internally for routine decisions without cluttering
-the response — just produce the correct output.
+- Don't produce "plan of plan" loops. If the reasoning itself needs sequential-thinking, stop and ask the user.
+- Don't fabricate deadlines ("Step 7 takes 5 minutes"). Time estimates belong in the plan bullets, not the reasoning trace.
+- Never expose intermediate reasoning to the user unless debugging.

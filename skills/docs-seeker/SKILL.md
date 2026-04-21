@@ -1,75 +1,60 @@
 ---
 name: docs-seeker
 description: >
-  Search framework and library documentation via context7 (llms.txt standard).
-  Use for Next.js, Supabase, Tailwind, shadcn/ui, Polar API reference lookups.
-  Activated internally by researcher and fullstack-dev agents.
-argument-hint: "[library-name] [topic]"
+  Fetch up-to-date documentation for a framework, library, or API that taw-kit
+  uses. Invoke when the orchestrator hits an unfamiliar feature (new Next.js
+  version, Supabase RLS syntax, Polar webhook shape). Vietnamese trigger phrases:
+  "tra tài liệu", "xem docs mới nhất", "tìm hướng dẫn <tên lib>".
 ---
 
-# docs-seeker — Documentation Discovery
+# docs-seeker
 
-## Overview
+Returns the freshest official documentation snippet for a targeted topic so the orchestrator does not reason from stale training data.
 
-Fetches authoritative documentation for libraries used in taw-kit projects.
-Uses context7.com llms.txt standard for zero-hallucination API references.
+## When to invoke
 
-## When to Activate
+- New release of a framework listed in the taw-kit default stack (Next.js, Tailwind, shadcn/ui, Supabase, Polar, Shipkit)
+- Error message points to an API shape that may have changed
+- Orchestrator needs a concrete code example, not a paraphrase
+- User asks in VN: "có version mới chưa?" / "còn syntax cũ không?"
 
-- Looking up a specific API method (e.g. `supabase.auth.signInWithOtp`)
-- Checking component props for shadcn/ui Button, Form, Table
-- Verifying Next.js App Router file conventions (`layout.tsx`, `page.tsx`, `route.ts`)
-- Confirming Polar checkout session parameters
-- Any "how do I use X in Y" question about the taw-kit stack
+## Output contract
 
-## Primary Workflow
+Return 3 blocks, in this order:
 
-```bash
-# 1. Detect query type
-node scripts/detect-topic.js "<user query>"
+1. **Summary (2 lines, Vietnamese)** — what the topic is + why it changed
+2. **Primary snippet (code block, English)** — canonical code from current docs
+3. **Source** — URL + retrieved date
 
-# 2. Fetch documentation
-node scripts/fetch-docs.js "<user query>"
+## How to run
 
-# 3. Analyze if multiple URLs returned
-cat llms.txt | node scripts/analyze-llms-txt.js -
+1. Pick the narrowest query term possible. "Supabase auth magic link" beats "Supabase auth".
+2. Prefer official docs (`supabase.com/docs`, `nextjs.org/docs`, `polar.sh/docs`, `tailwindcss.com/docs`, `ui.shadcn.com`).
+3. If official docs are ambiguous, check the library's GitHub `README.md` for the pinned version in `package.json`.
+4. If the topic is framework version-specific, always include the version number in the summary.
+5. Never quote a blog post or Medium article as primary source — only as tiebreaker when official docs are silent.
+
+## Limits
+
+- One topic per invocation. If caller passes two topics, split into two calls.
+- Return ≤ 400 words total. Skip marketing copy, keep code.
+- If no authoritative source is found within 2 tries, return `{"status":"not-found","suggestion":"<VN message>"}` and stop.
+
+## Example
+
+Input: "Supabase magic link gửi email từ server action Next.js 14"
+
+Output:
 ```
+Supabase cung cấp `supabase.auth.signInWithOtp({ email })` trả về token gửi
+qua email. Trong Next.js 14 App Router, gọi hàm này bên trong Server Action.
 
-Scripts handle URL construction, fallbacks, and error chains automatically.
+import { createClient } from '@/lib/supabase/server';
+export async function sendMagicLink(email: string) {
+  const supabase = createClient();
+  await supabase.auth.signInWithOtp({ email });
+}
 
-## Quick Start Examples
-
-**Specific API lookup:**
-```bash
-node scripts/detect-topic.js "supabase magic link auth"
-node scripts/fetch-docs.js "supabase magic link auth"
-# Read returned URLs with WebFetch
+Source: https://supabase.com/docs/guides/auth/auth-email-passwordless
+Retrieved: 2026-04-21
 ```
-
-**General library docs:**
-```bash
-node scripts/detect-topic.js "shadcn ui components"
-node scripts/fetch-docs.js "shadcn ui components"
-cat llms.txt | node scripts/analyze-llms-txt.js -
-# Deploy parallel agents per recommendation
-```
-
-## Supported Libraries (taw-kit stack)
-
-- `nextjs` — App Router, Server Components, API routes
-- `supabase` — Auth, database, storage, RLS
-- `shadcn-ui` — Component props and variants
-- `tailwindcss` — Utility classes, responsive prefixes
-- `polar` — Checkout, webhooks, subscriptions
-- `react` — Hooks, patterns
-
-## Script Descriptions
-
-- `detect-topic.js` — classifies query, extracts library + topic keyword
-- `fetch-docs.js` — constructs context7 URLs, handles fallback chains
-- `analyze-llms-txt.js` — categorises URLs, recommends agent distribution
-
-## Environment
-
-Scripts load config from `.env` in project root or skill directory.
-See `.env.example` for `CONTEXT7_API_KEY` if rate limiting is hit.

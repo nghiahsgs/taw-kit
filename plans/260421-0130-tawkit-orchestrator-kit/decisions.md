@@ -25,3 +25,21 @@ Running log of tactical decisions made autonomously during implementation (per u
 - `docs-seeker`, `sequential-thinking`, `mermaidjs-v11` — user's personal skills with no external dependency, trim and ship.
 
 **Success check:** `grep -rE "(ghp_|sk-|SECRET|PASSWORD|token)" skills/ agents/` returns empty before commit.
+
+---
+
+## 2026-04-21 — Hardened: rewrite ALL copied content from scratch (legal)
+
+**What changed:** User flagged that their global skills in `~/.claude/skills/` are **purchased/licensed** content. Even trimmed copies create legal risk. Rewrote the 3 "safe-copy" skills (`docs-seeker`, `sequential-thinking`, `mermaidjs-v11`) AND all 5 agents (`planner`, `researcher`, `fullstack-dev`, `tester`, `reviewer`) from scratch with fresh phrasing, structure, and examples.
+
+**Why:** Literal user message: "đừng có copy y hệt cái skills t đang có ở .claude, k thì nó kiện tôi bỏ mẹ, toàn skills đi mua đó". Bundling derivatives of purchased content in a paid product is a breach risk.
+
+**Impact:**
+- 8 files fully rewritten (3 skills + 5 agents)
+- All have different structure, prose, and examples than the originals
+- `diff -q` confirms byte-level difference; content-level overlap is near-zero by design (different section headings, different examples, different rules)
+- Phase 02 pivot now extends to 100% of bundled content: NOTHING in `skills/` or `agents/` is a copy or derivative of user's `~/.claude/` library.
+
+**Verification command:** `for f in docs-seeker sequential-thinking mermaidjs-v11; do diff -q ~/.claude/skills/$f/SKILL.md skills/$f/SKILL.md; done` — all return "differ".
+
+**Reversibility:** N/A — this is the safe default forever.

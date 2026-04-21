@@ -1,87 +1,75 @@
 ---
 name: mermaidjs-v11
 description: >
-  Create diagrams with Mermaid.js v11 syntax. Use for flowcharts, sequence
-  diagrams, ER diagrams, and architecture diagrams inside plan files and docs.
-  Activated by planner agent when visualising system flows.
-argument-hint: "[diagram-type or description]"
+  Generate Mermaid v11 diagrams for architecture, data flow, or user journey
+  when a picture explains faster than prose. Used by planner when rendering
+  phase files. Vietnamese trigger phrases: "vẽ sơ đồ", "vẽ flow",
+  "diagram kiến trúc".
 ---
 
-# mermaidjs-v11 — Diagram Generation
+# mermaidjs-v11
 
-## Overview
+Produce a Mermaid v11 diagram string. The renderer (markdown-novel-viewer, GitHub, Obsidian) handles visualization.
 
-Create text-based diagrams using Mermaid.js v11 declarative syntax.
-Used in plan files and README docs to visualise flows for non-dev users.
+## When to invoke
 
-## Common Diagram Types for taw-kit
+- Plan phase file benefits from a flow diagram (≥ 3 interacting steps)
+- User asks "vẽ cho tôi sơ đồ" or "architecture diagram"
+- Orchestrator needs to show data flow for `/taw-add` (how a new feature wires into existing code)
 
-- `flowchart` — user flows, feature decision trees
-- `sequenceDiagram` — auth flows, payment webhook sequences
-- `erDiagram` — Supabase table relationships
-- `stateDiagram` — booking/order status machines
+## Supported diagram types
 
-## Inline Markdown Usage
+- `flowchart` — most common; use for orchestration steps, request flow
+- `sequenceDiagram` — when showing actors (user, browser, API, DB)
+- `erDiagram` — DB schema visualization for shop / CRM intents
+- `journey` — user journey for landing page onboarding
+- `gantt` — only if a phase file spans > 3 days (rare for taw-kit MVPs)
 
-````markdown
+## Output contract
+
+- Start with ` ```mermaid ` fence, end with ` ``` `
+- First line declares type (e.g. `flowchart TD`)
+- Node IDs are short ASCII (`A`, `B`, `U1`) — never Vietnamese diacritics (Mermaid parser trips)
+- Node LABELS can be Vietnamese (quoted with `"..."`)
+- Max 15 nodes per diagram; split into multiple if larger
+
+## Example (flowchart)
+
 ```mermaid
 flowchart TD
-    A[Nguoi dung nhap /taw] --> B{Xac nhan ke hoach?}
-    B -->|Co| C[Tao du an]
-    B -->|Khong| D[Chinh sua]
-```
-````
-
-## Configuration via Frontmatter
-
-````markdown
-```mermaid
----
-theme: neutral
----
-erDiagram
-    USERS ||--o{ ORDERS : places
-    ORDERS ||--|{ ITEMS : contains
-```
-````
-
-## v11 Key Rules
-
-- Use `flowchart` not `graph` (deprecated in v11)
-- Node labels with spaces must be quoted: `A["Ten san pham"]`
-- Subgraphs: `subgraph Title` ... `end`
-- Comments: `%% nay la ghi chu`
-- Arrow types: `-->` (normal), `-.->` (dashed), `==>` (thick)
-
-## Sequence Diagram Example
-
-```mermaid
-sequenceDiagram
-    Khach->>Website: Bam Mua hang
-    Website->>Polar: Tao checkout session
-    Polar-->>Website: Tra ve URL thanh toan
-    Website-->>Khach: Chuyen trang thanh toan
+  U["Người dùng gõ /taw"] --> C["Phân loại intent"]
+  C --> Q["Hỏi 3-5 câu làm rõ"]
+  Q --> P["Render plan bullets"]
+  P --> G{"OK?"}
+  G -- yes --> E["Spawn agents"]
+  G -- sửa --> Q
+  G -- hủy --> X["Exit"]
+  E --> D["Deploy"]
+  D --> W["Xong + URL"]
 ```
 
-## ER Diagram Example
+## Example (erDiagram for shop)
 
 ```mermaid
 erDiagram
-    USERS {
-        uuid id PK
-        text email
-        timestamp created_at
-    }
-    ORDERS {
-        uuid id PK
-        uuid user_id FK
-        text status
-    }
-    USERS ||--o{ ORDERS : places
+  CUSTOMERS ||--o{ ORDERS : places
+  ORDERS ||--|{ ORDER_ITEMS : contains
+  PRODUCTS ||--o{ ORDER_ITEMS : listed_in
+  CUSTOMERS {
+    uuid id
+    string name
+    string phone
+  }
+  PRODUCTS {
+    uuid id
+    string name
+    int price_vnd
+    int stock
+  }
 ```
 
-## Rendering
+## Anti-patterns
 
-- In GitHub/GitLab markdown: renders automatically in code blocks
-- In plan files: use fenced code blocks with `mermaid` language tag
-- CLI render: `npx @mermaid-js/mermaid-cli -i diagram.mmd -o diagram.svg`
+- Don't draw diagrams with fewer than 3 nodes; use prose instead
+- Don't put large code blocks inside node labels (use an edge label or external note)
+- Don't nest subgraphs more than 1 level deep — loses readability fast
