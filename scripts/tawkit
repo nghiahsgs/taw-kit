@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# tawkit — main entry point
+# Usage:
+#   tawkit install | update | doctor | new <preset> | --help | --version
+
+set -eu
+
+# Resolve TAW_ROOT: prefer $TAW_ROOT env, then $HOME/.taw-kit, then script parent
+if [ -n "${TAW_ROOT:-}" ] && [ -f "$TAW_ROOT/scripts/tawkit" ]; then
+  :
+elif [ -f "$HOME/.taw-kit/scripts/tawkit" ]; then
+  TAW_ROOT="$HOME/.taw-kit"
+else
+  # Assume we're running from a clone: /path/to/taw-kit/scripts/tawkit
+  TAW_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+fi
+export TAW_ROOT
+
+# shellcheck source=lib/log.sh
+. "$TAW_ROOT/scripts/lib/log.sh"
+
+show_help_vi() {
+  cat <<'EOF'
+tawkit — bo cong cu vibe coding cho nguoi khong chuyen
+
+CACH DUNG:
+  tawkit install          Cai toan bo skills, agents, hooks vao ~/.claude/
+  tawkit update           Cap nhat kit len phien ban moi nhat
+  tawkit doctor           Kiem tra may co cai dat du thu khong
+  tawkit new <preset>     Tao du an moi tu preset co san
+  tawkit --help           Hien thi tro giup nay
+  tawkit --version        Hien thi phien ban
+
+VI DU:
+  tawkit install                   # lan dau
+  tawkit doctor                    # khi nghi ngo co loi
+  tawkit new shop-online           # tao shop online nhanh
+  tawkit update                    # moi khi co phien ban moi
+
+Tai lieu day du: https://taw-kit.dev/docs
+EOF
+}
+
+case "${1:-}" in
+  install)
+    shift
+    exec bash "$TAW_ROOT/scripts/install.sh" "$@"
+    ;;
+  update)
+    shift
+    exec bash "$TAW_ROOT/scripts/update.sh" "$@"
+    ;;
+  doctor)
+    shift
+    exec bash "$TAW_ROOT/scripts/doctor.sh" "$@"
+    ;;
+  new)
+    shift
+    if [ $# -eq 0 ]; then
+      err "thieu ten preset. vi du: tawkit new shop-online"
+      exit 1
+    fi
+    preset="$1"
+    if [ ! -f "$TAW_ROOT/presets/$preset.md" ]; then
+      err "preset khong ton tai: $preset"
+      info "xem danh sach preset: ls $TAW_ROOT/presets/"
+      exit 1
+    fi
+    # Hand off to Claude Code's /taw-new skill
+    if ! command -v claude >/dev/null 2>&1; then
+      err "Claude Code chua duoc cai. Xem: https://docs.claude.com/claude-code"
+      exit 3
+    fi
+    exec claude --skill taw-new --arg "$preset"
+    ;;
+  --help|-h|help)
+    show_help_vi
+    ;;
+  --version|-v|version)
+    cat "$TAW_ROOT/VERSION"
+    ;;
+  '')
+    show_help_vi
+    ;;
+  *)
+    err "lenh khong hop le: $1"
+    show_help_vi
+    exit 1
+    ;;
+esac
