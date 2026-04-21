@@ -1,7 +1,7 @@
 ---
 # taw-kit Skills Catalog (v0.1)
 
-26 skills bundled with taw-kit — 5 user-facing `/taw*` commands and 21 internal
+27 skills bundled with taw-kit — 5 user-facing `/taw*` commands and 22 internal
 skills invoked automatically by the orchestrator. Non-dev users only ever type
 `/taw`, `/taw-fix`, `/taw-deploy`, `/taw-add`, or `/taw-new`.
 
@@ -29,6 +29,7 @@ skills invoked automatically by the orchestrator. Non-dev users only ever type
 | `env-manager` | Generate .env.local, .env.example, validate required keys | taw, taw-deploy |
 | `git-auto-commit` | Stage files + `type(scope): subject [P<n>]` commit with phase tracing, security pre-check | taw, taw-add, taw-fix |
 | `git-trace` | Look up commit history by scope, phase, file, or feature — read-only | taw-fix, taw-deploy, user directly |
+| `git-pro` | Branch creation, PR via `gh`, fast-forward merge, safe undo/revert | user directly |
 | `preview-tunnel` | Run dev server + localtunnel for shareable preview URL | taw, taw-new |
 | `error-to-vi` | Translate build/runtime errors to plain language (EN default; VN on demand) | taw-fix, taw-deploy |
 | `approval-plan` | Render a 3-5 bullet plan and wait for user confirmation | taw, taw-add, taw-fix |
