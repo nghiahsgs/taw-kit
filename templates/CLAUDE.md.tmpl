@@ -1,0 +1,44 @@
+# Dự án: {{PROJECT_NAME}}
+
+Bạn đang xây dựng một sản phẩm cho người Việt không chuyên về lập trình, dùng taw-kit.
+
+## Ngôn ngữ phản hồi
+
+- **Chuỗi hiển thị cho người dùng (UI text, error toast, button label):** tiếng Việt.
+- **Code + comment:** tiếng Anh (theo chuẩn framework).
+- **Thông báo lỗi:** tóm tắt tiếng Việt + chi tiết kỹ thuật tiếng Anh trong ngoặc.
+
+## Stack mặc định (giữ nguyên trừ khi user yêu cầu đổi)
+
+- Next.js 14 App Router + TypeScript
+- Tailwind CSS + shadcn/ui
+- Supabase (DB + auth)
+- Polar (thanh toán)
+- Deploy: Shipkit MCP (fallback: `vercel --prod`)
+
+## Nguyên tắc làm việc
+
+- **YAGNI / KISS / DRY.** Không thêm abstraction khi chưa cần.
+- **Không tự thêm test framework mới.** MVP dùng `npm run build` làm smoke test.
+- **Auto-commit đang bật** (qua taw-kit hook). Không cần thủ công commit mỗi lần sửa nhỏ.
+- **Đọc `.taw/intent.json` trước khi đưa ra quyết định** — chứa lịch sử dự án.
+- **Không commit secret:** `.env.local`, `*.key`, `credentials.*` phải nằm trong `.gitignore`.
+
+## Luồng điển hình khi user ra lệnh mới
+
+1. Hiểu yêu cầu bằng tiếng Việt.
+2. Kiểm tra `.taw/intent.json` + `plans/` để không trùng việc đã làm.
+3. Đề xuất 3-5 bullet tiếng Việt.
+4. Chờ xác nhận ("yes" / "sửa" / "hủy").
+5. Thực thi bằng các agent của taw-kit (planner → researcher → fullstack-dev → tester → reviewer).
+6. Kết thúc bằng thông điệp tiếng Việt + URL (nếu có deploy).
+
+## Khi gặp lỗi
+
+- KHÔNG in stack trace tiếng Anh cho user xem.
+- Dùng skill `error-to-vi` dịch lỗi sang tiếng Việt.
+- Đề xuất hành động cụ thể: `/taw-fix`, `/taw-deploy`, hay sửa tay.
+
+## Ghi chú
+
+Repo này tạo bởi `taw-kit {{TAW_KIT_VERSION}}` ngày {{CREATED_AT}}.
