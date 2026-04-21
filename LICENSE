@@ -1,10 +1,16 @@
-taw-kit — Commercial EULA (placeholder)
+taw-kit — Commercial License
 
 Copyright (c) 2026 taw-kit. All rights reserved.
 
+Full EULA: docs/legal/LICENSE.md
+Terms of Service: docs/legal/TOS.md
+Refund Policy: docs/legal/REFUND-POLICY.md
+
 This kit is licensed for use by the individual purchaser who obtained a license
 via the official distribution channel. Redistribution, resharing of the repo,
-or transfer of access to third parties is prohibited without written consent.
+or transfer of access to third parties is prohibited.
 
-Full EULA text is finalized in phase 10 of the implementation plan.
-Until then, this file serves as a placeholder to reserve repository intent.
+Products built WITH this kit are owned outright by the purchaser — no
+attribution or royalty required. Only the kit itself is restricted.
+
+Contact: namkent1612000@gmail.com

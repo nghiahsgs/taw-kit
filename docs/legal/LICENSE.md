@@ -1,0 +1,58 @@
+# taw-kit — Commercial End User License Agreement (EULA)
+
+**Version 1.0 — effective 2026-04-21**
+
+By purchasing, downloading, or using taw-kit (the "Software"), you ("Licensee") agree to this EULA.
+
+## 1. Grant of license
+
+Licensee receives a **non-exclusive, non-transferable, perpetual license** to use the Software for Licensee's own projects, subject to the restrictions below.
+
+## 2. What Licensee MAY do
+
+- Install the Software on any number of machines that Licensee personally uses.
+- Modify skill, agent, hook, and template files **for Licensee's own use**.
+- Build an unlimited number of products, websites, apps, or services using the Software. Products built with the Software are **owned outright by Licensee** — no royalties, no attribution required.
+- Share screenshots, tutorials, or reviews of the Software publicly.
+
+## 3. What Licensee MAY NOT do
+
+- **Redistribute** the Software in whole or in part, whether for free or for fee.
+- **Resell** the Software or any derivative kit.
+- **Share repository access** with non-licensed individuals.
+- **Upload the Software** to public registries, mirrors, or marketplaces.
+- **Sublicense** any portion of the Software to third parties.
+- **Remove** copyright or license notices from Software files.
+
+## 4. Derivative products
+
+Products Licensee builds using taw-kit — including websites, apps, databases, and deployed services — are **Licensee's own property** and are not subject to this EULA. Licensee may open-source, sell, or close-source such products at their discretion.
+
+## 5. Refund policy
+
+See [REFUND-POLICY.md](./REFUND-POLICY.md). Upon refund approval, this license terminates immediately and Licensee's repository access will be revoked.
+
+## 6. Warranty disclaimer
+
+The Software is provided **"AS IS"** without warranty of any kind, express or implied. Licensor makes no warranty that the Software will meet Licensee's requirements, operate uninterrupted, or be free of defects.
+
+## 7. Limitation of liability
+
+In no event shall Licensor be liable for any indirect, incidental, special, or consequential damages arising out of use or inability to use the Software, even if advised of the possibility of such damages. Licensor's total liability shall not exceed the amount paid by Licensee for the Software.
+
+## 8. Third-party content
+
+The Software uses open-source components (Next.js, Supabase, Polar, etc.). Those components are governed by their own licenses. Licensee is responsible for complying with all third-party licenses when building derivative products.
+
+## 9. Termination
+
+This license terminates automatically if Licensee breaches any term. Upon termination, Licensee must stop using the Software and delete all copies. Repository access will be revoked.
+
+## 10. Governing law
+
+This EULA is governed by the laws of the jurisdiction where Licensor is registered, without regard to conflict-of-law principles.
+
+---
+
+**Contact:** namkent1612000@gmail.com
+**Copyright © 2026 taw-kit. All rights reserved.**
