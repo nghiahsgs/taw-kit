@@ -5,6 +5,7 @@ description: >
   modules, and platform integrations from a task description or phase file.
   Counterpart to a generic web/fullstack-dev agent. Stack-agnostic about who
   spawned it — works under taw-kit, /loop, manual /agent, or any orchestrator.
+model: sonnet
 ---
 
 # mobile-dev agent

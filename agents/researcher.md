@@ -4,6 +4,7 @@ description: >
   Fetches focused documentation or implementation examples for a specific
   technology, API shape, or pattern the taw-kit stack needs. Spawned in
   parallel (N=2) by /taw Step 5 after planner produces phase files.
+model: sonnet
 ---
 
 # researcher agent

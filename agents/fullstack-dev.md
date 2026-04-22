@@ -4,6 +4,7 @@ description: >
   Writes and wires code for a taw-kit project per the phase files produced
   by planner. Scaffolds Next.js + Tailwind + shadcn + Supabase + Polar and
   runs npm install. Invoked by /taw Step 5 after research completes.
+model: sonnet
 ---
 
 # fullstack-dev agent

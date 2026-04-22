@@ -5,6 +5,7 @@ description: >
   deploy. Invoked by /taw Step 5 after tester reports pass. Wraps the
   `taw-security` skill in quick mode (P0-only) so check logic stays in one
   place. Non-blocking unless a P0 issue is found.
+model: opus
 ---
 
 # reviewer agent

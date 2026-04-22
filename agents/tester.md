@@ -4,6 +4,7 @@ description: >
   Validates that a taw-kit project builds, boots, and passes smoke checks
   before deploy. Invoked by /taw Step 5 after fullstack-dev reports ready.
   Translates build errors to Vietnamese for non-dev users.
+model: haiku
 ---
 
 # tester agent
