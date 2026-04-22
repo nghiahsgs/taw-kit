@@ -4,7 +4,12 @@ description: >
   One-shot orchestrator. Turns the prose after /taw into a shipped product by
   clarifying intent, rendering a plan, gating on approval, then spawning
   planner+researcher+fullstack-dev+tester+reviewer agents in sequence.
-  User-visible strings match the user's input language (Vietnamese by default for VN users). Trigger phrases (EN + VN):
+  User-visible strings match the user's input language (Vietnamese by default for VN users).
+  Two modes: SAFE (default — clarify + show plan + wait for approval, max 1 round-trip)
+  and YOLO (skip clarify+approval, run full auto with smart defaults — for demos
+  and power users). YOLO triggers: prose contains `yolo`, `nhanh nha`, `lam luon`,
+  `khoi hoi`, `auto`, or args start with `yolo`.
+  Trigger phrases (EN + VN):
   "build me a site", "make me a landing page", "create a shop", "I need an app",
   "taw lam website", "tao cho toi mot", "xay dung shop online",
   "lam landing page", "can mot app".
@@ -31,14 +36,27 @@ Parse the user text and classify into exactly ONE of these categories:
 - `dashboard` — admin/analytics panel (keywords: dashboard, admin, reports)
 - `other` — fallback; ask clarifying Qs more aggressively
 
+**Mode detection (do this NOW, before writing intent.json):** Scan the user text for any YOLO trigger:
+- Explicit keywords (case-insensitive): `yolo`, `--yolo`, `--fast`, `auto`
+- Vietnamese phrases: `nhanh nha`, `nhanh đi`, `nhanh di`, `lam luon`, `làm luôn`, `khoi hoi`, `khỏi hỏi`, `khong can hoi`, `không cần hỏi`, `chay luon`, `chạy luôn`
+- Args literally starting with the word `yolo` (e.g. `/taw yolo lam landing page`)
+
+If ANY match → `mode = "yolo"`. Else → `mode = "safe"` (default).
+
 Write classified intent to `.taw/intent.json`:
 ```json
-{"category": "shop-online", "raw": "<user text>", "keywords": ["..."]}
+{"category": "shop-online", "raw": "<user text>", "keywords": ["..."], "mode": "safe"}
 ```
 
 ## Step 2 — Clarify (≤5 questions)
 
-Load `skills/taw/templates/clarify-questions.md`. Pick 3–5 questions matching the classified intent. Ask the user ONE message with all questions numbered. Wait for reply.
+**If `mode == "yolo"`:** SKIP this step entirely. Emit a single line:
+```
+⚡ YOLO mode — bỏ qua hỏi clarify, dùng smart defaults.
+```
+Generate sensible defaults inline (project name from category + timestamp, all sections enabled, deploy target = vercel, contact form = email-only). Append `{"clarifications": {...}, "yolo_defaults": true}` to `.taw/intent.json`. Proceed to Step 3.
+
+**If `mode == "safe"` (default):** Load `skills/taw/templates/clarify-questions.md`. Pick 3–5 questions matching the classified intent. Ask the user ONE message with all questions numbered. **WAIT for reply** — do NOT auto-answer for the user even if they pasted images, URLs, or detailed prose. The user must explicitly answer (or say "default" / "mặc định" to accept your suggested defaults).
 
 If user answers partially, accept defaults for unanswered Qs and note them.
 
@@ -48,7 +66,9 @@ Append answers to `.taw/intent.json` under `clarifications`.
 
 Load `skills/taw/templates/plan-bullet-format.md`. Generate exactly 3–5 bullets covering: stack, pages/features, data model (if any), deploy target, est. time.
 
-Example:
+**ALWAYS echo the plan to the terminal as a code block** (both modes) — the user must SEE what is about to be built, even in YOLO mode. Writing to `.taw/plan.md` alone is NOT enough.
+
+Example output:
 ```
 Plan:
 1. Set up Next.js + Tailwind + Supabase
@@ -60,16 +80,24 @@ Plan:
 
 Write plan text to `.taw/plan.md`.
 
-## Step 4 — Approval gate (REQUIRED, cannot skip)
+## Step 4 — Approval gate
 
-Emit EXACTLY this prompt:
+**If `mode == "yolo"`:** SKIP approval. Emit:
+```
+⚡ YOLO — auto-approved, đang chạy...
+```
+Proceed to Step 5.
+
+**If `mode == "safe"` (default, REQUIRED):** Emit EXACTLY this prompt and **WAIT** for the user's reply. Do NOT spawn any agent until reply arrives.
 ```
 Does this plan look good? (type: yes / edit / cancel)
 ```
 
-- On `yes` (or `ok`, `sure`, `go`, `có`, `được`): proceed to Step 5.
+- On `yes` (or `ok`, `sure`, `go`, `có`, `được`, `ừ`, `chạy đi`, `lam di`): proceed to Step 5.
 - On `edit` (or `sửa`, `sua`): go back to Step 2 with user's edit notes.
 - On `cancel` (or `hủy`, `huy`): write `{"status":"cancelled"}` to `.taw/checkpoint.json`, emit "Cancelled. Type /taw again when you're ready.", exit.
+
+**HARD RULE for safe mode:** Even if the user previously sent images, URLs, or detailed prose, even if you are confident about defaults, even if it would be faster to skip — you MUST still emit the approval prompt and wait. The user trades 1 message for the right to course-correct before 5 minutes of build work. If the user wants to skip this, they invoke YOLO mode explicitly.
 
 ## Step 5 — Spawn agents in sequence
 

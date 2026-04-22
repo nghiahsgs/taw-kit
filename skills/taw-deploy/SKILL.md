@@ -9,7 +9,7 @@ description: >
   site", "go live", "push to vercel", "dockerize", "deploy to my vps",
   "deploy di", "day len vercel".
 argument-hint: "[--target=vercel|docker|vps] [domain-or-host]"
-allowed-tools: Read, Write, Bash, Grep, Task
+allowed-tools: Read, Write, Bash, Grep, Task, Skill
 ---
 
 # taw-deploy — One-Command Deploy
@@ -18,21 +18,43 @@ You are the taw-deploy skill. Ship the current taw-kit project to production and
 
 **Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "deploy di", "day len vercel"), reply 100% in Vietnamese — friendly, conversational, Southern style. If English, reply in English. Default to Vietnamese for ambiguous/short input. Applies to ALL user-visible text: progress lines, prompts, errors, the final URL announcement. Keep sentences short, no jargon.
 
-## Step 1 — Pre-flight checks
+## Step 1 — Security gate (BLOCKING)
 
-Run ALL checks before touching deploy infrastructure. If any check fails, stop and emit the matching message — do NOT proceed.
+Before any other check, run the `taw-security` skill in quick mode to catch P0 issues that would make deploy unsafe (leaked secrets, RLS gaps, unverified webhooks, service-role key in client bundle, etc.).
+
+Invoke via Skill tool:
+```
+Skill({ skill: "taw-security", args: "quick" })
+```
+
+Read the returned report. Decision tree:
+
+- **0 P0 findings** → emit "✓ Quét bảo mật: an toàn" (or English equivalent) and continue to Step 2.
+- **≥1 P0 findings** → STOP. Echo the P0 list verbatim, then emit:
+  ```
+  🚨 Không thể deploy — còn {N} lỗi bảo mật P0.
+  Chạy `/taw-security` để xem chi tiết và fix, rồi gõ `/taw-deploy` lại.
+  ```
+  Write `.taw/checkpoint.json`: `{"status": "blocked-by-security", "p0_count": N}`. Do NOT proceed.
+
+P1/P2 findings are reported but **never block** deploy (user decides).
+
+## Step 2 — Pre-flight checks
+
+Run ALL checks. If any fails, stop and emit the matching message — do NOT proceed.
 
 | # | Check | Command | Fail message |
 |---|-------|---------|--------------|
 | 1 | Build passes locally | `npm run build 2>&1` exit 0 | "Build is failing. Run `/taw-fix` first." |
 | 2 | `.env.local` exists | `test -f .env.local` | "`.env.local` is missing. Create it with your Supabase + Polar keys." |
-| 3 | No secrets in tracked files | `git grep -lE "(SUPABASE_SERVICE_KEY\|POLAR_SECRET\|sk-[a-zA-Z]{20})" -- '*.ts' '*.tsx' '*.js'` returns empty | "Secret detected in source. Remove it before deploying." |
-| 4 | Required env keys present | grep `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` | "Missing Supabase keys in `.env.local`." |
-| 5 | Config file exists | `test -f next.config.js -o -f next.config.mjs -o -f next.config.ts` | "Next.js config not found. Is this a taw-kit project?" |
+| 3 | Required env keys present | grep `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` | "Missing Supabase keys in `.env.local`." |
+| 4 | Config file exists | `test -f next.config.js -o -f next.config.mjs -o -f next.config.ts` | "Next.js config not found. Is this a taw-kit project?" |
+
+(Secrets-in-tracked-files check has moved to Step 1 security gate via `taw-security`.)
 
 Emit progress: "Pre-flight checks... done"
 
-## Step 2 — Pick a deploy target
+## Step 3 — Pick a deploy target
 
 Parse target from args (`--target=vercel|docker|vps`). If not given:
 
@@ -47,7 +69,7 @@ Parse target from args (`--target=vercel|docker|vps`). If not given:
    ```
 3. Save the choice to `.taw/deploy-target.txt`.
 
-## Step 3 — Deploy
+## Step 4 — Deploy
 
 Read project name from `package.json` (`$PROJECT_NAME`).
 
@@ -170,7 +192,7 @@ If present:
 
 Write `.taw/deploy-url.txt`: `ssh://$VPS_USER@$VPS_HOST$VPS_PATH` + the public domain the user points at the VPS.
 
-## Step 4 — Capture and persist
+## Step 5 — Capture and persist
 
 ```bash
 echo "<url-or-identifier>" > .taw/deploy-url.txt
@@ -181,7 +203,7 @@ Update `.taw/checkpoint.json`:
 {"status": "deployed", "target": "<vercel|docker|vps>", "deploy_url": "<url>", "deployed_at": "<ISO timestamp>"}
 ```
 
-## Step 5 — Done
+## Step 6 — Done
 
 Emit exactly (substitute the relevant line):
 ```
