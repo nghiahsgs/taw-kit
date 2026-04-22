@@ -4,8 +4,10 @@ description: >
   Advanced git workflows for taw-kit users who have graduated beyond
   /taw auto-commit: create branches, open pull requests via `gh`, merge,
   and recover from common mistakes. Complements `git-auto-commit` (single
-  commits) and `git-trace` (history lookup). Simple English UI; Vietnamese
-  triggers. Based on public specs (conventionalcommits.org, gh CLI docs).
+  commits) and `git-trace` (history lookup). User-visible strings match the
+  user's input language (Vietnamese by default for VN users); raw git/gh
+  commands always shown verbatim so power users can learn. Based on public
+  specs (conventionalcommits.org, gh CLI docs).
 argument-hint: "branch <name> | pr [base] | merge [from] | undo"
 ---
 
@@ -161,4 +163,4 @@ Refuse any amend/reset if the commit is already pushed to a protected branch (`m
 
 ## Output style
 
-Short, simple English. Always show the raw git command being run so power users can learn. Never emoji.
+Short prose in the user's input language (Vietnamese by default for VN users). ALWAYS show the raw git/gh command being run on its own line so power users can learn — commands themselves stay in English (e.g. `git checkout -b feature/login`). Never emoji.

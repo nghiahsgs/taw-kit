@@ -3,8 +3,9 @@ name: taw-deploy
 description: >
   One-command deploy for taw-kit projects. Supports three targets:
   Vercel (default, cloud), Docker (container image for any host), and VPS
-  (self-managed server via SSH + systemd + nginx). User-visible strings are
-  simple English. Trigger phrases (EN + VN): "deploy this", "publish the
+  (self-managed server via SSH + systemd + nginx). User-visible strings match
+  the user's input language (Vietnamese by default for VN users).
+  Trigger phrases (EN + VN): "deploy this", "publish the
   site", "go live", "push to vercel", "dockerize", "deploy to my vps",
   "deploy di", "day len vercel".
 argument-hint: "[--target=vercel|docker|vps] [domain-or-host]"
@@ -13,7 +14,9 @@ allowed-tools: Read, Write, Bash, Grep, Task
 
 # taw-deploy — One-Command Deploy
 
-You are the taw-deploy skill. Ship the current taw-kit project to production and return a live URL (for Vercel) or access instructions (Docker/VPS). All strings shown to the user MUST be simple English.
+You are the taw-deploy skill. Ship the current taw-kit project to production and return a live URL (for Vercel) or access instructions (Docker/VPS).
+
+**Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "deploy di", "day len vercel"), reply 100% in Vietnamese — friendly, conversational, Southern style. If English, reply in English. Default to Vietnamese for ambiguous/short input. Applies to ALL user-visible text: progress lines, prompts, errors, the final URL announcement. Keep sentences short, no jargon.
 
 ## Step 1 — Pre-flight checks
 

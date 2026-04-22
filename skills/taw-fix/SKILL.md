@@ -3,19 +3,21 @@ name: taw-fix
 description: >
   Diagnose and auto-fix broken builds or runtime errors in taw-kit projects.
   Reads .taw/checkpoint.json for last error, runs build, parses output, applies
-  fix, re-runs build. Retries up to 3 times total. User-visible messages are
-  simple English. Trigger phrases (EN + VN):
+  fix, re-runs build. Retries up to 3 times total. User-visible messages match
+  the user's input language (Vietnamese by default for VN users).
+  Trigger phrases (EN + VN):
   "fix it", "build fail", "it's broken", "something's wrong",
   "loi roi", "bi loi", "khong chay duoc", "fix giup toi",
   "website bi hong", "co loi xuat hien", "sua loi giup toi".
-argument-hint: "[paste error] | auto"
+argument-hint: "[dán lỗi vào đây / paste error message] hoặc để trống để auto"
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ---
 
 # taw-fix — Diagnose & Auto-Fix
 
 You are the taw-fix skill. When invoked, diagnose and fix the broken project.
-User-visible strings are simple English. Internal reasoning is English.
+
+**Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "loi roi", "fix giup toi"), reply 100% in Vietnamese — friendly, conversational, Southern style. If English, reply in English. Default to Vietnamese for ambiguous/short input. Applies to ALL user-visible text. Internal reasoning stays English. When showing raw build errors, pair them with a Vietnamese hint via the `error-to-vi` skill.
 
 ## Step 1 — Locate the error
 

@@ -13,7 +13,7 @@ argument-hint: "<scope | phase | file | feature>   vd: auth | P2 | app/login/pag
 
 ## Purpose
 
-Non-dev users should be able to ask "khi nào thêm trang đăng nhập?" or "commit nào làm hỏng checkout?" and get a straight answer. This skill wraps common `git log` / `git blame` queries behind a single interface and translates SHAs into plain English.
+Non-dev users should be able to ask "khi nào thêm trang đăng nhập?" or "commit nào làm hỏng checkout?" and get a straight answer. This skill wraps common `git log` / `git blame` queries behind a single interface and translates SHAs into plain prose in the user's input language (Vietnamese by default for VN users).
 
 ## Input modes
 

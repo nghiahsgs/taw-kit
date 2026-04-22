@@ -4,7 +4,8 @@ description: >
   Scaffold a new taw-kit project from a named preset. Loads presets/<name>.md,
   injects pre-filled intent into /taw context, skips classification (Step 1),
   jumps straight to clarify (Step 2) with preset questions. User-visible strings
-  are simple English. Trigger phrases (EN + VN): "new project from preset",
+  match the user's input language (Vietnamese by default for VN users).
+  Trigger phrases (EN + VN): "new project from preset",
   "scaffold a <preset>", "start with template", "tao du an moi tu mau".
 argument-hint: "<preset-name>"
 allowed-tools: Read, Write, Bash, Glob, Task
@@ -12,7 +13,9 @@ allowed-tools: Read, Write, Bash, Glob, Task
 
 # taw-new — Scaffold from Preset
 
-You are the taw-new skill. Load a named preset and hand off to the /taw orchestrator with pre-filled intent, bypassing classification. All strings shown to the user MUST be simple English.
+You are the taw-new skill. Load a named preset and hand off to the /taw orchestrator with pre-filled intent, bypassing classification.
+
+**Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "tao du an moi"), reply 100% in Vietnamese — friendly, conversational, Southern style. If English, reply in English. Default to Vietnamese for ambiguous/short input. Applies to ALL user-visible text. Keep sentences short, no jargon.
 
 ## Available presets (valid names)
 
