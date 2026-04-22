@@ -37,6 +37,24 @@ Under `plans/<YYMMDD-HHMM>-<slug>/`:
 - `plan.md` — 40-80 line overview: phase table, dependencies, critical path
 - `phase-01-<name>.md` through `phase-NN-<name>.md` — one per logical chunk
 
+**CRITICAL — declare target stack in plan.md frontmatter** so the orchestrator knows which dev agent to spawn:
+
+```yaml
+---
+target: web        # if Next.js / Vercel / Polar — orchestrator spawns fullstack-dev
+# OR
+target: mobile     # if Expo / RN / EAS Build — orchestrator spawns mobile-dev
+# OR
+target: hybrid     # if both web + mobile twins — orchestrator spawns BOTH agents in sequence
+---
+```
+
+Detection rules:
+- `intent.json.category` contains `mobile` OR `app` OR `react-native` → `mobile`
+- `intent.json.category` contains `landing-page`, `shop`, `crm`, `blog`, `dashboard` → `web`
+- User explicitly mentions both web + mobile (porting feature, twin repos) → `hybrid`
+- Existing `package.json` has `expo` → `mobile`; has `next` → `web`
+
 ## Phase file format
 
 Every phase file includes: Context Links, Overview (priority, effort in hours), Key Insights, Requirements, Architecture (textual + mermaid if ≥3 components), Related Code Files (create / modify / delete), Implementation Steps (numbered), Todo List (checkboxes), Success Criteria.

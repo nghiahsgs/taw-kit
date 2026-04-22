@@ -115,7 +115,12 @@ Use the Task tool to dispatch the agent chain below. Order is **fixed**: each st
    </one assistant message>
    ```
    The harness fans both out concurrently and you receive both tool results in the next user turn. If you spawn researcher #1, wait for its result, then spawn researcher #2, you have FAILED the parallel requirement — that is sequential. Do NOT do that.
-3. `fullstack-dev` — input: research reports + plan + `.taw/design.json`. Output: scaffolded + implemented code honouring the chosen style/palette/fonts; runs `npm install` and records results.
+3. **Dev agent — read `target` from `plans/<dir>/plan.md` frontmatter:**
+   - `target: web` → spawn `fullstack-dev` (Next.js + Tailwind + shadcn + Supabase + Polar)
+   - `target: mobile` → spawn `mobile-dev` (Expo + Expo Router + NativeWind + Supabase RN + EAS)
+   - `target: hybrid` → spawn `fullstack-dev` first (web), then `mobile-dev` (mobile twin) sequentially
+
+   Input to whichever agent: research reports + plan + `.taw/design.json`. Output: scaffolded + implemented code honouring the chosen style/palette/fonts; runs deps install and records results.
 4. `tester` — input: the project directory. Runs `npm run build` and `npm run dev` smoke. Reports pass/fail.
 5. `reviewer` — input: recent diffs. Runs quick security/quality pass + UI checks against the `frontend-design` "anti-AI-slop" guidelines (no Inter/Arial defaults, distinctive typography, cohesive aesthetic, intentional spacing). Reports ok/issues.
 
