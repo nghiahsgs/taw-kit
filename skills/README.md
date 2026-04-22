@@ -21,6 +21,11 @@ skills invoked automatically by the orchestrator. Non-dev users only ever type
 | `shadcn-ui` | Install and use shadcn/ui components (Button, Card, Form, Table) | fullstack-dev |
 | `nextjs-app-router` | App Router file conventions, Server/Client Components, API routes | fullstack-dev |
 | `frontend-design` | Anti-AI-slop design (Anthropic, Apache 2.0): bold aesthetics, distinctive typography, refined visual POV | planner, fullstack-dev, reviewer |
+| `expo-tailwind-setup` | Tailwind v4 + NativeWind v5 setup for Expo (mobile equivalent of `shadcn-ui` styling) (Expo, MIT) | fullstack-dev (mobile) |
+| `expo-deployment` | EAS Build + Submit to App Store / Play Store (mobile equivalent of `taw-deploy`) (Expo, MIT) | fullstack-dev (mobile) |
+| `expo-dev-client` | Custom Expo Go for native modules (Expo, MIT) | fullstack-dev (mobile) |
+| `building-native-ui` | Expo Router + native UI patterns (mobile equivalent of `nextjs-app-router`) (Expo, MIT) | fullstack-dev (mobile) |
+| `taw-rn-supabase` | Supabase JS in React Native: AsyncStorage session, deep-link magic-link auth, Realtime | fullstack-dev (mobile) |
 | `vietnamese-copy` | Vietnamese marketing copy, CTAs, email templates (on demand) | taw, taw-add |
 | `tiktok-shop-embed` | Embed TikTok Shop product cards and affiliate links | fullstack-dev, taw-add |
 | `seo-basic` | Meta tags, Open Graph, sitemap.xml, robots.txt, JSON-LD | fullstack-dev, taw |
