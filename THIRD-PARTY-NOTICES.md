@@ -4,36 +4,16 @@ taw-kit bundles open-source components from other authors. Their licenses are re
 
 ---
 
-## UI UX Pro Max
+## frontend-design (Anthropic Skills)
 
-**Bundled at:** `skills/ui-ux-pro-max/`
-**Source:** https://github.com/Next-Level-Builder/ui-ux-pro-max-skill
-**License:** MIT
-**Copyright:** © 2024 Next Level Builder
+**Bundled at:** `skills/frontend-design/`
+**Source:** https://github.com/anthropics/skills/tree/main/skills/frontend-design
+**License:** Apache License 2.0
+**Copyright:** © Anthropic, PBC
 
-```
-MIT License
+The full Apache 2.0 license text is preserved verbatim at `skills/frontend-design/LICENSE.txt` (as required by Apache 2.0 §4). This skill is bundled unmodified; if you modify it inside your fork, mark the changed files prominently per Apache 2.0 §4(b).
 
-Copyright (c) 2024 Next Level Builder
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+The Anthropic name and logo are trademarks of Anthropic, PBC and are NOT licensed under Apache 2.0. taw-kit does not imply endorsement by Anthropic.
 
 ---
 

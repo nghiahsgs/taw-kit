@@ -99,15 +99,25 @@ Does this plan look good? (type: yes / edit / cancel)
 
 **HARD RULE for safe mode:** Even if the user previously sent images, URLs, or detailed prose, even if you are confident about defaults, even if it would be faster to skip — you MUST still emit the approval prompt and wait. The user trades 1 message for the right to course-correct before 5 minutes of build work. If the user wants to skip this, they invoke YOLO mode explicitly.
 
-## Step 5 — Spawn agents in sequence
+## Step 5 — Spawn agent chain (mostly sequential, researchers parallel)
 
-Use the Task tool to dispatch the following agent chain. Compact each agent's output to ≤200 tokens before next dispatch to preserve context.
+Use the Task tool to dispatch the agent chain below. Order is **fixed**: each step waits for the previous step's result, EXCEPT step 5.2 (researchers) which spawn in parallel inside one assistant message. Compact each agent's output to ≤200 tokens before next dispatch to preserve context.
 
-1. `planner` — input: `.taw/intent.json` + `.taw/plan.md`. Output: `plans/<timestamp>-<slug>/plan.md` + phase files. Before finalizing, planner MUST consult the `ui-ux-pro-max` skill to pick a UI style, color palette, font pairing, and page layout matching the product type. Write the chosen design tokens into `.taw/design.json`.
-2. `researcher` × 2 in PARALLEL — input: plan phase files. Output: research reports for chosen stack components. Spawn in a single message with two Task calls.
+1. `planner` — input: `.taw/intent.json` + `.taw/plan.md`. Output: `plans/<timestamp>-<slug>/plan.md` + phase files. Before finalizing, planner MUST consult the `frontend-design` skill (Anthropic, Apache 2.0) to pick a BOLD aesthetic direction, distinctive typography, and a memorable visual point-of-view. Write the chosen design tokens (colors, fonts, signature effect) into `.taw/design.json`.
+2. `researcher` × 2 in PARALLEL — input: plan phase files. Output: research reports for chosen stack components.
+
+   **HOW to spawn parallel (CRITICAL — wrong way costs ~30s per researcher):**
+   In ONE assistant message, emit TWO Task tool_use blocks back-to-back inside the same response — NOT two separate messages, NOT one message with one Task call followed by waiting for result. The two Task blocks must appear in the same `<function_calls>` parent. Example shape:
+   ```
+   <one assistant message>
+     Task(subagent_type=researcher, description="topic A", prompt="...")
+     Task(subagent_type=researcher, description="topic B", prompt="...")
+   </one assistant message>
+   ```
+   The harness fans both out concurrently and you receive both tool results in the next user turn. If you spawn researcher #1, wait for its result, then spawn researcher #2, you have FAILED the parallel requirement — that is sequential. Do NOT do that.
 3. `fullstack-dev` — input: research reports + plan + `.taw/design.json`. Output: scaffolded + implemented code honouring the chosen style/palette/fonts; runs `npm install` and records results.
 4. `tester` — input: the project directory. Runs `npm run build` and `npm run dev` smoke. Reports pass/fail.
-5. `reviewer` — input: recent diffs. Runs quick security/quality pass + UI checks against the `ui-ux-pro-max` pre-delivery checklist. Reports ok/issues.
+5. `reviewer` — input: recent diffs. Runs quick security/quality pass + UI checks against the `frontend-design` "anti-AI-slop" guidelines (no Inter/Arial defaults, distinctive typography, cohesive aesthetic, intentional spacing). Reports ok/issues.
 
 Between steps, emit a short progress line:
 ```

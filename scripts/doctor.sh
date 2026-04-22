@@ -89,12 +89,12 @@ else
   _warn_only "POLAR_ACCESS_TOKEN not set (only needed if you are selling on Polar)"
 fi
 
-# 10. Python 3 (required by ui-ux-pro-max skill)
+# 10. Python 3 (optional — frontend-design skill is pure Markdown, no longer required)
 if command -v python3 >/dev/null 2>&1; then
   pv="$(python3 --version 2>&1 | awk '{print $2}')"
-  _pass "Python 3: $pv (needed by ui-ux-pro-max)"
+  _pass "Python 3: $pv (optional, useful for ad-hoc scripts)"
 else
-  _fail "python3 not installed. Install: brew install python3 (Mac) / sudo apt install python3 (Linux)"
+  _warn_only "python3 not installed (optional — taw-kit core skills no longer require it)"
 fi
 
 # 11. Locale UTF-8
