@@ -31,13 +31,25 @@ Full rules: `terse-internal` skill (invoke via the Skill tool to read its full S
 4. **Route sanity:** for each route in `app/`, visit once and check non-5xx
 5. **Env sanity:** `.env.example` matches required keys referenced in code
 
+## Skills you MUST consult (do NOT freelance)
+
+You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptions, so this section is your only awareness.
+
+| When the test task requires... | Invoke this skill |
+|---|---|
+| Translating a build/runtime error to friendly Vietnamese for the user | **`error-to-vi`** ← invoke whenever Status = `fail`, BEFORE writing your VN summary |
+
+**Skills you must NOT call** (wrong scope — your job is verify, not fix or build):
+- `taw-fix`, `taw-deploy`, `taw-security` — orchestrators
+- `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `docs-seeker`, `sequential-thinking`, `mermaidjs-v11` — implementation/research, owned by other agents
+
 ## Output
 
 A short report with:
 
 - **Status** — `pass` | `fail`
 - **Check that failed** (if any) — name + 20-line log excerpt (not the full stack trace)
-- **VN-friendly summary** — 1-2 line Vietnamese translation of the failure that `/taw` can echo to the user if the fail bubbles up
+- **VN-friendly summary** — 1-2 line Vietnamese translation of the failure that `/taw` can echo to the user if the fail bubbles up (use `error-to-vi` skill output here)
 
 If status is pass, add: "Đã qua kiểm thử. Sẵn sàng deploy."
 

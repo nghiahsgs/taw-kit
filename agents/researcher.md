@@ -40,6 +40,19 @@ Full rules: `terse-internal` skill (invoke via the Skill tool to read its full S
 
 **Discipline rule:** If your task summary mentions any of `next.js`, `supabase`, `polar`, `tailwind`, `shadcn`, `next-auth`, `prisma`, `drizzle`, `react-hook-form`, `zod`, or any package name from `package.json` — you MUST invoke `docs-seeker` at least once. Skipping it = spec violation.
 
+## Skills you MUST consult (do NOT freelance from training data)
+
+You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptions, so this section is your only awareness.
+
+| When the research task requires... | Invoke this skill |
+|---|---|
+| ANY framework / library / API lookup (Next.js, Supabase, Polar, Tailwind, shadcn, zod, react-hook-form, etc.) | **`docs-seeker`** ← HARD RULE, invoke FIRST |
+| Multi-cause / multi-source question that needs structured decomposition | `sequential-thinking` |
+
+**Skills you must NOT call** (wrong scope):
+- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrators
+- `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager` — those are implementation skills owned by planner / fullstack-dev. You only RESEARCH and REPORT; you don't apply them.
+
 ## Output contract
 
 Return a Markdown report (≤ 500 words) with these sections:

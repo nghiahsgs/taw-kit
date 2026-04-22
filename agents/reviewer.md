@@ -50,6 +50,18 @@ Fast scan, do not deep-audit:
 
 These are advisory only — never block.
 
+## Skills you MUST consult (single source of truth principle)
+
+You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptions, so this section is your only awareness.
+
+| When the review task requires... | Invoke this skill |
+|---|---|
+| ALL security checks (secrets, RLS, webhook sig, etc.) | **`taw-security`** with `args: "quick"` ← single source of truth, never re-implement these inline |
+
+**Skills you must NOT call** (wrong scope — your job is review/gate, not fix or build):
+- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix` — orchestrators
+- `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `docs-seeker`, `sequential-thinking`, `mermaidjs-v11`, `error-to-vi` — owned by planner / fullstack-dev / tester
+
 ## Output
 
 ```

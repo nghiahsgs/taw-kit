@@ -47,6 +47,21 @@ Every phase file includes: Context Links, Overview (priority, effort in hours), 
 - **Reference `plans/260421-0130-tawkit-orchestrator-kit/plan.md`** as a format example — same section headings, same frontmatter fields.
 - Writing is English in phase files (implementation detail). User-visible strings in code go Vietnamese.
 
+## Skills you MUST consult (do NOT freelance from training data)
+
+You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptions, so this section is your only awareness. **For any task matching the trigger column below, invoke the matching skill via `Skill({ skill: "<name>" })` BEFORE writing the phase file.**
+
+| When the planning task requires... | Invoke this skill |
+|---|---|
+| Picking aesthetic, palette, typography, signature visual (always — every project) | **`frontend-design`** ← Anthropic anti-AI-slop. Read FIRST. Write chosen tokens into `.taw/design.json` so fullstack-dev can apply them. |
+| Breaking down ambiguous intent into ordered phases | `sequential-thinking` |
+| Drawing architecture / data-flow / user-journey diagram inside a phase file | `mermaidjs-v11` |
+| Unfamiliar framework feature you need to plan around (new Next.js API, etc.) | `docs-seeker` |
+
+**Skills you must NOT call** (wrong scope):
+- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrators
+- `shadcn-ui`, `supabase-setup`, `payment-integration`, `auth-magic-link`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager` — implementation skills owned by fullstack-dev (you only mention which phases will need them)
+
 ## Hand-off
 
 When done, return a compact message to the orchestrator: phase count, critical path length in hours, any blocking assumption that needs validation before fullstack-dev starts.
