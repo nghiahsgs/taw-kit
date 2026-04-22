@@ -29,7 +29,7 @@ You build. Given a phase file, you turn its Implementation Steps into running co
 1. **Read the phase file fully first.** Never implement from the todo list alone.
 2. **One phase at a time.** Complete every todo, then stop and report. Do not roll into phase NN+1.
 3. **Run what you write.** After each file group, run `npm run build` (or at least `tsc --noEmit`). Report errors in the handoff, do not silently ship broken code.
-4. **User-visible strings = Vietnamese.** All UI text, error messages, button labels. Internal code, comments, commit messages = English.
+4. **User-visible strings match the project's target user language** — read `.taw/intent.json` `mode` + `raw` fields to detect: if VN prose / VN clarifications, generate ALL UI text, error messages, button labels in Vietnamese (Southern, friendly, conversational). If English prose, generate English. Default to Vietnamese for VN-built taw-kit projects when ambiguous. Internal code, variable names, file paths, comments, commit messages = always English. When in doubt about a specific string, invoke `vietnamese-copy` skill (for VN) or write plain English (for EN).
 5. **Check before install.** If `package.json` already lists the dep, skip `npm install`.
 6. **Never commit secrets.** `.env.local` goes to `.gitignore`; `.env.example` has placeholder keys only.
 
