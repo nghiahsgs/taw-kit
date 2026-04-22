@@ -86,6 +86,21 @@ git add -A
 git diff --cached --name-only > /tmp/taw-staged.txt
 ```
 
+**Step 2a — Sanity unstage (run BEFORE checks below):** auto-unstage any staged files matching the local-state directories below — these are NEVER meant for git, regardless of whether `.gitignore` is up to date:
+
+```bash
+for pat in '.claude/' '.claudebk/' '.taw/' '.expo/' '.expo-shared/' '.eas/' '.DS_Store' 'Thumbs.db' '*.log' '*.tsbuildinfo' 'node_modules/' '.next/' 'dist/' 'build/' 'ios/build/' 'android/build/' 'android/.gradle/' 'android/app/build/'; do
+  files=$(git diff --cached --name-only | grep -E "^${pat}" || true)
+  if [ -n "$files" ]; then
+    git reset HEAD -- $files >/dev/null 2>&1
+    echo "↩ unstaged $pat (local-state, never commit)"
+  fi
+done
+git diff --cached --name-only > /tmp/taw-staged.txt  # refresh after unstage
+```
+
+If after sanity unstage there are 0 staged files left, abort with: "Không có file nào đáng commit (toàn local state). Bỏ qua." — exit 0, do NOT make empty commit.
+
 Refuse to commit (reset and abort) if any of these match staged paths or content.
 
 **Filename blockers** (always unstage with `git reset HEAD <file>`):
@@ -131,18 +146,50 @@ On hit:
 2. Unstage the file: `git reset HEAD <file>`.
 3. Tell user in VN: "File `<path>` có lộ secret ở dòng <n>. Đã unstage. Di chuyển giá trị vào `.env.local` trước khi commit."
 
-Check `.gitignore` exists; create minimum if missing:
+Check `.gitignore` exists; create minimum if missing (or APPEND missing entries if file exists but lacks them):
+
 ```gitignore
+# Env / secrets
+.env
 .env.local
 .env*.local
+*.key
+*.pem
+*.p12
+credentials.json
+service-account*.json
+
+# Web build artefacts
 node_modules/
 .next/
 out/
 dist/
-*.key
-*.pem
+build/
+*.tsbuildinfo
+
+# Mobile build artefacts (Expo / RN)
+.expo/
+.expo-shared/
+ios/build/
+android/build/
+android/.gradle/
+android/app/build/
+.eas/
+
+# Local state — NEVER commit
+.claude/
+.claudebk/
+.taw/
+
+# OS / IDE cruft
 .DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/
 ```
+
+**Append-only rule:** if `.gitignore` already exists, do NOT overwrite it. Read it, identify which patterns from the list above are missing, append only those (with a `# Added by taw-kit` separator comment).
 
 ### 3. Generate subject (when caller did not supply one)
 
