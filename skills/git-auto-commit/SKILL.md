@@ -96,7 +96,12 @@ Refuse to commit (reset and abort) if any of these match staged paths or content
 | `*.key`, `*.pem`, `*.p12`, `*.pfx` | Private keys (PEM/PKCS#12 — RFC 7468) |
 | `id_rsa`, `id_ed25519`, `id_ecdsa` | SSH private keys |
 | `credentials.json`, `service-account*.json` | Cloud IAM credentials |
-| `node_modules/**`, `.next/**`, `dist/**`, `out/**` | Build artefacts |
+| `node_modules/**`, `.next/**`, `dist/**`, `out/**`, `build/**`, `.expo/**`, `ios/build/**`, `android/build/**` | Build artefacts (web + mobile) |
+| `.claude/**`, `.claudebk/**` | **Claude Code local state** — session transcripts, hooks, MCP config. Local-only, NEVER commit. |
+| `.taw/**` | **taw-kit local state** — intent.json, checkpoint.json, deploy-target.txt. Local-only, NEVER commit. |
+| `.DS_Store`, `Thumbs.db` | OS metadata cruft |
+| `*.log`, `*.tsbuildinfo` | Generated logs / TS build cache |
+| `.eas/`, `.expo-shared/` | EAS / Expo local cache (mobile) |
 
 **Content blockers** — run on the staged diff:
 
