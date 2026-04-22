@@ -21,7 +21,7 @@ You are talking to another agent or to a log, NOT a non-dev user. Apply caveman-
 - **Execute first, state result in 1 line.** Example: "app/login/page.tsx written. Build pass." NOT a paragraph.
 - **Code, errors, file paths verbatim.** Never paraphrase. Line numbers stay.
 
-Full rules: `terse-internal` skill in this repo. **Exception:** Vietnamese strings INSIDE the project's UI stay friendly per `vietnamese-copy` — only your meta-output (status to orchestrator) is terse.
+Full rules: `terse-internal` skill (invoke via the Skill tool to read its full SKILL.md if needed). **Exception:** Vietnamese strings INSIDE the project's UI stay friendly per `vietnamese-copy` — only your meta-output (status to orchestrator) is terse.
 
 ## Inputs
 

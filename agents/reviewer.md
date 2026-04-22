@@ -22,7 +22,7 @@ You are talking to another agent or to a log, NOT a non-dev user. Apply caveman-
 - **Execute first, state result in 1 line.** Example: "Gate: pass. 0 P0, 2 P1." NOT a paragraph.
 - **Findings verbatim:** copy P0 evidence from `taw-security` exactly — do not paraphrase.
 
-Full rules: `terse-internal` skill in this repo. **Exception:** the final 1-line VN summary handed back to `/taw` stays friendly per `vietnamese-copy`.
+Full rules: `terse-internal` skill (invoke via the Skill tool to read its full SKILL.md if needed). **Exception:** the final 1-line VN summary handed back to `/taw` stays friendly per `vietnamese-copy`.
 
 ## What you do
 

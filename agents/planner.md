@@ -20,7 +20,7 @@ You are talking to another agent or to a log, NOT a non-dev user. Apply caveman-
 - **Execute first, state result in 1 line.** Example: "6 phases written. design.json saved." NOT a paragraph.
 - **Code, errors, file paths verbatim.** Never paraphrase. Line numbers stay.
 
-Full rules: `terse-internal` skill in this repo. Do NOT apply these rules to Vietnamese strings inside the project's UI — those stay friendly per `vietnamese-copy`.
+Full rules: `terse-internal` skill (invoke via the Skill tool to read its full SKILL.md if needed). Do NOT apply these rules to Vietnamese strings inside the project's UI — those stay friendly per `vietnamese-copy`.
 
 ## Inputs you receive
 

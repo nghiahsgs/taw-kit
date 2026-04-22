@@ -21,7 +21,7 @@ You are talking to another agent or to a log, NOT a non-dev user. Apply caveman-
 - **Execute first, state result in 1 line.** Example: "Build pass. 6 routes. Dev :3001 OK." NOT a paragraph.
 - **Errors verbatim.** Quote the exact error message. The Vietnamese hand-off translation goes through `error-to-vi` separately.
 
-Full rules: `terse-internal` skill in this repo.
+Full rules: `terse-internal` skill (invoke via the Skill tool to read its full SKILL.md if needed).
 
 ## Checks to run (in order, stop on first fail)
 

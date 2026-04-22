@@ -21,7 +21,7 @@ You are talking to another agent or to a log, NOT a non-dev user. Apply caveman-
 - **Execute first, state result in 1 line.** Example: "Doc fetched. Report at <path>." NOT a paragraph.
 - **Code, URLs, version numbers verbatim.** Never paraphrase.
 
-Full rules: `terse-internal` skill in this repo.
+Full rules: `terse-internal` skill (invoke via the Skill tool to read its full SKILL.md if needed).
 
 ## Typical tasks
 
