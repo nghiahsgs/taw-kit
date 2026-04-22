@@ -97,6 +97,20 @@ else
   _warn_only "python3 not installed (optional — taw-kit core skills no longer require it)"
 fi
 
+# 10b. ast-grep — optional, speeds up code investigation ~30%
+if command -v ast-grep >/dev/null 2>&1 || command -v sg >/dev/null 2>&1; then
+  _pass "ast-grep installed (fast AST-based code search)"
+else
+  _warn_only "ast-grep not installed (optional — Claude will fall back to Grep+Read when investigating code, ~30% slower). Install on demand when Claude asks, or: brew install ast-grep (Mac) / cargo install ast-grep (Linux)"
+fi
+
+# 10c. gh CLI — optional, for git-pro PR flows
+if command -v gh >/dev/null 2>&1; then
+  _pass "gh CLI installed (GitHub PR / issue / release automation)"
+else
+  _warn_only "gh CLI not installed (optional — needed only if you use /git-pro pr flow). Install on demand, or: brew install gh (Mac) / apt install gh (Linux)"
+fi
+
 # 11. Locale UTF-8
 if locale 2>/dev/null | grep -q 'UTF-8'; then
   _pass "locale: UTF-8"

@@ -70,7 +70,7 @@ fi
 
 # --- 2. Remove our agents by known name ---
 agent_count=0
-for a in planner researcher fullstack-dev tester reviewer; do
+for a in planner researcher fullstack-dev mobile-dev tester reviewer; do
   f="$CLAUDE_DIR/agents/$a.md"
   if [ -f "$f" ]; then
     rm -f "$f"
@@ -79,7 +79,24 @@ for a in planner researcher fullstack-dev tester reviewer; do
 done
 if [ "$agent_count" -gt 0 ]; then
   ok "removed $agent_count taw-kit agent(s)"
-  warn "if you had your own 'planner/researcher/fullstack-dev/tester/reviewer' before install, those were overwritten. Check any ~/.claude backup dir you may have kept."
+  warn "if you had your own 'planner/researcher/fullstack-dev/mobile-dev/tester/reviewer' before install, those were overwritten. Check any ~/.claude backup dir you may have kept."
+fi
+
+# --- 2b. Strip tool-bootstrap block from ~/.claude/CLAUDE.md ---
+USER_CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
+if [ -f "$USER_CLAUDE_MD" ] && grep -q "taw-kit:tool-bootstrap:begin" "$USER_CLAUDE_MD"; then
+  awk '
+    /<!-- taw-kit:tool-bootstrap:begin -->/ { skip=1; next }
+    /<!-- taw-kit:tool-bootstrap:end -->/   { skip=0; next }
+    !skip                                   { print }
+  ' "$USER_CLAUDE_MD" > "$USER_CLAUDE_MD.new" && mv "$USER_CLAUDE_MD.new" "$USER_CLAUDE_MD"
+  # If file is now empty or only blank lines, delete it entirely
+  if [ ! -s "$USER_CLAUDE_MD" ] || ! grep -q '[^[:space:]]' "$USER_CLAUDE_MD"; then
+    rm -f "$USER_CLAUDE_MD"
+    ok "removed empty ~/.claude/CLAUDE.md"
+  else
+    ok "stripped tool-bootstrap section from ~/.claude/CLAUDE.md"
+  fi
 fi
 
 # --- 3. Remove our hooks by known name ---

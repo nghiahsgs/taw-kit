@@ -66,6 +66,40 @@ fi
 # --- 4. Ensure hooks are executable ---
 chmod +x "$HOME/.claude/hooks/"*.sh 2>/dev/null || true
 
+# --- 4b. Append tool-bootstrap rule to ~/.claude/CLAUDE.md (idempotent) ---
+USER_CLAUDE_MD="$HOME/.claude/CLAUDE.md"
+mkdir -p "$HOME/.claude"
+
+if [ -f "$USER_CLAUDE_MD" ] && grep -q "taw-kit:tool-bootstrap:begin" "$USER_CLAUDE_MD"; then
+  info "tool-bootstrap section already in ~/.claude/CLAUDE.md (skip)"
+else
+  # Append (or create) the block. Use heredoc directly to avoid quote issues.
+  [ -f "$USER_CLAUDE_MD" ] && printf "\n\n" >> "$USER_CLAUDE_MD"
+  cat >> "$USER_CLAUDE_MD" <<'TBEOF'
+<!-- taw-kit:tool-bootstrap:begin -->
+## Tool bootstrap protocol (added by taw-kit — do not edit between markers)
+
+When you need a CLI tool that is not installed (ast-grep/sg, gh, jq, fd, rg, etc.) AND it would materially speed up the current task:
+
+1. Check first: `command -v <tool> >/dev/null 2>&1`
+2. If missing, ask the user ONCE in their language:
+   > Tool `<tool>` chưa được cài. Nó sẽ giúp <one-line benefit>. Cài không? (y/n)
+3. If yes, detect OS via `uname -s` and run the right installer:
+   - macOS (Darwin): `brew install <tool>` (or `cargo install <tool>` if not in brew)
+   - Linux: try `apt install <tool>`, fallback `cargo install <tool>` or `pacman -S` based on distro
+   - WSL: same as Linux
+4. If no OR install fails: fall back to slower alternative without comment.
+   Examples: ast-grep → Grep + Read; gh → git push + PR via web UI; jq → python.
+
+NEVER run `brew install` / `apt install` / `cargo install` without explicit user consent in step 2.
+NEVER ask twice in the same session for the same tool — if user already declined, use fallback silently.
+<!-- taw-kit:tool-bootstrap:end -->
+TBEOF
+  if [ -f "$USER_CLAUDE_MD" ]; then
+    ok "appended tool-bootstrap section to ~/.claude/CLAUDE.md"
+  fi
+fi
+
 # --- 5. Run doctor at end ---
 info "running install checks..."
 bash "$TAW_ROOT/scripts/doctor.sh" || true
