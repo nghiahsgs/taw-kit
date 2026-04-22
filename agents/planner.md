@@ -3,6 +3,7 @@ name: planner
 description: >
   Decomposes a taw-kit intent (VN prose + clarifications in .taw/intent.json)
   into plan.md + numbered phase files. Invoked by /taw Step 5.
+model: opus
 ---
 
 # planner agent
