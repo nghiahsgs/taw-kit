@@ -38,7 +38,7 @@ You need these on your machine:
 | **GitHub CLI (`gh`)** | Used to clone the private repo | `brew install gh` / `apt install gh` |
 | **Anthropic API key** | You pay Anthropic directly for Claude usage | [console.anthropic.com](https://console.anthropic.com) |
 
-**OS:** macOS, Linux, or Windows via WSL2.
+**OS:** macOS, Linux, or Windows via WSL2. On Windows, follow the step-by-step guide in [docs/install-windows.md](./docs/install-windows.md) first, then come back here.
 
 ### Option A — One-liner (recommended)
 
