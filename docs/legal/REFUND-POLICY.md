@@ -36,8 +36,7 @@ Response within 48 hours.
 ## What happens on approval
 
 1. Refund processed via Polar within 3-5 business days.
-2. GitHub repository access revoked (via `scripts/invite-buyer.sh --revoke <username>`).
-3. License terminated per EULA §9.
+2. License terminated per EULA §9 — buyer must stop using taw-kit and delete any local copies.
 
 ## Partial refunds
 

@@ -29,7 +29,7 @@ taw-kit integrates with Anthropic (Claude API), GitHub (repo hosting), Polar (pa
 
 ## 5. Privacy
 
-taw-kit itself collects **no data**. It runs entirely on Licensee's machine. Payment data is handled by Polar; see Polar's privacy policy. Repository invite tracking (email + GitHub username) is stored in the seller's internal records and used only to fulfill the sale.
+taw-kit itself collects **no data**. It runs entirely on Licensee's machine. Payment data is handled by Polar; see Polar's privacy policy. Purchase records (email + Polar order ID) are stored in the seller's internal records and used only to fulfill the sale and handle refunds.
 
 ## 6. Support
 
