@@ -36,8 +36,11 @@
 
 ## Bạn nhận được gì
 
-- **34 skills, 6 agents, 4 hooks** — cài sẵn vào `~/.claude/`
+- **~50 skills, 6 agents, 4 hooks** — cài sẵn vào `~/.claude/`
+- **1 lệnh duy nhất `/taw`** — router 2 tầng tự hiểu tạo mới / thêm / sửa / deploy / test / nâng cấp / dọn code / rollback / refactor / audit bảo mật
+- **Stack adaptation** — mặc định dùng Next.js + Supabase + Polar cho project mới, nhưng TỰ DETECT project hiện tại đang dùng Stripe/Drizzle/Clerk... và respect, không ghi đè
 - **Design có gu** — skill `frontend-design` của Anthropic (Apache 2.0) được bundle sẵn, giúp giao diện không bị "AI slop". Xem chi tiết tại [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)
+- **Dev workflow skills** — testing (vitest/playwright/rls), CI (GitHub Actions), bundle analyzer, knip dọn code, dep upgrade an toàn, Stripe alt cho Polar, Sentry monitoring, commit-message-smart, pr-description, debug-flight-recorder, dashboard `/taw status`
 - **CLI `tawkit`** — install, update, doctor, uninstall, scaffold từ preset
 - **5 preset** — landing page, shop online, CRM, blog, dashboard
 - **3 đích deploy** — Vercel (mặc định), Docker image, hoặc VPS qua SSH
@@ -155,6 +158,27 @@ tawkit uninstall --full   # xoá luôn repo đã clone ở ~/.taw-kit/
 Lệnh gỡ chỉ động vào file do taw-kit tạo (nhận diện qua marker `.taw-kit-owned` và tên agent/hook cố định). **Skill cá nhân của bạn trong `~/.claude/skills/` không bao giờ bị động tới.**
 
 ---
+
+## Skills dành cho dev (không chỉ non-dev)
+
+Ngoài flow `/taw` cho non-dev, bộ kit cung cấp các skill chuyên dụng cho dev daily workflow:
+
+| Skill | Làm gì |
+|---|---|
+| `/taw status` | Dashboard 1 màn: git state, build, deploy URL, test count, security findings, bundle size, suggested next step |
+| `/taw test` | Auto-gen unit/E2E/RLS test — tự detect vitest vs jest vs playwright |
+| `/taw upgrade` | Bump deps với breaking-change awareness (Next 14→15, React 18→19, Supabase v1→v2) |
+| `/taw clean` | Knip: xoá dead code, unused exports, unused deps |
+| `/taw perf` | Bundle analyzer + N+1 detection + lighthouse |
+| `/taw refactor` | Rename/extract/move với ast-grep (AST-safe) |
+| `/taw seed` | Gen data giả tiếng Việt thực tế (tên, SĐT, địa chỉ, VND) |
+| `/taw rollback` | Revert code + rollback deploy (Vercel/VPS) |
+| `/taw review` | Local pre-push review (lint + type + test + security) |
+| `commit-message-smart` | Đọc diff, viết commit message conventional + đúng scope |
+| `pr-description` | Auto-gen PR body từ branch diff + template của project |
+| `debug-flight-recorder` | Add `console.log` tại call sites nghi ngờ → chạy repro → cleanup tự động |
+
+Mọi thứ đều respect stack đang có của project (Stripe/Clerk/Drizzle...). Chi tiết từng skill ở `~/.claude/skills/<tên>/SKILL.md` sau khi cài.
 
 ## Tài liệu
 
