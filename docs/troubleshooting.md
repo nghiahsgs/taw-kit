@@ -57,62 +57,43 @@
 
 ---
 
-## B. Lỗi login / API key
+## B. Lỗi login Claude Code
 
-> Claude Code có 2 cách login: **subscription Claude Pro/Max** (OAuth qua trình duyệt) hoặc **API key Anthropic**. Phần dưới chủ yếu cho nhánh API key — nếu bạn dùng subscription thì phần lớn không áp dụng.
+> taw-kit chỉ hỗ trợ login Claude Code qua **subscription Claude Pro/Max** (OAuth trình duyệt). Các lỗi dưới đây liên quan tới flow đó.
 
-### "Invalid API key"
-**Triệu chứng:** `Error: invalid_api_key` hoặc `401 Unauthorized`.
-**Nguyên nhân:** Gõ sai, thiếu ký tự, hoặc key đã bị revoke.
+### Login hết hạn / bị đá ra giữa chừng
+**Triệu chứng:** Claude Code báo phiên login không còn hợp lệ, hoặc đòi login lại.
+**Nguyên nhân:** Token OAuth hết hạn sau 1 khoảng thời gian, hoặc bạn đổi mật khẩu tài khoản Claude.
 **Cách fix:**
-1. Mở console Anthropic và xác nhận key còn active.
-2. Copy lại cả chuỗi `sk-ant-...` — coi chừng khoảng trắng thừa.
-3. Trong Claude Code: `/logout`, rồi `claude` lại, paste key mới.
+1. Trong Claude Code gõ `/logout`.
+2. Thoát, mở lại: `claude`.
+3. Chọn lại nhánh login bằng subscription → trình duyệt mở → Accept.
 
-**Vẫn tắc?** Tạo key mới, xoá key cũ, dùng key mới.
+**Vẫn tắc?** Xoá cache auth: `rm -rf ~/.claude/auth.json` rồi login lại từ đầu.
 
 ---
 
 ### Rate limit / "Too many requests"
-**Triệu chứng:** `/taw` chạy được 1 lúc rồi dính `429 Too Many Requests`.
-**Nguyên nhân:** Vượt rate limit theo phút của Anthropic.
+**Triệu chứng:** `/taw` chạy được 1 lúc rồi dính `429 Too Many Requests` hoặc thông báo hết hạn mức 5 tiếng.
+**Nguyên nhân:** Subscription Claude Pro/Max có hạn mức sử dụng theo cửa sổ 5 tiếng. Khi vượt, phải chờ reset.
 **Cách fix:**
-1. Chờ 60 giây, gõ `/taw-fix` để chạy tiếp từ bước cuối.
-2. Nạp thêm tiền vào tài khoản Anthropic — tier cao hơn có rate limit cao hơn.
-3. Nếu nhiều người dùng chung 1 key, tạo 1 key cho mỗi người.
+1. Chờ qua cửa sổ 5 tiếng (Claude Code thường báo còn bao lâu).
+2. Gõ `/taw-fix` để chạy tiếp từ bước cuối.
+3. Dùng nhiều → nâng lên gói Max hạn mức cao hơn.
 
-**Vẫn tắc?** Tạm dừng build lớn, chờ 1 tiếng, hoặc nâng tier.
+**Vẫn tắc?** Tạm dừng build lớn, chờ reset hoặc nâng tier.
 
 ---
 
-### "Insufficient credits"
-**Triệu chứng:** `credits exhausted` hoặc `billing_error`.
-**Nguyên nhân:** Số dư Anthropic của bạn về 0.
+### "Subscription không hợp lệ" / tài khoản free
+**Triệu chứng:** Claude Code báo tài khoản không có quyền dùng Claude Code, hoặc login xong thì chạy lỗi.
+**Nguyên nhân:** Bạn đăng ký tài khoản Claude nhưng **chưa** có gói Pro hoặc Max.
 **Cách fix:**
-1. Mở console Anthropic → Billing.
-2. Nạp tối thiểu $5. Mỗi dự án taw-kit tốn $0.50–$2.
-3. Quay lại Terminal: `/taw-fix` để chạy tiếp.
+1. Vào [claude.ai](https://claude.ai) → Settings → Billing.
+2. Nâng cấp lên Claude Pro hoặc Max.
+3. Quay lại terminal: `claude` → chọn login → Accept.
 
-**Vẫn tắc?** Check xem thẻ có bị chặn thanh toán quốc tế không; dùng Visa/MasterCard quốc tế.
-
----
-
-### "Tôi không biết API key là gì / không muốn tạo API key"
-**Triệu chứng:** Claude Code hỏi cách login nhưng bạn không muốn tạo API key.
-**Nguyên nhân:** Hiểu nhầm API key là bắt buộc.
-**Cách fix:** Không bắt buộc. Có 2 đường:
-
-**Đường 1 — Subscription (đơn giản hơn nếu bạn xài thường xuyên):**
-1. Vào [claude.ai](https://claude.ai) → đăng ký Claude Pro hoặc Max.
-2. Trong Claude Code, chọn nhánh login bằng subscription → trình duyệt mở, click Accept.
-3. Xong.
-
-**Đường 2 — API key (trả theo lượng dùng):**
-1. Vào [console.anthropic.com](https://console.anthropic.com) → Sign up.
-2. Verify email.
-3. Trong Billing, nạp tối thiểu $5.
-4. Vào API Keys → Create key. Copy chuỗi `sk-ant-...`.
-5. Paste vào Claude Code khi được hỏi.
+**Lưu ý:** taw-kit không hỗ trợ login bằng API key Anthropic — chỉ subscription.
 
 ---
 

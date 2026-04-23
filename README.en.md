@@ -40,9 +40,9 @@ You need these on your machine:
 | **Node.js ≥ 20** | Your generated projects run on it | [nodejs.org](https://nodejs.org) |
 | **git** | Used by the installer | `brew install git` / `apt install git` |
 | **GitHub CLI (`gh`)** | Used to clone the private repo | `brew install gh` / `apt install gh` |
-| **Authenticated Claude Code** | One of two options: a Claude Pro/Max subscription (login via `claude login`) **or** an Anthropic API key (pay per token) | Subscription: [claude.ai](https://claude.ai) · API key: [console.anthropic.com](https://console.anthropic.com) |
+| **Claude Pro/Max subscription** | Required so Claude Code can log in via `claude login` (browser OAuth) | [claude.ai](https://claude.ai) |
 
-> taw-kit itself makes no API calls — it's just markdown + shell scripts. Auth is required by **Claude Code** (Anthropic's CLI). If you already have a Claude Pro/Max subscription, you do not need a separate API key.
+> taw-kit only supports Claude Code sign-in via a Claude Pro/Max subscription. Anthropic API key auth is **not** supported. taw-kit itself makes no API calls — it's just markdown + shell scripts; all AI usage goes through Claude Code.
 
 **OS:** macOS, Linux, or Windows via WSL2. On Windows, follow the step-by-step guide in [docs/install-windows.md](./docs/install-windows.md) first, then come back here.
 
@@ -164,7 +164,7 @@ Uninstall only touches files installed by taw-kit (identified by the `.taw-kit-o
 
 ## Docs
 
-The primary docs (quickstart, troubleshooting, install-windows, video-script) are maintained in Vietnamese — this kit targets Vietnamese non-dev users first. For an English technical overview suitable for dev audit, see:
+The primary docs (quickstart, troubleshooting, install-windows) are maintained in Vietnamese — this kit targets Vietnamese non-dev users first. For an English technical overview suitable for dev audit, see:
 
 - **Architecture:** [docs/en/architecture.md](./docs/en/architecture.md) — how the orchestrator works
 

@@ -42,9 +42,9 @@ Máy bạn cần có:
 | **Node.js ≥ 20** | Dự án bạn sinh ra chạy trên này | [nodejs.org](https://nodejs.org) |
 | **git** | Installer cần dùng | `brew install git` / `apt install git` |
 | **GitHub CLI (`gh`)** | Để clone repo private | `brew install gh` / `apt install gh` |
-| **Tài khoản Claude đã login** | Để Claude Code chạy được — 1 trong 2: subscription Claude Pro/Max (login qua `claude login`) **hoặc** API key Anthropic (trả theo lượng dùng) | Subscription: [claude.ai](https://claude.ai) · API key: [console.anthropic.com](https://console.anthropic.com) |
+| **Subscription Claude Pro/Max** | Để Claude Code login được (gõ `claude login`, OAuth qua trình duyệt) | [claude.ai](https://claude.ai) |
 
-> taw-kit bản thân không gọi API — chỉ là file markdown + script shell. Cái cần auth là **Claude Code** (CLI của Anthropic). Đã có Claude Pro/Max rồi thì không cần API key.
+> taw-kit chỉ hỗ trợ đăng nhập Claude Code bằng subscription Claude Pro/Max. Chưa hỗ trợ API key Anthropic. Bản thân taw-kit không gọi API trực tiếp — chỉ là file markdown + script shell, phần AI là do Claude Code chạy.
 
 **Hệ điều hành:** macOS, Linux, hoặc Windows qua WSL2. Nếu dùng Windows, làm theo [docs/install-windows.md](./docs/install-windows.md) trước, xong quay lại đây.
 
@@ -169,7 +169,6 @@ Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.ta
 - **Quickstart:** [docs/quickstart.md](./docs/quickstart.md) — 5 phút từ số 0 tới URL live
 - **Troubleshooting:** [docs/troubleshooting.md](./docs/troubleshooting.md) — 20 lỗi thường gặp + cách fix
 - **Architecture (EN):** [docs/en/architecture.md](./docs/en/architecture.md) — cách orchestrator hoạt động (dành cho dev)
-- **Script video:** [docs/video-script.md](./docs/video-script.md) — kịch bản onboarding sẵn để quay
 
 ---
 
