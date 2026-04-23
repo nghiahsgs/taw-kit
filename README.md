@@ -40,54 +40,29 @@ Máy bạn cần có:
 |-----|-----------|-----------|
 | **Claude Code** | CLI để chạy skill | [docs.claude.com/claude-code](https://docs.claude.com/claude-code) |
 | **Node.js ≥ 20** | Dự án bạn sinh ra chạy trên này | [nodejs.org](https://nodejs.org) |
-| **git** | Installer cần dùng | `brew install git` / `apt install git` |
-| **GitHub CLI (`gh`)** | Để clone repo private | `brew install gh` / `apt install gh` |
+| **git** | Để clone repo | `brew install git` / `apt install git` |
 | **Subscription Claude Pro/Max** | Để Claude Code login được (gõ `claude login`, OAuth qua trình duyệt) | [claude.ai](https://claude.ai) |
 
 > taw-kit chỉ hỗ trợ đăng nhập Claude Code bằng subscription Claude Pro/Max. Chưa hỗ trợ API key Anthropic. Bản thân taw-kit không gọi API trực tiếp — chỉ là file markdown + script shell, phần AI là do Claude Code chạy.
 
 **Hệ điều hành:** macOS, Linux, hoặc Windows qua WSL2. Nếu dùng Windows, làm theo [docs/install-windows.md](./docs/install-windows.md) trước, xong quay lại đây.
 
-### Cách A — One-liner (khuyên dùng)
+Repo public trên GitHub. Clone và chạy installer:
 
 ```bash
-curl -fsSL https://install.tawkit.dev | bash
+git clone https://github.com/nghiahsgs/taw-kit.git ~/.taw-kit
+bash ~/.taw-kit/scripts/install.sh
 ```
 
-Script này sẽ:
+Installer sẽ:
 
 1. Nhận diện OS (macOS / Linux / WSL).
-2. Check xem prerequisites đã cài đủ chưa (cảnh báo nếu thiếu).
-3. Login GitHub cho bạn nếu chưa login.
-4. Clone repo private taw-kit về `~/.taw-kit/`.
-5. Cài skills, agents, hooks, templates vào `~/.claude/`.
-6. Symlink `tawkit` vào `/usr/local/bin/` (xin sudo đúng 1 lần).
-7. Chạy `tawkit doctor` để xác nhận mọi thứ hoạt động.
+2. Check prerequisites (cảnh báo nếu thiếu).
+3. Cài skills, agents, hooks, templates vào `~/.claude/`.
+4. Symlink `tawkit` vào `/usr/local/bin/` (xin sudo đúng 1 lần).
+5. Chạy `tawkit doctor` để xác nhận mọi thứ hoạt động.
 
-Tổng cộng mất tầm 30 giây.
-
-### Cách B — Cài thủ công (nếu không tin `curl | bash`)
-
-```bash
-# 1. Clone repo private (bạn cần được invite vào taw-kit/taw-kit)
-gh repo clone <your-org>/taw-kit ~/.taw-kit
-
-# 2. Chạy installer
-bash ~/.taw-kit/scripts/install.sh
-
-# 3. Kiểm tra
-tawkit doctor
-```
-
-### Cách C — Đọc script trước khi chạy
-
-Muốn xem script kỹ trước khi chạy?
-
-```bash
-curl -fsSL https://install.tawkit.dev -o /tmp/taw-install.sh
-less /tmp/taw-install.sh          # đọc trước
-bash /tmp/taw-install.sh          # chạy khi bạn thấy yên tâm
-```
+Mất tầm 30 giây sau khi clone xong.
 
 ---
 
@@ -167,7 +142,7 @@ Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.ta
 ## Tài liệu
 
 - **Quickstart:** [docs/quickstart.md](./docs/quickstart.md) — 5 phút từ số 0 tới URL live
-- **Troubleshooting:** [docs/troubleshooting.md](./docs/troubleshooting.md) — 20 lỗi thường gặp + cách fix
+- **Cài trên Windows:** [docs/install-windows.md](./docs/install-windows.md) — hướng dẫn WSL2 chi tiết
 - **Architecture (EN):** [docs/en/architecture.md](./docs/en/architecture.md) — cách orchestrator hoạt động (dành cho dev)
 
 ---

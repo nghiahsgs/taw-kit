@@ -129,7 +129,7 @@ Push to a registry:
   docker tag $PROJECT_NAME:latest <registry>/$PROJECT_NAME:latest
   docker push <registry>/$PROJECT_NAME:latest
 
-Then run on your host. See docs/troubleshooting.md for nginx reverse proxy notes.
+Then run on your host.
 ```
 
 Write `.taw/deploy-url.txt`: `docker://$PROJECT_NAME:latest`.

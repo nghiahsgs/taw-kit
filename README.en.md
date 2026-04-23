@@ -38,54 +38,29 @@ You need these on your machine:
 |------|-----|---------|
 | **Claude Code** | The CLI that runs the skills | [docs.claude.com/claude-code](https://docs.claude.com/claude-code) |
 | **Node.js ≥ 20** | Your generated projects run on it | [nodejs.org](https://nodejs.org) |
-| **git** | Used by the installer | `brew install git` / `apt install git` |
-| **GitHub CLI (`gh`)** | Used to clone the private repo | `brew install gh` / `apt install gh` |
+| **git** | Clones the public repo | `brew install git` / `apt install git` |
 | **Claude Pro/Max subscription** | Required so Claude Code can log in via `claude login` (browser OAuth) | [claude.ai](https://claude.ai) |
 
 > taw-kit only supports Claude Code sign-in via a Claude Pro/Max subscription. Anthropic API key auth is **not** supported. taw-kit itself makes no API calls — it's just markdown + shell scripts; all AI usage goes through Claude Code.
 
 **OS:** macOS, Linux, or Windows via WSL2. On Windows, follow the step-by-step guide in [docs/install-windows.md](./docs/install-windows.md) first, then come back here.
 
-### Option A — One-liner (recommended)
+The repo is public on GitHub. Clone and run the installer:
 
 ```bash
-curl -fsSL https://install.tawkit.dev | bash
+git clone https://github.com/nghiahsgs/taw-kit.git ~/.taw-kit
+bash ~/.taw-kit/scripts/install.sh
 ```
 
-This will:
+The installer will:
 
 1. Detect your OS (macOS / Linux / WSL).
 2. Check that prerequisites are installed (warn if missing).
-3. Log you into GitHub if you're not already.
-4. Clone the private taw-kit repo to `~/.taw-kit/`.
-5. Install skills, agents, hooks, and templates into `~/.claude/`.
-6. Symlink `tawkit` into `/usr/local/bin/` (asks for sudo once).
-7. Run `tawkit doctor` to confirm everything works.
+3. Install skills, agents, hooks, and templates into `~/.claude/`.
+4. Symlink `tawkit` into `/usr/local/bin/` (asks for sudo once).
+5. Run `tawkit doctor` to confirm everything works.
 
-The whole thing takes about 30 seconds.
-
-### Option B — Manual (if you don't trust `curl | bash`)
-
-```bash
-# 1. Clone the private repo (you need an invite to taw-kit/taw-kit)
-gh repo clone <your-org>/taw-kit ~/.taw-kit
-
-# 2. Run the installer
-bash ~/.taw-kit/scripts/install.sh
-
-# 3. Verify
-tawkit doctor
-```
-
-### Option C — Verify without installing
-
-Prefer to read the script before running it?
-
-```bash
-curl -fsSL https://install.tawkit.dev -o /tmp/taw-install.sh
-less /tmp/taw-install.sh          # review
-bash /tmp/taw-install.sh          # run if you're satisfied
-```
+About 30 seconds after the clone finishes.
 
 ---
 
@@ -164,7 +139,7 @@ Uninstall only touches files installed by taw-kit (identified by the `.taw-kit-o
 
 ## Docs
 
-The primary docs (quickstart, troubleshooting, install-windows) are maintained in Vietnamese — this kit targets Vietnamese non-dev users first. For an English technical overview suitable for dev audit, see:
+The primary docs (quickstart, install-windows) are maintained in Vietnamese — this kit targets Vietnamese non-dev users first. For an English technical overview suitable for dev audit, see:
 
 - **Architecture:** [docs/en/architecture.md](./docs/en/architecture.md) — how the orchestrator works
 

@@ -130,5 +130,5 @@ taw-kit is distributed under the terms in [LICENSE](../../LICENSE). Code generat
 ## Further Reading
 
 - User flow reference: [`skills/taw/SKILL.md`](../../skills/taw/SKILL.md)
-- User docs: [`docs/quickstart.md`](../quickstart.md) and [`docs/troubleshooting.md`](../troubleshooting.md)
+- User docs: [`docs/quickstart.md`](../quickstart.md)
 - Design decisions log: [`plans/260421-0130-tawkit-orchestrator-kit/decisions.md`](../../plans/260421-0130-tawkit-orchestrator-kit/decisions.md)

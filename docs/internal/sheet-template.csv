@@ -1,2 +1,0 @@
-paid_at,email,polar_order_id,amount_usd,github_username,invited_at,first_install_at,first_deploy_at,refunded_at,refund_reason,notes
-2026-04-21T10:30:00Z,example@buyer.com,polar_ord_sample_0001,39,example-gh-user,2026-04-21T11:00:00Z,,,,,"sample row — delete before going live"
