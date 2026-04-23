@@ -1,110 +1,114 @@
 # taw-kit
 
-> Opinionated Claude Code kit for non-developers — ship real products with `/taw <describe what you want>`.
+> Bộ kit Claude Code cho người không biết code — ship sản phẩm thật chỉ bằng một câu `/taw <mô tả cái bạn muốn>`.
 
 **Website:** [theagents.work](https://www.theagents.work/)
 
+> English version: [README.en.md](./README.en.md)
+
 ```
-/taw build me an online shop selling cosmetics
-  → clarify (3-5 questions)
-  → plan (5 bullets, you approve)
+/taw làm cho tôi một shop mỹ phẩm online
+  → hỏi lại cho rõ (3–5 câu)
+  → lên plan 5 gạch đầu dòng, bạn duyệt
   → code + test + review
-  → deploy (Vercel, Docker, or VPS)
-  → live URL
+  → deploy (Vercel, Docker, hoặc VPS)
+  → trả về URL đã live
 ```
 
 > Xem demo & mua bộ kit tại **[theagents.work](https://www.theagents.work/)** — ship sản phẩm thật trong 20 phút.
 
 ---
 
-## What you get
+## Bạn nhận được gì
 
-- **24 skills, 5 agents, 4 hooks** — installed into `~/.claude/`
-- **Design intelligence** — 50 UI styles, 21 palettes, 50 font pairings via [UI UX Pro Max](./THIRD-PARTY-NOTICES.md) (MIT)
-- **`tawkit` CLI** — install, update, doctor, uninstall, scaffold from preset
-- **5 presets** — landing page, online shop, CRM, blog, dashboard
-- **3 deploy targets** — Vercel (default), Docker image, or VPS over SSH
-- **Commercial license** — build and sell as many products as you want
+- **34 skills, 6 agents, 4 hooks** — cài sẵn vào `~/.claude/`
+- **Design có gu** — skill `frontend-design` của Anthropic (Apache 2.0) được bundle sẵn, giúp giao diện không bị "AI slop". Xem chi tiết tại [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)
+- **CLI `tawkit`** — install, update, doctor, uninstall, scaffold từ preset
+- **5 preset** — landing page, shop online, CRM, blog, dashboard
+- **3 đích deploy** — Vercel (mặc định), Docker image, hoặc VPS qua SSH
+- **License thương mại** — làm và bán bao nhiêu sản phẩm cũng được
 
 ---
 
-## Install
+## Cài đặt
 
-### Before you start
+### Trước khi bắt đầu
 
-You need these on your machine:
+Máy bạn cần có:
 
-| Tool | Why | Install |
-|------|-----|---------|
-| **Claude Code** | The CLI that runs the skills | [docs.claude.com/claude-code](https://docs.claude.com/claude-code) |
-| **Node.js ≥ 20** | Your generated projects run on it | [nodejs.org](https://nodejs.org) |
-| **git** | Used by the installer | `brew install git` / `apt install git` |
-| **GitHub CLI (`gh`)** | Used to clone the private repo | `brew install gh` / `apt install gh` |
-| **Anthropic API key** | You pay Anthropic directly for Claude usage | [console.anthropic.com](https://console.anthropic.com) |
+| Thứ | Để làm gì | Cài ở đâu |
+|-----|-----------|-----------|
+| **Claude Code** | CLI để chạy skill | [docs.claude.com/claude-code](https://docs.claude.com/claude-code) |
+| **Node.js ≥ 20** | Dự án bạn sinh ra chạy trên này | [nodejs.org](https://nodejs.org) |
+| **git** | Installer cần dùng | `brew install git` / `apt install git` |
+| **GitHub CLI (`gh`)** | Để clone repo private | `brew install gh` / `apt install gh` |
+| **Tài khoản Claude đã login** | Để Claude Code chạy được — 1 trong 2: subscription Claude Pro/Max (login qua `claude login`) **hoặc** API key Anthropic (trả theo lượng dùng) | Subscription: [claude.ai](https://claude.ai) · API key: [console.anthropic.com](https://console.anthropic.com) |
 
-**OS:** macOS, Linux, or Windows via WSL2. On Windows, follow the step-by-step guide in [docs/install-windows.md](./docs/install-windows.md) first, then come back here.
+> taw-kit bản thân không gọi API — chỉ là file markdown + script shell. Cái cần auth là **Claude Code** (CLI của Anthropic). Đã có Claude Pro/Max rồi thì không cần API key.
 
-### Option A — One-liner (recommended)
+**Hệ điều hành:** macOS, Linux, hoặc Windows qua WSL2. Nếu dùng Windows, làm theo [docs/install-windows.md](./docs/install-windows.md) trước, xong quay lại đây.
+
+### Cách A — One-liner (khuyên dùng)
 
 ```bash
 curl -fsSL https://install.tawkit.dev | bash
 ```
 
-This will:
+Script này sẽ:
 
-1. Detect your OS (macOS / Linux / WSL).
-2. Check that prerequisites are installed (warn if missing).
-3. Log you into GitHub if you're not already.
-4. Clone the private taw-kit repo to `~/.taw-kit/`.
-5. Install skills, agents, hooks, and templates into `~/.claude/`.
-6. Symlink `tawkit` into `/usr/local/bin/` (asks for sudo once).
-7. Run `tawkit doctor` to confirm everything works.
+1. Nhận diện OS (macOS / Linux / WSL).
+2. Check xem prerequisites đã cài đủ chưa (cảnh báo nếu thiếu).
+3. Login GitHub cho bạn nếu chưa login.
+4. Clone repo private taw-kit về `~/.taw-kit/`.
+5. Cài skills, agents, hooks, templates vào `~/.claude/`.
+6. Symlink `tawkit` vào `/usr/local/bin/` (xin sudo đúng 1 lần).
+7. Chạy `tawkit doctor` để xác nhận mọi thứ hoạt động.
 
-The whole thing takes about 30 seconds.
+Tổng cộng mất tầm 30 giây.
 
-### Option B — Manual (if you don't trust `curl | bash`)
+### Cách B — Cài thủ công (nếu không tin `curl | bash`)
 
 ```bash
-# 1. Clone the private repo (you need an invite to taw-kit/taw-kit)
+# 1. Clone repo private (bạn cần được invite vào taw-kit/taw-kit)
 gh repo clone <your-org>/taw-kit ~/.taw-kit
 
-# 2. Run the installer
+# 2. Chạy installer
 bash ~/.taw-kit/scripts/install.sh
 
-# 3. Verify
+# 3. Kiểm tra
 tawkit doctor
 ```
 
-### Option C — Verify without installing
+### Cách C — Đọc script trước khi chạy
 
-Prefer to read the script before running it?
+Muốn xem script kỹ trước khi chạy?
 
 ```bash
 curl -fsSL https://install.tawkit.dev -o /tmp/taw-install.sh
-less /tmp/taw-install.sh          # review
-bash /tmp/taw-install.sh          # run if you're satisfied
+less /tmp/taw-install.sh          # đọc trước
+bash /tmp/taw-install.sh          # chạy khi bạn thấy yên tâm
 ```
 
 ---
 
-## First run
+## Chạy lần đầu
 
-Open Claude Code in a fresh folder:
+Mở Claude Code trong 1 folder trống:
 
 ```bash
 mkdir my-first-product && cd my-first-product
 claude
 ```
 
-Inside Claude Code:
+Trong Claude Code:
 
 ```
-/taw build me a landing page for my online course
+/taw làm cho tôi 1 landing page bán khoá học online
 ```
 
-taw-kit will ask you 3–5 clarifying questions, render a plan, and wait for your approval. Type `yes` and it runs the full pipeline: plan → research → code → test → security review → deploy. About 15–20 minutes end-to-end.
+taw-kit sẽ hỏi bạn 3–5 câu cho rõ yêu cầu, render ra 1 plan, rồi đợi bạn duyệt. Gõ `yes` là nó chạy full pipeline: plan → research → code → test → security review → deploy. Tổng tầm 15–20 phút.
 
-Or start from a preset:
+Hoặc bắt đầu từ preset có sẵn:
 
 ```bash
 tawkit new shop-online
@@ -112,67 +116,67 @@ tawkit new shop-online
 
 ---
 
-## Deploy choices
+## Chọn đích deploy
 
-After the code is written, `/taw-deploy` asks where to ship:
+Sau khi code xong, `/taw-deploy` sẽ hỏi bạn deploy ở đâu:
 
 ```
-Where do you want to deploy?
-  1. vercel  — Free cloud hosting, fastest to set up (recommended)
-  2. docker  — Build a Docker image; run it on any host you own
-  3. vps     — Deploy to your own VPS over SSH (systemd + nginx)
+Deploy ở đâu?
+  1. vercel  — Hosting cloud miễn phí, dễ nhất (khuyên dùng)
+  2. docker  — Build Docker image, tự deploy lên host của bạn
+  3. vps     — Deploy lên VPS riêng qua SSH (systemd + nginx)
 ```
 
-| Target | Setup effort | Cost | Best for |
-|--------|--------------|------|----------|
-| **Vercel** | Zero | Free tier fits small shops | Non-devs, prototypes, landing pages |
-| **Docker** | Need Docker installed | Free (you host it) | Portable delivery to clients, cloud-agnostic |
-| **VPS** | Need SSH + systemd comfort | Cost of your VPS | Full control, heavy traffic, data residency needs |
+| Đích | Công sức setup | Chi phí | Phù hợp với |
+|------|----------------|---------|-------------|
+| **Vercel** | Không cần gì | Free tier đủ cho shop nhỏ | Non-dev, prototype, landing page |
+| **Docker** | Cần cài Docker | Free (bạn tự host) | Giao gói cho khách, không phụ thuộc cloud |
+| **VPS** | Cần biết SSH + systemd | Tiền thuê VPS | Kiểm soát hoàn toàn, traffic lớn, yêu cầu về dữ liệu |
 
-You can change targets later — `/taw-deploy --target=docker` on an already-deployed project generates a Dockerfile without touching your Vercel deployment.
+Đổi đích sau cũng được — `/taw-deploy --target=docker` trên 1 dự án đã deploy Vercel sẽ sinh Dockerfile mà không đụng gì tới Vercel deployment đang chạy.
 
 ---
 
-## Keep it updated
+## Cập nhật
 
 ```bash
 tawkit update
 ```
 
-This pulls the latest taw-kit from GitHub, re-runs install, and prints a changelog.
+Lệnh này kéo bản mới nhất của taw-kit từ GitHub về, cài lại, và in ra changelog.
 
-## Verify installation
+## Kiểm tra cài đặt
 
 ```bash
 tawkit doctor
 ```
 
-Runs 10 checks: Claude Code installed, git/node versions, `~/.claude/` writable, hooks executable, API auth, UTF-8 locale, etc.
+Chạy 10 check: Claude Code đã cài, version git/node, `~/.claude/` có quyền ghi, hook chạy được, auth API, locale UTF-8, v.v.
 
-## Uninstall
+## Gỡ cài đặt
 
 ```bash
-tawkit uninstall          # remove skills/agents/hooks from ~/.claude, keep ~/.taw-kit/
-tawkit uninstall --full   # also remove the cloned repo at ~/.taw-kit/
+tawkit uninstall          # xoá skill/agent/hook khỏi ~/.claude, giữ ~/.taw-kit/
+tawkit uninstall --full   # xoá luôn repo đã clone ở ~/.taw-kit/
 ```
 
-Uninstall only touches files installed by taw-kit (identified by the `.taw-kit-owned` marker and fixed agent/hook names). **Your personal skills in `~/.claude/skills/` are never touched.**
+Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.taw-kit-owned` và tên agent/hook cố định). **Skill cá nhân của bạn trong `~/.claude/skills/` không bao giờ bị đụng.**
 
 ---
 
-## Docs
+## Tài liệu
 
-- **Quickstart:** [docs/quickstart.md](./docs/quickstart.md) — 5 minutes from zero to a live URL
-- **Troubleshooting:** [docs/troubleshooting.md](./docs/troubleshooting.md) — top 20 errors with fixes
-- **Architecture:** [docs/en/architecture.md](./docs/en/architecture.md) — how the orchestrator works (for devs)
-- **Video scripts:** [docs/video-script.md](./docs/video-script.md) — ready-to-shoot onboarding scripts
+- **Quickstart:** [docs/quickstart.md](./docs/quickstart.md) — 5 phút từ số 0 tới URL live
+- **Troubleshooting:** [docs/troubleshooting.md](./docs/troubleshooting.md) — 20 lỗi thường gặp + cách fix
+- **Architecture (EN):** [docs/en/architecture.md](./docs/en/architecture.md) — cách orchestrator hoạt động (dành cho dev)
+- **Script video:** [docs/video-script.md](./docs/video-script.md) — kịch bản onboarding sẵn để quay
 
 ---
 
 ## License
 
-Commercial — see [LICENSE](./LICENSE). You own the products you build with taw-kit 100%. The kit itself cannot be redistributed or resold.
+License thương mại — xem [LICENSE](./LICENSE). Sản phẩm bạn làm ra bằng taw-kit là của bạn 100%. Bản thân bộ kit thì không được phân phối lại hay bán lại.
 
-## Support
+## Hỗ trợ
 
-Contact in your order email — or visit [theagents.work](https://www.theagents.work/).
+Liên hệ trong email đơn hàng — hoặc vào [theagents.work](https://www.theagents.work/).

@@ -6,8 +6,8 @@ Technical overview for developer-buyers who want to fork, extend, or audit the k
 
 taw-kit is a Claude Code extension that turns plain-language product descriptions (English or Vietnamese) into shipped web applications. It ships as a single installable bundle composed of:
 
-- **24 skills** — scoped capability modules loaded on demand by Claude Code. The root orchestrator is `skills/taw/`; the rest cover stack concerns (Next.js scaffolding, Tailwind tokens, Supabase bootstrap, payment integration, deploy, error translation, etc.).
-- **5 agents** — specialist sub-agents dispatched by the orchestrator: `planner`, `researcher`, `fullstack-dev`, `tester`, `reviewer`.
+- **34 skills** — scoped capability modules loaded on demand by Claude Code. The root orchestrator is `skills/taw/`; the rest cover stack concerns (Next.js scaffolding, Tailwind tokens, Supabase bootstrap, payment integration, deploy, error translation, etc.). One skill (`frontend-design`) is vendored from Anthropic under Apache 2.0; four Expo skills are vendored under MIT. See [THIRD-PARTY-NOTICES.md](../../THIRD-PARTY-NOTICES.md) for the full list.
+- **6 agents** — specialist sub-agents dispatched by the orchestrator: `planner`, `researcher`, `fullstack-dev`, `mobile-dev`, `tester`, `reviewer`.
 - **4 hooks** — lightweight lifecycle interceptors installed into Claude Code settings (`session-start`, `post-tool`, `permission-classifier`, `rtk-wrapper`).
 - **`tawkit` CLI** — a small shell wrapper for install, update, doctor, uninstall, and offline maintenance tasks.
 - **5 presets** — opinionated product blueprints (`landing-page`, `shop-online`, `crm`, `blog`, `dashboard`) with prefilled clarifying questions and stack defaults.
@@ -109,7 +109,7 @@ The kit is designed to be forked. Three extension surfaces:
 
 **Stack overrides.** Every stack choice in `skills/taw/SKILL.md` ("Next.js 14 + Tailwind + Supabase + Polar, deploy to Vercel/Docker/VPS") is a default, not a mandate. If the user says "use Remix" or "skip Supabase" in Step 2, the orchestrator routes to the appropriate alternative skill. Add a new skill under `skills/<name>/` and reference it from a preset to make it discoverable.
 
-**Agent replacement.** Each of the 5 agents is a single markdown file under `agents/`. Swap the prompt body to inject a different coding style, testing philosophy, or review checklist. The orchestrator only cares about the contract (input format + output format), not the internals.
+**Agent replacement.** Each of the 6 agents is a single markdown file under `agents/`. Swap the prompt body to inject a different coding style, testing philosophy, or review checklist. The orchestrator only cares about the contract (input format + output format), not the internals.
 
 ## Security Model
 
@@ -121,7 +121,7 @@ taw-kit runs entirely client-side. There is no taw-kit server — nothing your C
 
 **Secret scanning.** The auto-commit hook blocks commits containing `.env*`, `*.key`, `credentials.*`, or anything matching a common token prefix. This is belt-and-suspenders on top of the reviewer's check.
 
-**Supply chain.** All skills and agents are written from scratch for this product; no copied third-party prompt content is bundled. See [decisions.md](../../plans/260421-0130-tawkit-orchestrator-kit/decisions.md) for the rationale.
+**Supply chain.** The orchestrator skills (`taw`, `taw-add`, `taw-fix`, `taw-deploy`, etc.) and all 6 agents are written from scratch for this product. Five skills are vendored from upstream open-source projects with their licenses preserved: `frontend-design` (Anthropic, Apache 2.0) and four Expo skills — `expo-tailwind-setup`, `expo-deployment`, `expo-dev-client`, `building-native-ui` (650 Industries / Expo, MIT). See [THIRD-PARTY-NOTICES.md](../../THIRD-PARTY-NOTICES.md) for full attribution and [decisions.md](../../plans/260421-0130-tawkit-orchestrator-kit/decisions.md) for the rationale.
 
 ## License
 

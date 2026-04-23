@@ -1,241 +1,243 @@
-# Troubleshooting
+# Khắc phục sự cố
 
-20 common errors people hit in the first week, with step-by-step fixes. If your error isn't here, try `/taw-fix --deep` to let taw-kit auto-diagnose.
+20 lỗi thường gặp trong tuần đầu xài taw-kit, kèm cách fix từng bước. Nếu lỗi của bạn không có ở đây, thử `/taw-fix --deep` để taw-kit tự chẩn đoán.
 
-**Convention:** All commands are typed in Terminal. Replace `<...>` with your actual value.
+**Quy ước:** Mọi lệnh đều gõ trong Terminal. Thay `<...>` bằng giá trị thật của bạn.
 
 ---
 
-## A. Install errors
+## A. Lỗi khi cài đặt
 
 ### "curl: command not found"
-**Symptom:** Running the install line prints `curl: command not found`.
-**Cause:** Your machine doesn't have `curl`. Rare on modern Mac/Windows; usually minimal Linux images.
-**Fix:**
-1. Mac: `brew install curl`. Install Homebrew first from brew.sh if you don't have it.
-2. Windows 10+: curl is built in — double-check spelling.
-3. Try `wget` instead: `wget -qO- https://install.tawkit.dev | bash`.
+**Triệu chứng:** Chạy dòng cài đặt thì in ra `curl: command not found`.
+**Nguyên nhân:** Máy không có `curl`. Hiếm gặp trên Mac/Windows hiện đại; thường thấy trên Linux bản minimal.
+**Cách fix:**
+1. Mac: `brew install curl`. Nếu chưa có Homebrew thì cài trước ở brew.sh.
+2. Windows 10+: curl có sẵn — check lại chính tả.
+3. Thử `wget` thay thế: `wget -qO- https://install.tawkit.dev | bash`.
 
-**Still stuck?** Download `install-oneliner.sh` manually from the taw-kit page and run `bash install-oneliner.sh`.
-
----
-
-### /taw does nothing after install
-**Symptom:** Inside Claude Code you type `/taw` but nothing happens.
-**Cause:** Claude Code hasn't picked up the skill yet. Usually a path mismatch or needs a restart.
-**Fix:**
-1. Quit Claude Code (Ctrl+D or type `/exit`).
-2. Open again: `claude`.
-3. Type `/taw` again. If still nothing, check `~/.claude/skills/taw/SKILL.md` exists.
-4. If the file is missing: re-run the install one-liner.
-
-**Still stuck?** Type `/taw-fix --deep` — it checks the install and self-heals.
+**Vẫn tắc?** Tải `install-oneliner.sh` tay từ trang taw-kit rồi chạy `bash install-oneliner.sh`.
 
 ---
 
-### Permission denied during install
-**Symptom:** `Permission denied` or `bash: /install.sh: Permission denied`.
-**Cause:** Script isn't executable or you're in a folder without write access.
-**Fix:**
-1. Go home: `cd ~`.
-2. Re-run the install one-liner.
-3. Never use `sudo` for install. taw-kit doesn't need admin rights.
+### /taw không có phản ứng gì sau khi cài
+**Triệu chứng:** Trong Claude Code gõ `/taw` nhưng không có gì xảy ra.
+**Nguyên nhân:** Claude Code chưa nhận skill. Thường do sai đường dẫn hoặc cần khởi động lại.
+**Cách fix:**
+1. Thoát Claude Code (Ctrl+D hoặc gõ `/exit`).
+2. Mở lại: `claude`.
+3. Gõ `/taw` lại. Nếu vẫn không thấy, check file `~/.claude/skills/taw/SKILL.md` có tồn tại không.
+4. Nếu file bị thiếu: chạy lại one-liner cài đặt.
 
-**Still stuck?** Remove any old `~/.claude/skills/taw` and re-install.
+**Vẫn tắc?** Gõ `/taw-fix --deep` — nó check cài đặt và tự chữa.
+
+---
+
+### Permission denied khi cài
+**Triệu chứng:** `Permission denied` hoặc `bash: /install.sh: Permission denied`.
+**Nguyên nhân:** Script không có quyền thực thi, hoặc bạn đang ở folder không ghi được.
+**Cách fix:**
+1. Về home: `cd ~`.
+2. Chạy lại one-liner cài đặt.
+3. Không bao giờ dùng `sudo` để cài. taw-kit không cần quyền admin.
+
+**Vẫn tắc?** Xoá `~/.claude/skills/taw` cũ rồi cài lại.
 
 ---
 
 ### "claude: command not found"
-**Symptom:** Typing `claude` says command not found.
-**Cause:** Claude Code isn't installed or isn't on your PATH.
-**Fix:**
-1. Install Claude Code from the Anthropic site.
-2. Quit and reopen Terminal (to reload PATH).
-3. If still missing, locate the binary (usually `/usr/local/bin/claude` on Mac) and add its folder to PATH.
+**Triệu chứng:** Gõ `claude` báo command not found.
+**Nguyên nhân:** Claude Code chưa cài hoặc không có trong PATH.
+**Cách fix:**
+1. Cài Claude Code từ trang Anthropic.
+2. Thoát và mở lại Terminal (để reload PATH).
+3. Nếu vẫn thiếu, tìm binary (thường ở `/usr/local/bin/claude` trên Mac) và thêm folder đó vào PATH.
 
-**Still stuck?** Uninstall Claude Code and reinstall from the official package.
+**Vẫn tắc?** Gỡ Claude Code và cài lại từ package chính thức.
 
 ---
 
-## B. API key errors
+## B. Lỗi API key
 
 ### "Invalid API key"
-**Symptom:** `Error: invalid_api_key` or `401 Unauthorized`.
-**Cause:** Typo, missing characters, or a revoked key.
-**Fix:**
-1. Open the Anthropic console and confirm the key is active.
-2. Re-copy the full `sk-ant-...` string — watch out for stray spaces.
-3. In Claude Code: `/logout`, then `claude` again, paste the fresh key.
+**Triệu chứng:** `Error: invalid_api_key` hoặc `401 Unauthorized`.
+**Nguyên nhân:** Gõ sai, thiếu ký tự, hoặc key đã bị revoke.
+**Cách fix:**
+1. Mở console Anthropic và xác nhận key còn active.
+2. Copy lại cả chuỗi `sk-ant-...` — coi chừng khoảng trắng thừa.
+3. Trong Claude Code: `/logout`, rồi `claude` lại, paste key mới.
 
-**Still stuck?** Create a new key, delete the old one, use the new one.
+**Vẫn tắc?** Tạo key mới, xoá key cũ, dùng key mới.
 
 ---
 
 ### Rate limit / "Too many requests"
-**Symptom:** `/taw` runs for a while then hits `429 Too Many Requests`.
-**Cause:** You've exceeded your minute-level rate limit on Anthropic.
-**Fix:**
-1. Wait 60 seconds, type `/taw-fix` to resume from the last step.
-2. Top up your account in the Anthropic console — higher tiers have higher rate limits.
-3. If multiple people share a key, create one key per person.
+**Triệu chứng:** `/taw` chạy được 1 lúc rồi dính `429 Too Many Requests`.
+**Nguyên nhân:** Vượt rate limit theo phút của Anthropic.
+**Cách fix:**
+1. Chờ 60 giây, gõ `/taw-fix` để chạy tiếp từ bước cuối.
+2. Nạp thêm tiền vào tài khoản Anthropic — tier cao hơn có rate limit cao hơn.
+3. Nếu nhiều người dùng chung 1 key, tạo 1 key cho mỗi người.
 
-**Still stuck?** Pause big builds, wait an hour, or upgrade your tier.
+**Vẫn tắc?** Tạm dừng build lớn, chờ 1 tiếng, hoặc nâng tier.
 
 ---
 
 ### "Insufficient credits"
-**Symptom:** `credits exhausted` or `billing_error`.
-**Cause:** Your Anthropic balance hit zero.
-**Fix:**
-1. Open the Anthropic console → Billing.
-2. Add at least $5. A taw-kit project typically costs $0.50–$2.
-3. Back to Terminal: `/taw-fix` to resume.
+**Triệu chứng:** `credits exhausted` hoặc `billing_error`.
+**Nguyên nhân:** Số dư Anthropic của bạn về 0.
+**Cách fix:**
+1. Mở console Anthropic → Billing.
+2. Nạp tối thiểu $5. Mỗi dự án taw-kit tốn $0.50–$2.
+3. Quay lại Terminal: `/taw-fix` để chạy tiếp.
 
-**Still stuck?** Check whether your card is blocked for international charges; use an international Visa/MasterCard.
-
----
-
-### "I don't know what an API key is"
-**Symptom:** Claude Code asks for an API key but you don't have one.
-**Cause:** You haven't signed up for Anthropic yet.
-**Fix:**
-1. Go to console.anthropic.com → Sign up.
-2. Verify your email.
-3. In Billing, add $5 minimum.
-4. Go to API Keys → Create key. Copy the `sk-ant-...` string.
-5. Paste into Claude Code when prompted.
+**Vẫn tắc?** Check xem thẻ có bị chặn thanh toán quốc tế không; dùng Visa/MasterCard quốc tế.
 
 ---
 
-## C. Build errors
+### "Tôi không biết API key là gì"
+**Triệu chứng:** Claude Code đòi API key nhưng bạn chưa có.
+**Nguyên nhân:** Bạn chưa đăng ký Anthropic.
+**Cách fix:**
+1. Vào console.anthropic.com → Sign up.
+2. Verify email.
+3. Trong Billing, nạp tối thiểu $5.
+4. Vào API Keys → Create key. Copy chuỗi `sk-ant-...`.
+5. Paste vào Claude Code khi được hỏi.
+
+---
+
+## C. Lỗi build
 
 ### "Module not found"
-**Symptom:** `Error: Cannot find module 'xyz'`.
-**Cause:** A dependency wasn't installed, or `node_modules` is broken.
-**Fix:**
-1. In the project folder: `npm install`.
-2. If that fails: `rm -rf node_modules package-lock.json && npm install`.
-3. If still failing: `/taw-fix --deep`.
+**Triệu chứng:** `Error: Cannot find module 'xyz'`.
+**Nguyên nhân:** Thiếu dependency, hoặc `node_modules` bị hỏng.
+**Cách fix:**
+1. Trong folder dự án: `npm install`.
+2. Nếu fail: `rm -rf node_modules package-lock.json && npm install`.
+3. Vẫn fail: `/taw-fix --deep`.
 
 ---
 
-### TypeScript type error
-**Symptom:** `Type 'X' is not assignable to type 'Y'` during `npm run build`.
-**Cause:** A generated component has a type mismatch, often after a `/taw-add` call.
-**Fix:**
-1. Type `/taw-fix` — it handles most type errors automatically.
-2. If you want to fix manually, open the file mentioned in the error and align the types.
+### Lỗi TypeScript type
+**Triệu chứng:** `Type 'X' is not assignable to type 'Y'` khi chạy `npm run build`.
+**Nguyên nhân:** Component vừa sinh ra có type không khớp, hay gặp sau khi `/taw-add`.
+**Cách fix:**
+1. Gõ `/taw-fix` — tự xử lý phần lớn lỗi type.
+2. Muốn tự fix, mở file nêu trong error và chỉnh type cho khớp.
 
 ---
 
-### Missing environment variable
-**Symptom:** `Missing environment variable: NEXT_PUBLIC_SUPABASE_URL`.
-**Cause:** `.env.local` is missing or missing a required key.
-**Fix:**
-1. Open `.env.local` in the project folder (create if absent).
-2. Add the missing line, e.g. `NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co`.
-3. Get the value from Supabase → Project → Settings → API.
-4. `/taw-fix` to rebuild.
+### Thiếu biến môi trường
+**Triệu chứng:** `Missing environment variable: NEXT_PUBLIC_SUPABASE_URL`.
+**Nguyên nhân:** File `.env.local` bị thiếu hoặc thiếu key quan trọng.
+**Cách fix:**
+1. Mở `.env.local` trong folder dự án (tạo nếu chưa có).
+2. Thêm dòng bị thiếu, ví dụ `NEXT_PUBLIC_SUPABASE_URL=https://xyz.supabase.co`.
+3. Lấy giá trị từ Supabase → Project → Settings → API.
+4. `/taw-fix` để build lại.
 
 ---
 
-### Out of disk space
-**Symptom:** `ENOSPC: no space left on device`.
-**Cause:** Your drive is full. A Next.js project needs ~500MB for node_modules.
-**Fix:**
-1. Free up space: empty Trash, delete unused files.
-2. Delete old `node_modules`: `find ~/tawkit-projects -name node_modules -exec rm -rf {} +`.
-3. Move the project to another drive.
+### Hết dung lượng ổ cứng
+**Triệu chứng:** `ENOSPC: no space left on device`.
+**Nguyên nhân:** Ổ đầy. 1 dự án Next.js cần ~500MB cho node_modules.
+**Cách fix:**
+1. Dọn dẹp: xoá Trash, xoá file không dùng.
+2. Xoá `node_modules` cũ: `find ~/tawkit-projects -name node_modules -exec rm -rf {} +`.
+3. Chuyển dự án sang ổ khác.
 
 ---
 
-## D. Deploy errors
+## D. Lỗi deploy
 
 ### Vercel auth failed
-**Symptom:** `Vercel authentication required` during `/taw-deploy`.
-**Cause:** Vercel CLI not logged in.
-**Fix:**
-1. Run `npx vercel login` and follow the browser prompt.
-2. `/taw-deploy` again.
+**Triệu chứng:** `Vercel authentication required` khi chạy `/taw-deploy`.
+**Nguyên nhân:** Vercel CLI chưa login.
+**Cách fix:**
+1. Chạy `npx vercel login` và làm theo prompt trên trình duyệt.
+2. `/taw-deploy` lại.
 
 ---
 
-### Domain already taken
-**Symptom:** `The requested domain is already in use`.
-**Cause:** Another project on Vercel owns the slug.
-**Fix:**
-1. Edit `.taw/intent.json`, change `project_name` to something unique.
-2. `/taw-deploy` again.
+### Domain đã bị chiếm
+**Triệu chứng:** `The requested domain is already in use`.
+**Nguyên nhân:** Dự án khác trên Vercel đã dùng slug đó.
+**Cách fix:**
+1. Sửa `.taw/intent.json`, đổi `project_name` thành cái duy nhất.
+2. `/taw-deploy` lại.
 
 ---
 
-### Docker build fails
-**Symptom:** `docker build` exits with a step failure.
-**Cause:** Usually a missing package, outdated base image, or BuildKit cache issue.
-**Fix:**
-1. Run with clean cache: `docker build --no-cache -t <name>:latest .`.
-2. Confirm `.dockerignore` excludes `node_modules` and `.env*`.
-3. `/taw-fix` handles common Dockerfile issues automatically.
+### Docker build fail
+**Triệu chứng:** `docker build` thoát ở 1 bước nào đó.
+**Nguyên nhân:** Thường do thiếu package, base image cũ, hoặc cache BuildKit lỗi.
+**Cách fix:**
+1. Chạy với cache sạch: `docker build --no-cache -t <name>:latest .`.
+2. Xác nhận `.dockerignore` đã loại `node_modules` và `.env*`.
+3. `/taw-fix` tự xử lý phần lớn lỗi Dockerfile.
+
+---
 
 ### VPS deploy: "Permission denied (publickey)"
-**Symptom:** SSH rejects the connection during `/taw-deploy --target=vps`.
-**Cause:** Your VPS doesn't have your public key, or `.taw/vps.env` has the wrong user.
-**Fix:**
-1. Copy your key: `ssh-copy-id $VPS_USER@$VPS_HOST`.
-2. Double-check `VPS_USER` and `VPS_HOST` in `.taw/vps.env`.
-3. Test the raw connection: `ssh $VPS_USER@$VPS_HOST echo ok`.
+**Triệu chứng:** SSH từ chối kết nối khi chạy `/taw-deploy --target=vps`.
+**Nguyên nhân:** VPS chưa có public key của bạn, hoặc `.taw/vps.env` sai user.
+**Cách fix:**
+1. Copy key lên: `ssh-copy-id $VPS_USER@$VPS_HOST`.
+2. Check lại `VPS_USER` và `VPS_HOST` trong `.taw/vps.env`.
+3. Test kết nối thô: `ssh $VPS_USER@$VPS_HOST echo ok`.
 
 ---
 
-### Build works locally but fails on Vercel
-**Symptom:** `npm run build` passes on your machine but fails during deploy.
-**Cause:** Usually missing env vars on Vercel, or a case-sensitive filename on Linux.
-**Fix:**
-1. In the Vercel dashboard → Settings → Environment Variables — add the same keys as your `.env.local`.
-2. Check filename casing in imports (Mac is case-insensitive, Linux is not).
-3. `/taw-fix` to try an auto-fix.
+### Build OK local nhưng fail trên Vercel
+**Triệu chứng:** `npm run build` OK trên máy bạn nhưng deploy thì fail.
+**Nguyên nhân:** Thường do thiếu env var trên Vercel, hoặc tên file phân biệt hoa/thường trên Linux.
+**Cách fix:**
+1. Vercel dashboard → Settings → Environment Variables — thêm đúng các key như `.env.local`.
+2. Check casing tên file trong import (Mac không phân biệt, Linux có phân biệt).
+3. `/taw-fix` để thử auto-fix.
 
 ---
 
-## E. General confusion
+## E. Các rối chung
 
-### /taw doesn't respond
-**Symptom:** Typed `/taw`, nothing happens.
-**Cause:** You may not be inside Claude Code, or the skill isn't loaded.
-**Fix:**
-1. Confirm prompt shows `claude >` (not `$` or `%`).
-2. Type `/taw --help` — if help text appears, the skill is loaded.
-3. If not, quit and restart Claude Code.
-
----
-
-### Output looks weird (blank, partial text, broken characters)
-**Symptom:** Answers come back empty or truncated.
-**Cause:** Network interruption or context limit.
-**Fix:**
-1. Check your internet.
-2. Type `/taw-fix` to resume.
-3. If context is full, start a new Claude Code session — taw-kit state lives on disk.
+### /taw không phản hồi
+**Triệu chứng:** Gõ `/taw` nhưng không thấy gì.
+**Nguyên nhân:** Có thể không ở trong Claude Code, hoặc skill chưa load.
+**Cách fix:**
+1. Xác nhận prompt là `claude >` (không phải `$` hay `%`).
+2. Gõ `/taw --help` — nếu hiện help thì skill đã load.
+3. Nếu không, thoát và khởi động lại Claude Code.
 
 ---
 
-### Answers in the wrong language
-**Symptom:** Replies mix English and Vietnamese randomly.
-**Cause:** Language hint is ambiguous.
-**Fix:**
-1. Put a clear request at the start: "Please reply in English." (or Vietnamese).
-2. taw-kit's `error-to-vi` skill can translate errors on demand.
+### Output kỳ lạ (trắng, cắt giữa chừng, ký tự lỗi)
+**Triệu chứng:** Trả lời rỗng hoặc cụt.
+**Nguyên nhân:** Mạng chập chờn hoặc đạt giới hạn context.
+**Cách fix:**
+1. Check internet.
+2. Gõ `/taw-fix` để chạy tiếp.
+3. Nếu context đầy, bắt đầu session Claude Code mới — state taw-kit lưu trên đĩa.
 
 ---
 
-### Confused about generated code
-**Symptom:** You open the project folder and don't understand anything.
-**Cause:** That's normal if you don't code yet.
-**Fix:**
-1. Don't touch code manually. Use `/taw-add` for changes.
-2. Want to learn? Read a Next.js quickstart — 2 hours and you'll recognize the structure.
-3. Community channel has friendly people; ask questions with the exact filename you're looking at.
+### Trả lời sai ngôn ngữ
+**Triệu chứng:** Phản hồi trộn lẫn tiếng Anh với tiếng Việt loạn xạ.
+**Nguyên nhân:** Gợi ý ngôn ngữ bị mơ hồ.
+**Cách fix:**
+1. Ghi rõ ngay đầu prompt: "Trả lời bằng tiếng Việt giúp tôi." (hoặc tiếng Anh).
+2. Skill `error-to-vi` của taw-kit có thể dịch error khi cần.
 
 ---
 
-If your error isn't listed here, open the taw-kit community link in your order email, paste the error text (redact any API keys), and someone will help.
+### Không hiểu code sinh ra
+**Triệu chứng:** Mở folder dự án và không hiểu gì hết.
+**Nguyên nhân:** Bình thường nếu bạn chưa code.
+**Cách fix:**
+1. Đừng sửa code tay. Dùng `/taw-add` để thay đổi.
+2. Muốn học? Đọc Next.js quickstart — 2 tiếng là bạn nhận ra cấu trúc.
+3. Cộng đồng có người thân thiện; hỏi kèm tên file cụ thể bạn đang xem.
+
+---
+
+Nếu lỗi của bạn không có trong list này, mở link cộng đồng taw-kit (có trong email đơn hàng), paste nội dung lỗi (che API key), và sẽ có người giúp.
