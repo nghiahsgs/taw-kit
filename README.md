@@ -135,7 +135,7 @@ tawkit uninstall          # xoá skill/agent/hook khỏi ~/.claude, giữ ~/.taw
 tawkit uninstall --full   # xoá luôn repo đã clone ở ~/.taw-kit/
 ```
 
-Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.taw-kit-owned` và tên agent/hook cố định). **Skill cá nhân của bạn trong `~/.claude/skills/` không bao giờ bị đụng.**
+Lệnh gỡ chỉ động vào file do taw-kit tạo (nhận diện qua marker `.taw-kit-owned` và tên agent/hook cố định). **Skill cá nhân của bạn trong `~/.claude/skills/` không bao giờ bị động tới.**
 
 ---
 
@@ -154,8 +154,8 @@ Source-available — free dùng trong public beta. Xem [LICENSE](./LICENSE) cho 
 - **Được:** clone, dùng taw-kit làm bao nhiêu sản phẩm cũng được. Sản phẩm bạn làm ra là của bạn 100%, không cần trích dẫn.
 - **Không được:** phân phối lại repo này (mirror, fork đăng chỗ khác, đẩy lên registry), bán lại taw-kit hay bản rebrand của nó.
 
-Tác giả giữ quyền đổi license ở version tương lai (ví dụ mở gói trả phí). Bản anh clone hôm nay vẫn theo điều khoản hiện tại.
+Tác giả giữ quyền đổi license ở phiên bản tương lai (ví dụ mở gói trả phí). Bản bạn clone hôm nay vẫn theo điều khoản hiện tại.
 
 ## Hỗ trợ
 
-Liên hệ trong email đơn hàng — hoặc vào [theagents.work](https://www.theagents.work/).
+Liên hệ qua email đơn hàng — hoặc vào [theagents.work](https://www.theagents.work/).

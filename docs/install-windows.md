@@ -1,12 +1,12 @@
 # Cài taw-kit trên Windows
 
-> **Tóm tắt** — Installer của taw-kit là bash script. Trên Windows bạn cần 1 shell tương thích Linux. Cách khuyến nghị là **WSL2** (Windows Subsystem for Linux). Lần đầu mất ~10 phút, xong rồi `/taw` chạy y hệt như trên Mac hay Linux.
+> **Tóm tắt** — Trình cài đặt của taw-kit là bash script. Trên Windows bạn cần một shell tương thích Linux. Cách khuyến nghị là **WSL2** (Windows Subsystem for Linux). Lần đầu mất ~10 phút, xong rồi `/taw` chạy y hệt như trên Mac hay Linux.
 
 ---
 
 ## Tại sao lại WSL2, không phải cmd / PowerShell?
 
-taw-kit ship kèm ~50 bash script (install, doctor, hooks, CLI `tawkit`). Viết lại hết cho PowerShell thì khối lượng bảo trì tăng gấp đôi và gần như chắc chắn sẽ drift. Thay vào đó, mình dùng WSL2 — layer Linux chính thức của Microsoft bên trong Windows — để **cùng 1 bộ script** chạy không đổi.
+taw-kit đi kèm ~50 bash script (install, doctor, hooks, CLI `tawkit`). Viết lại hết cho PowerShell thì khối lượng bảo trì tăng gấp đôi và gần như chắc chắn sẽ drift. Thay vào đó, mình dùng WSL2 — tầng Linux chính thức của Microsoft bên trong Windows — để **cùng một bộ script** chạy không đổi.
 
 Lợi ích:
 
