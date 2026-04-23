@@ -57,7 +57,9 @@
 
 ---
 
-## B. Lỗi API key
+## B. Lỗi login / API key
+
+> Claude Code có 2 cách login: **subscription Claude Pro/Max** (OAuth qua trình duyệt) hoặc **API key Anthropic**. Phần dưới chủ yếu cho nhánh API key — nếu bạn dùng subscription thì phần lớn không áp dụng.
 
 ### "Invalid API key"
 **Triệu chứng:** `Error: invalid_api_key` hoặc `401 Unauthorized`.
@@ -95,11 +97,18 @@
 
 ---
 
-### "Tôi không biết API key là gì"
-**Triệu chứng:** Claude Code đòi API key nhưng bạn chưa có.
-**Nguyên nhân:** Bạn chưa đăng ký Anthropic.
-**Cách fix:**
-1. Vào console.anthropic.com → Sign up.
+### "Tôi không biết API key là gì / không muốn tạo API key"
+**Triệu chứng:** Claude Code hỏi cách login nhưng bạn không muốn tạo API key.
+**Nguyên nhân:** Hiểu nhầm API key là bắt buộc.
+**Cách fix:** Không bắt buộc. Có 2 đường:
+
+**Đường 1 — Subscription (đơn giản hơn nếu bạn xài thường xuyên):**
+1. Vào [claude.ai](https://claude.ai) → đăng ký Claude Pro hoặc Max.
+2. Trong Claude Code, chọn nhánh login bằng subscription → trình duyệt mở, click Accept.
+3. Xong.
+
+**Đường 2 — API key (trả theo lượng dùng):**
+1. Vào [console.anthropic.com](https://console.anthropic.com) → Sign up.
 2. Verify email.
 3. Trong Billing, nạp tối thiểu $5.
 4. Vào API Keys → Create key. Copy chuỗi `sk-ant-...`.

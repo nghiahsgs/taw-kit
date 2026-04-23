@@ -30,11 +30,11 @@ VISUAL: Cận cảnh Terminal. Paste lệnh curl. Enter. Hiện ra "taw-kit inst
 
 LỜI DẪN: "Bước một: cài taw-kit. Copy dòng này, paste vào Terminal, Enter. Chờ tầm 30 giây. Khi thấy 'installed successfully' là xong. Đơn giản vậy thôi."
 
-### [1:30–2:10] Paste API key
+### [1:30–2:10] Login Claude Code
 
-VISUAL: Mở Claude Code bằng lệnh `claude`. Prompt hỏi API key. Host paste `sk-ant-...` (che một phần). Enter.
+VISUAL: Mở Claude Code bằng lệnh `claude`. Prompt cho 2 lựa chọn login. Host demo nhánh OAuth (nếu có Pro): trình duyệt mở, click Accept, quay lại terminal. Nếu quay kịch bản dùng API key thì paste `sk-ant-...` (che một phần).
 
-LỜI DẪN: "Bước hai: gõ `claude` để mở Claude Code. Lần đầu nó hỏi API key. Vào console Anthropic, tạo key, copy chuỗi `sk-ant-...`, paste vào đây. Xong. Lần sau nó tự nhớ."
+LỜI DẪN: "Bước hai: gõ `claude` để mở Claude Code. Lần đầu nó hỏi cách login. Có Claude Pro/Max? Chọn nhánh subscription, trình duyệt mở, Accept, xong. Dùng API key? Vào console Anthropic, tạo key, copy `sk-ant-...`, paste vào đây. Lần sau nó tự nhớ."
 
 ### [2:10–3:00] Gõ /taw
 
