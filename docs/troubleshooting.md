@@ -230,4 +230,4 @@
 
 ---
 
-Nếu lỗi của bạn không có trong list này, mở link cộng đồng taw-kit (có trong email đơn hàng), paste nội dung lỗi (che API key), và sẽ có người giúp.
+Nếu lỗi của bạn không có trong list này, mở link cộng đồng taw-kit (có trong email đơn hàng), paste nội dung lỗi (che thông tin nhạy cảm như token, mật khẩu), và sẽ có người giúp.

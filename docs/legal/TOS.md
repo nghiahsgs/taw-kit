@@ -10,7 +10,7 @@ By purchasing or using taw-kit, you agree to these Terms of Service and the [EUL
 
 taw-kit provides a bundled set of Claude Code skills, agents, hooks, scripts, and templates that operate on the Licensee's local machine. taw-kit does NOT provide:
 
-- Server-side AI inference (Licensee must bring their own Anthropic API key)
+- Server-side AI inference (Licensee must bring their own Claude Pro/Max subscription; AI calls run through Claude Code on the Licensee's machine)
 - Hosting or deployment infrastructure (Licensee uses their own Vercel/Supabase accounts, Docker registry, or VPS)
 - Data storage (all project data stays on Licensee's machine or in Licensee's third-party accounts)
 
