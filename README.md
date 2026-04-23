@@ -15,6 +15,21 @@
   → trả về URL đã chạy
 ```
 
+**Chỉ 1 lệnh duy nhất: `/taw`.** Anh nói gì bằng tiếng Việt cũng được — tạo mới, thêm tính năng, sửa lỗi, deploy, test, nâng cấp, dọn code, tối ưu, lùi bản — `/taw` tự hiểu và chạy đúng nhánh.
+
+```
+/taw làm cho tôi một shop cà phê        → tạo mới
+/taw thêm trang liên hệ                  → thêm tính năng
+/taw lỗi rồi, fix giùm                   → auto-fix
+/taw deploy lên vercel                   → deploy
+/taw test cái login                      → auto-gen test
+/taw nâng cấp next lên 15                → upgrade deps
+/taw dọn code dùm                         → xoá dead code
+/taw chậm quá, check perf                → bundle + lighthouse
+/taw lùi lại bản hôm qua                 → rollback code + deploy
+/taw kiểm tra bảo mật                    → audit P0/P1/P2
+```
+
 > Xem demo & mua bộ kit tại **[theagents.work](https://www.theagents.work/)** — ra mắt sản phẩm thật trong 20 phút.
 
 ---
@@ -93,7 +108,7 @@ tawkit new shop-online
 
 ## Chọn nơi deploy
 
-Sau khi code xong, `/taw-deploy` sẽ hỏi bạn deploy ở đâu:
+Sau khi code xong, `/taw deploy` sẽ hỏi bạn deploy ở đâu:
 
 ```
 Deploy ở đâu?
@@ -108,7 +123,9 @@ Deploy ở đâu?
 | **Docker** | Cần cài Docker | Miễn phí (bạn tự host) | Đóng gói giao khách, không phụ thuộc cloud |
 | **VPS** | Cần biết SSH + systemd | Tiền thuê VPS | Kiểm soát hoàn toàn, traffic lớn, có yêu cầu về dữ liệu |
 
-Đổi nơi deploy sau cũng được — `/taw-deploy --target=docker` trên một dự án đã deploy Vercel sẽ sinh Dockerfile mà không ảnh hưởng tới bản Vercel đang chạy.
+Đổi nơi deploy sau cũng được — `/taw deploy --target=docker` trên một dự án đã deploy Vercel sẽ sinh Dockerfile mà không ảnh hưởng tới bản Vercel đang chạy.
+
+> **Lưu ý:** từ phiên bản này, các lệnh cũ `/taw-new`, `/taw-add`, `/taw-fix`, `/taw-deploy`, `/taw-security` vẫn chạy được nhưng sẽ tự forward sang `/taw`. Khuyến nghị dùng `/taw` cho mọi thao tác — đơn giản hơn, nhớ 1 lệnh duy nhất.
 
 ---
 

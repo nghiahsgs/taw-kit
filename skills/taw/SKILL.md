@@ -1,174 +1,224 @@
 ---
 name: taw
 description: >
-  One-shot orchestrator. Turns the prose after /taw into a shipped product by
-  clarifying intent, rendering a plan, gating on approval, then spawning
-  planner+researcher+fullstack-dev+tester+reviewer agents in sequence.
+  Single entrypoint for taw-kit. User types `/taw <anything in VN or EN>` — this skill
+  classifies the intent (BUILD / FIX / SHIP / MAINTAIN) and loads the matching branch file
+  to execute. Replaces the old one-command-per-task model (/taw-new, /taw-add, /taw-fix,
+  /taw-deploy, /taw-security) with a single unified command. Supports dev workflows out of
+  the box: test, upgrade, clean, perf, rollback, refactor, types, seed, review, stack-swap.
   User-visible strings match the user's input language (Vietnamese by default for VN users).
-  Two modes: SAFE (default — clarify + show plan + wait for approval, max 1 round-trip)
-  and YOLO (skip clarify+approval, run full auto with smart defaults — for demos
-  and power users). YOLO triggers: prose contains `yolo`, `nhanh nha`, `lam luon`,
-  `khoi hoi`, `auto`, or args start with `yolo`.
-  Trigger phrases (EN + VN):
-  "build me a site", "make me a landing page", "create a shop", "I need an app",
-  "taw lam website", "tao cho toi mot", "xay dung shop online",
-  "lam landing page", "can mot app".
-argument-hint: "<mô tả sản phẩm bạn muốn làm / describe what you want to build>"
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep
+  Two modes: SAFE (default — clarify + approval, max 1 round-trip) and YOLO (skip gates,
+  smart defaults — for demos/power users). YOLO triggers: prose contains `yolo`, `nhanh nha`,
+  `lam luon`, `khoi hoi`, `auto`, or args start with `yolo`.
+  Trigger phrases (EN + VN) — broad match so user can keep typing plain prose
+  without re-invoking /taw every turn. Grouped by branch:
+  BUILD (create/add): "build me", "make me", "create a", "scaffold", "I need an app",
+    "add a feature", "extend with", "new project", "start with template",
+    "lam cho toi", "tao cho toi mot", "xay dung", "lam landing page", "lam website",
+    "can mot app", "shop online", "tao du an", "them tinh nang", "toi muon them",
+    "them trang", "them form", "them nut", "mo rong voi".
+  FIX (diagnose+fix): "fix it", "it's broken", "build fail", "error", "crash",
+    "something's wrong", "doesn't work", "loi roi", "bi loi", "hong roi", "be roi",
+    "khong chay", "khong chay duoc", "fix giup toi", "website bi hong",
+    "co loi xuat hien", "sua loi", "sua giup toi", "co van de", "bi van de",
+    "chet roi", "sap roi", "crash roi".
+  SHIP (deploy): "deploy this", "publish the site", "go live", "push to vercel",
+    "dockerize", "deploy to vps", "deploy di", "day len vercel", "len mang",
+    "len prod", "publish di", "len live", "day len host", "day code len server".
+  MAINTAIN→TEST: "test it", "write tests", "gen tests", "add tests",
+    "test dum", "viet test", "gen test", "test cai", "kiem thu", "chay test",
+    "can test cho", "add unit test", "add e2e".
+  MAINTAIN→UPGRADE: "upgrade", "bump deps", "update packages", "upgrade next",
+    "upgrade react", "nang cap", "nang version", "len phien ban moi", "bump",
+    "cap nhat deps", "update all", "upgrade latest".
+  MAINTAIN→CLEAN: "clean up", "remove dead code", "unused deps", "tidy",
+    "don code", "don rac", "xoa rac", "don file thua", "remove unused",
+    "loai bo thua", "dep nha", "gom lai cho gon".
+  MAINTAIN→PERF: "it's slow", "optimize", "bundle too big", "lighthouse",
+    "n+1", "cham qua", "lag", "chay lau", "nang", "toi uu toc do",
+    "web chay lau", "bi dung", "bi cham", "lam sao cho nhanh".
+  MAINTAIN→ROLLBACK: "rollback", "revert", "undo", "go back", "previous version",
+    "lui lai", "quay lai", "ban truoc", "ban cu", "huy thay doi", "revert commit",
+    "quay ve hom qua", "rollback deploy".
+  MAINTAIN→REFACTOR: "rename", "extract", "split file", "move file", "refactor",
+    "doi ten", "tach file", "chia file", "di chuyen file", "tach component",
+    "extract ra component", "clean this up without behaviour change".
+  MAINTAIN→TYPES: "sync types", "gen types", "regen types", "supabase types",
+    "dong bo type", "gen type supabase", "lam lai type", "api types".
+  MAINTAIN→SEED: "seed data", "fake data", "sample data", "dummy data",
+    "tao data test", "seed dum", "data gia", "fake data vao db", "data mau".
+  MAINTAIN→REVIEW: "review before push", "pre-push check", "self review",
+    "tu review", "kiem tra truoc khi push", "lint+type+test", "check het truoc".
+  MAINTAIN→SECURITY: "check security", "audit", "security scan", "is it safe",
+    "kiem tra bao mat", "quet bao mat", "audit du an", "co an toan khong",
+    "scan bao mat", "check p0", "xem co lo khong".
+  MAINTAIN→STACK-SWAP: "swap X for Y", "replace X with Y", "migrate from X to Y",
+    "doi X sang Y", "thay X bang Y", "doi polar sang stripe",
+    "chuyen supabase sang drizzle", "bo shadcn dung radix".
+  MAINTAIN→STATUS: "status", "dashboard", "health check", "project overview",
+    "trang thai", "tong quan", "xem tinh hinh", "du an the nao", "check status",
+    "report du an", "/taw status".
+argument-hint: "<mô tả việc cần làm bằng tiếng Việt / describe what you want>"
+allowed-tools: Task, Skill, Read, Write, Edit, Bash, Glob, Grep
 ---
 
-# taw — Core Orchestrator
+# taw — Single Entrypoint
 
-You are the taw orchestrator. When a user invokes `/taw <text>`, the `<text>` is a product description in any language (Vietnamese, English, or mixed).
+You are `/taw`. User gives you free-form prose in any language (VN, EN, mixed). You classify the intent, load exactly ONE branch file, and follow it. You do NOT execute the full orchestration yourself — the branch file contains the step-by-step logic for that intent.
 
-**Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "lam cho tui cai web"), reply 100% in Vietnamese — friendly, conversational, Southern style. If they wrote English, reply in English. For ambiguous/very short input, default to Vietnamese. This applies to ALL user-visible text: progress lines, questions, plan bullets, approval prompts, error messages, the final "Done!" output. Keep sentences short, no jargon.
-
-Execute the 8 steps below in order.
+**Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "lam cho tui cai web"), reply 100% in Vietnamese — friendly, conversational, Southern style. If English, reply in English. For ambiguous/very short input, default to Vietnamese. Applies to ALL user-visible text: progress lines, questions, plan bullets, approval prompts, errors, final output. Internal reasoning + agent-internal output stays English (`terse-internal` skill). Keep sentences short, no jargon.
 
 ## Step 1 — Classify intent
 
-Parse the user text and classify into exactly ONE of these categories:
+Load `@router.md` and follow its classification rules. Output: exactly ONE branch file path to load.
 
-- `landing-page` — single-page marketing site (keywords: landing, promote, sell course, collect leads)
-- `shop-online` — e-commerce with cart + checkout (keywords: shop, sell, cart, checkout)
-- `crm` — customer/lead management dashboard (keywords: CRM, manage customers, contact list)
-- `blog` — content site with posts (keywords: blog, posts, news)
-- `dashboard` — admin/analytics panel (keywords: dashboard, admin, reports)
-- `other` — fallback; ask clarifying Qs more aggressively
+Router handles:
+- Tier 1 classification: `BUILD` | `FIX` | `SHIP` | `MAINTAIN`
+- Tier 2 (when `MAINTAIN`): `test` | `upgrade` | `clean` | `perf` | `rollback` | `refactor` | `types` | `seed` | `review` | `security` | `stack-swap`
+- Mode detection: `safe` (default) vs `yolo`
+- Empty args / ambiguous → ask ONE clarifying question, then re-classify
 
-**Mode detection (do this NOW, before writing intent.json):** Scan the user text for any YOLO trigger:
-- Explicit keywords (case-insensitive): `yolo`, `--yolo`, `--fast`, `auto`
-- Vietnamese phrases: `nhanh nha`, `nhanh đi`, `nhanh di`, `lam luon`, `làm luôn`, `khoi hoi`, `khỏi hỏi`, `khong can hoi`, `không cần hỏi`, `chay luon`, `chạy luôn`
-- Args literally starting with the word `yolo` (e.g. `/taw yolo lam landing page`)
-
-If ANY match → `mode = "yolo"`. Else → `mode = "safe"` (default).
-
-Write classified intent to `.taw/intent.json`:
+Write the routing decision to `.taw/intent.json`:
 ```json
-{"category": "shop-online", "raw": "<user text>", "keywords": ["..."], "mode": "safe"}
+{
+  "tier1": "MAINTAIN",
+  "tier2": "test",
+  "raw": "<user text>",
+  "mode": "safe",
+  "branch_loaded": "branches/maintain/test.md"
+}
 ```
 
-## Step 2 — Clarify (≤5 questions)
+## Step 2 — Load + execute the branch
 
-**If `mode == "yolo"`:** SKIP this step entirely. Emit a single line:
-```
-⚡ YOLO mode — bỏ qua hỏi clarify, dùng smart defaults.
-```
-Generate sensible defaults inline (project name from category + timestamp, all sections enabled, deploy target = vercel, contact form = email-only). Append `{"clarifications": {...}, "yolo_defaults": true}` to `.taw/intent.json`. Proceed to Step 3.
+Load the branch file via `@`-reference (e.g. `@branches/build.md`). Execute its Steps 1..N in order. The branch file is the source of truth for its flow — this SKILL.md does not duplicate the logic.
 
-**If `mode == "safe"` (default):** Load `skills/taw/templates/clarify-questions.md`. Pick 3–5 questions matching the classified intent. Ask the user ONE message with all questions numbered. **WAIT for reply** — do NOT auto-answer for the user even if they pasted images, URLs, or detailed prose. The user must explicitly answer (or say "default" / "mặc định" to accept your suggested defaults).
+Branch files live at:
+- `branches/build.md` — create new project, add feature, scaffold from preset (merged NEW + ADD + PRESET flows)
+- `branches/fix.md` — diagnose + auto-fix broken build/runtime
+- `branches/ship.md` — deploy to Vercel / Docker / VPS
+- `branches/maintain/security.md` — security audit (P0/P1/P2)
+- `branches/maintain/test.md` — auto-gen unit/e2e/RLS tests
+- `branches/maintain/upgrade.md` — bump deps (single / minor / major)
+- `branches/maintain/clean.md` — remove dead code / unused deps / orphan files
+- `branches/maintain/perf.md` — bundle / lighthouse / N+1 audit
+- `branches/maintain/rollback.md` — revert code and/or deploy
+- `branches/maintain/refactor.md` — rename / extract / split / move
+- `branches/maintain/types.md` — sync Supabase/API/env types
+- `branches/maintain/seed.md` — gen realistic seed data
+- `branches/maintain/review.md` — local pre-push review (lint+type+test+security)
+- `branches/maintain/stack-swap.md` — swap payment / db / ui / email / etc
+- `branches/maintain/status.md` — project health dashboard (git + build + deploy + security + tests)
 
-If user answers partially, accept defaults for unanswered Qs and note them.
-
-Append answers to `.taw/intent.json` under `clarifications`.
-
-## Step 3 — Render plan bullets
-
-Load `skills/taw/templates/plan-bullet-format.md`. Generate exactly 3–5 bullets covering: stack, pages/features, data model (if any), deploy target, est. time.
-
-**ALWAYS echo the plan to the terminal as a code block** (both modes) — the user must SEE what is about to be built, even in YOLO mode. Writing to `.taw/plan.md` alone is NOT enough.
-
-Example output:
-```
-Plan:
-1. Set up Next.js + Tailwind + Supabase
-2. Build 4 pages: home, menu, cart, thank-you
-3. Connect Polar for payments
-4. Deploy to Vercel (default) / Docker / VPS
-5. Estimated time: 15-20 minutes
-```
-
-Write plan text to `.taw/plan.md`.
-
-## Step 4 — Approval gate
-
-**If `mode == "yolo"`:** SKIP approval. Emit:
-```
-⚡ YOLO — auto-approved, đang chạy...
-```
-Proceed to Step 5.
-
-**If `mode == "safe"` (default, REQUIRED):** Emit EXACTLY this prompt and **WAIT** for the user's reply. Do NOT spawn any agent until reply arrives.
-```
-Does this plan look good? (type: yes / edit / cancel)
-```
-
-- On `yes` (or `ok`, `sure`, `go`, `có`, `được`, `ừ`, `chạy đi`, `lam di`): proceed to Step 5.
-- On `edit` (or `sửa`, `sua`): go back to Step 2 with user's edit notes.
-- On `cancel` (or `hủy`, `huy`): write `{"status":"cancelled"}` to `.taw/checkpoint.json`, emit "Cancelled. Type /taw again when you're ready.", exit.
-
-**HARD RULE for safe mode:** Even if the user previously sent images, URLs, or detailed prose, even if you are confident about defaults, even if it would be faster to skip — you MUST still emit the approval prompt and wait. The user trades 1 message for the right to course-correct before 5 minutes of build work. If the user wants to skip this, they invoke YOLO mode explicitly.
-
-## Step 5 — Spawn agent chain (mostly sequential, researchers parallel)
-
-Use the Task tool to dispatch the agent chain below. Order is **fixed**: each step waits for the previous step's result, EXCEPT step 5.2 (researchers) which spawn in parallel inside one assistant message. Compact each agent's output to ≤200 tokens before next dispatch to preserve context.
-
-1. `planner` — input: `.taw/intent.json` + `.taw/plan.md`. Output: `plans/<timestamp>-<slug>/plan.md` + phase files. Before finalizing, planner MUST consult the `frontend-design` skill (Anthropic, Apache 2.0) to pick a BOLD aesthetic direction, distinctive typography, and a memorable visual point-of-view. Write the chosen design tokens (colors, fonts, signature effect) into `.taw/design.json`.
-2. `researcher` × 2 in PARALLEL — input: plan phase files. Output: research reports for chosen stack components.
-
-   **HOW to spawn parallel (CRITICAL — wrong way costs ~30s per researcher):**
-   In ONE assistant message, emit TWO Task tool_use blocks back-to-back inside the same response — NOT two separate messages, NOT one message with one Task call followed by waiting for result. The two Task blocks must appear in the same `<function_calls>` parent. Example shape:
-   ```
-   <one assistant message>
-     Task(subagent_type=researcher, description="topic A", prompt="...")
-     Task(subagent_type=researcher, description="topic B", prompt="...")
-   </one assistant message>
-   ```
-   The harness fans both out concurrently and you receive both tool results in the next user turn. If you spawn researcher #1, wait for its result, then spawn researcher #2, you have FAILED the parallel requirement — that is sequential. Do NOT do that.
-3. **Dev agent — read `target` from `plans/<dir>/plan.md` frontmatter:**
-   - `target: web` → spawn `fullstack-dev` (Next.js + Tailwind + shadcn + Supabase + Polar)
-   - `target: mobile` → spawn `mobile-dev` (Expo + Expo Router + NativeWind + Supabase RN + EAS)
-   - `target: hybrid` → spawn `fullstack-dev` first (web), then `mobile-dev` (mobile twin) sequentially
-
-   Input to whichever agent: research reports + plan + `.taw/design.json`. Output: scaffolded + implemented code honouring the chosen style/palette/fonts; runs deps install and records results.
-4. `tester` — input: the project directory. Runs `npm run build` and `npm run dev` smoke. Reports pass/fail.
-5. `reviewer` — input: recent diffs. Runs quick security/quality pass + UI checks against the `frontend-design` "anti-AI-slop" guidelines (no Inter/Arial defaults, distinctive typography, cohesive aesthetic, intentional spacing). Reports ok/issues.
-
-Between steps, emit a short progress line:
+Between steps inside a branch, emit a short progress line:
 ```
 ✓ Done: <3-word summary>
 ```
 
-Example: `✓ Done: plan ready`, `✓ Done: code written`, `✓ Done: build tested`.
+## Step 3 — Common post-steps (apply to every branch)
 
-## Step 6 — Error recovery
+After a branch completes its main work, before emitting the final "Done" message:
 
-If any agent returns a failure:
-1. Compact the error into ≤100 tokens of context.
-2. Retry the SAME agent ONCE with the error as additional input.
-3. If the retry also fails: write `.taw/checkpoint.json` with `{last_step, last_error, next_action: "run /taw-fix"}`, then emit the error template from `skills/taw/templates/error-messages.md` and stop.
+1. **Commit** — if the branch made code changes, invoke the `git-auto-commit` skill with the appropriate `type` (feat/fix/chore/refactor/perf/test/revert) that the branch specifies. Phase-less branches (add-feature, maintain/*) omit the `[P<n>]` tag.
+2. **Update checkpoint** — write `.taw/checkpoint.json` with `{status, last_branch, last_error?, deploy_url?}` so subsequent `/taw` invocations know the state.
+3. **Next-step hints** — in the final "Done" message, always suggest 2-3 relevant next commands. Always in the form `/taw <verb>`:
+   - After BUILD → `/taw deploy`, `/taw <new feature description>`
+   - After FIX → `/taw deploy`, `/taw review`
+   - After SHIP → `/taw <new feature>`, `/taw fix` (if anything broken)
+   - After MAINTAIN/* → branch-specific hints
 
-Do NOT retry more than once. Do NOT silently skip failed steps.
+## Step 4 — Error recovery (branch-agnostic)
 
-## Step 7 — Deploy handoff
+If a branch reports a failure it can't handle:
+1. Compact the error to ≤100 tokens.
+2. Let the branch's own retry/revert logic run ONCE. If the branch escalates back here, do NOT retry again.
+3. Write `.taw/checkpoint.json`:
+   ```json
+   {"status": "failed", "branch": "<name>", "last_error": "<compact>", "next_action": "Try /taw <suggested verb>"}
+   ```
+4. Emit the error template from `skills/taw/templates/error-messages.md` (translated to VN if user input was VN) with a pointer to the next action.
 
-On successful Step 5, invoke `/taw-deploy` as a subskill. It returns a live URL.
-
-If `/taw-deploy` fails, emit: "Build finished, but deploy failed. Run `/taw-deploy` to try again." and stop — do NOT treat as full failure; the code is still usable locally.
-
-## Step 8 — Done
-
-Emit exactly:
-```
-Done! 🎉 Open: <live-url>
-Project files: <project-path>
-Want to add a feature? Type: /taw-add <feature description>
-Something broken? Type: /taw-fix
-```
+Never retry past the branch's own retry budget. Never silently skip failed steps.
 
 ## State files
 
 All taw state lives in `.taw/` (gitignored):
-- `.taw/intent.json` — classified intent + clarifications
-- `.taw/plan.md` — approved plan bullets
-- `.taw/checkpoint.json` — {last_step, last_error, status}
+- `.taw/intent.json` — classified intent + mode + branch loaded + clarifications
+- `.taw/plan.md` — approved plan bullets (BUILD branch only)
+- `.taw/checkpoint.json` — {status, last_branch, last_error?, deploy_url?}
+- `.taw/design.json` — design tokens from frontend-design (BUILD branch only)
+- `.taw/<branch>-session.json` — branch-specific transient state (e.g. fix-session, upgrade-snapshot, review-*.log)
+- `.taw/deploy-target.txt`, `.taw/deploy-url.txt`, `.taw/vps.env` — SHIP branch artefacts
 
 NEVER write API keys, tokens, or secrets into `.taw/` files. Redact before write.
 
+## Stack adaptation rule (MUST follow for every branch + every loaded skill)
+
+The default stack (Next.js + Tailwind + shadcn + Supabase + Polar) is a **suggestion for NEW projects only**. For existing projects, do the opposite: **detect what's already there and adapt**.
+
+Before a branch or a loaded skill writes any code / runs any install, execute this detection pass:
+
+1. **Read `package.json`** — map installed deps to categories:
+   - Auth: `@supabase/supabase-js`, `@clerk/nextjs`, `next-auth`, `better-auth`, `lucia`
+   - Payment: `@polar-sh/sdk`, `stripe`, `@lemonsqueezy/lemonsqueezy.js`
+   - DB client: raw `@supabase/supabase-js` vs `drizzle-orm` vs `prisma` vs `@libsql/client`
+   - UI: shadcn (`class-variance-authority` + `@radix-ui/*`) vs bare Radix vs Chakra vs MUI
+   - Styling: `tailwindcss` vs `unocss` vs `styled-components` vs CSS modules
+   - Data fetch: `@tanstack/react-query`, `swr`, `@trpc/*`
+   - Email: `resend`, `@sendgrid/mail`, `postmark`, `nodemailer`
+   - Analytics: `posthog-js`, `@vercel/analytics`, `plausible-tracker`
+   - Error tracking: `@sentry/nextjs`, `bugsnag`, `@logtail/next`
+   - Queue/Cron: `inngest`, `trigger.dev`, `@upstash/qstash`
+   - Cache/Rate limit: `@upstash/ratelimit`, `ioredis`, `next-rate-limit`
+   - Storage: `@supabase/storage-js`, `uploadthing`, `@aws-sdk/client-s3`
+   - Testing: `vitest`, `jest`, `@playwright/test`, `cypress`
+
+2. **Read `.env.local` / `.env.example`** (keys only, never values) — corroborate: `STRIPE_SECRET_KEY` confirms Stripe, `CLERK_SECRET_KEY` confirms Clerk, etc.
+
+3. **Read `supabase/migrations/` or `drizzle/` or `prisma/schema.prisma`** — determine DB layer.
+
+4. **Decide adaptation mode:**
+   - **Empty project / no matching dep** → follow taw-kit default (suggest install).
+   - **One alternative detected** → use that alternative throughout this branch. Load the matching skill (e.g. `stripe-checkout` instead of `payment-integration`, `clerk-auth` instead of `auth-magic-link`).
+   - **Multiple alternatives in same category** (rare — e.g. both Clerk AND Supabase auth) → ask user which one is the source of truth.
+   - **User explicitly requested something different** in their prose ("add auth with Clerk" even if project has Supabase) → honour the request, but warn about mixing.
+
+5. **Never silently install a "taw-kit default" alongside an existing alternative.** Example: if project has Stripe, do NOT `npm install @polar-sh/sdk`. If project has Drizzle, do NOT rewrite queries to raw Supabase client.
+
+This rule is **absolute** — every branch and every loaded skill must begin with this detection pass OR explicitly delegate to a skill that does. See `skills/<any-stack-skill>/SKILL.md` Step 0 for the canonical pattern.
+
+When calling a skill via `Skill({ skill: "<name>", args: "..." })`, pass the detection summary as context so the skill doesn't repeat the detection from scratch.
+
+## Shell compatibility rule (prevents silent bugs)
+
+Inside Claude Code, `grep` is a shell function that wraps `ugrep` with extra flags. This wrapper has **non-POSIX exit-code semantics in pipelines** — `grep -v <pattern> >/dev/null` can return exit 0 even when output is empty, which silently corrupts boolean checks.
+
+**Rule for every branch and every skill using bash:**
+- For boolean decisions (`if grep ...; then`) → use `command grep` or `/usr/bin/grep`, NEVER bare `grep`
+- For display-only output (`grep | wc -l`, `grep | head`) → bare `grep` is fine
+- `git grep` is NOT affected (git has its own grep implementation) — safe to use bare
+- `sed`, `awk`, `find`, `cut` — no wrappers, use normally
+
+Example of the bug:
+```bash
+# BAD — may trigger even when no match found, due to wrapper
+if git ls-files | grep -E 'env' | grep -v 'example' >/dev/null; then
+  alert "env file committed"
+fi
+
+# GOOD — `command grep` forces POSIX behaviour
+if git ls-files | command grep -E 'env' | command grep -v 'example' >/dev/null; then
+  alert "env file committed"
+fi
+```
+
+This rule is absolute — any new branch/skill doing security checks or state-detection with grep pipelines MUST follow it or risk false positives.
+
 ## Constraints
 
-- User-visible strings: match user's input language (Vietnamese by default for VN users). Internal reasoning/SKILL.md: English. Agent-internal output (planner, researcher, fullstack-dev, tester, reviewer): English per `terse-internal`.
-- Single approval gate only (Step 4). Do NOT add more user prompts during Step 5 unless a blocking decision is required.
-- Default stack: Next.js 14 App Router + Tailwind + shadcn/ui + Supabase + Polar. Deploy default is Vercel; user may pick Docker or VPS via `/taw-deploy --target=`. Override only if user explicitly asks.
-- If context grows past 150k tokens during agent chain, compact via `.taw/artifacts/` on disk and summarize.
-- If `/taw` is invoked with empty args, ask: "What do you want to build? Give me a short description." and then re-enter Step 1.
+- **One entrypoint, one command.** The old `/taw-new`, `/taw-add`, `/taw-fix`, `/taw-deploy`, `/taw-security` skills are kept as thin shims that redirect to `/taw`. Do NOT add new top-level `/taw-*` skills — add a new branch file under `branches/` instead.
+- **One approval gate per BUILD flow.** Branches MAINTAIN/* ask targeted confirmations as needed but never bundle a full project-wide approval step. FIX auto-fixes but asks before destructive actions. SHIP runs security as a blocking gate.
+- **Default stack**: Next.js 14 App Router + Tailwind + shadcn/ui + Supabase + Polar. Deploy default is Vercel. Override only if user explicitly asks or the project is Expo/mobile.
+- **Context budget**: if conversation grows past 150k tokens during a long branch (BUILD agent chain especially), compact via `.taw/artifacts/` on disk and summarize.
+- **Empty args**: let the router emit its own "what do you want to do?" menu (see `router.md` → Empty args). Do not pre-empt it here.
+- **Language consistency**: once language is detected on first interaction, keep it for the entire session unless user explicitly switches.

@@ -1,227 +1,29 @@
 ---
 name: taw-deploy
 description: >
-  One-command deploy for taw-kit projects. Supports three targets:
-  Vercel (default, cloud), Docker (container image for any host), and VPS
-  (self-managed server via SSH + systemd + nginx). User-visible strings match
-  the user's input language (Vietnamese by default for VN users).
-  Trigger phrases (EN + VN): "deploy this", "publish the
-  site", "go live", "push to vercel", "dockerize", "deploy to my vps",
-  "deploy di", "day len vercel".
-argument-hint: "[--target=vercel|docker|vps] [domain-or-host]"
-allowed-tools: Read, Write, Bash, Grep, Task, Skill
+  DEPRECATED — use `/taw` instead. This shim forwards to `/taw` with the SHIP branch.
+  Kept for backward compatibility with earlier taw-kit versions.
+argument-hint: "[--target=vercel|docker|vps] — use /taw from next version"
+allowed-tools: Skill, Read, Write, Bash, Grep, Task
 ---
 
-# taw-deploy — One-Command Deploy
+# taw-deploy — compat shim
 
-You are the taw-deploy skill. Ship the current taw-kit project to production and return a live URL (for Vercel) or access instructions (Docker/VPS).
+This command was merged into `/taw` (see `skills/taw/branches/ship.md`).
 
-**Language rule (MUST follow):** Detect the language of the user's input. If they wrote Vietnamese (or VN-style mixed text like "deploy di", "day len vercel"), reply 100% in Vietnamese — friendly, conversational, Southern style. If English, reply in English. Default to Vietnamese for ambiguous/short input. Applies to ALL user-visible text: progress lines, prompts, errors, the final URL announcement. Keep sentences short, no jargon.
+When invoked:
 
-## Step 1 — Security gate (BLOCKING)
-
-Before any other check, run the `taw-security` skill in quick mode to catch P0 issues that would make deploy unsafe (leaked secrets, RLS gaps, unverified webhooks, service-role key in client bundle, etc.).
-
-Invoke via Skill tool:
-```
-Skill({ skill: "taw-security", args: "quick" })
-```
-
-Read the returned report. Decision tree:
-
-- **0 P0 findings** → emit "✓ Quét bảo mật: an toàn" (or English equivalent) and continue to Step 2.
-- **≥1 P0 findings** → STOP. Echo the P0 list verbatim, then emit:
-  ```
-  🚨 Không thể deploy — còn {N} lỗi bảo mật P0.
-  Chạy `/taw-security` để xem chi tiết và fix, rồi gõ `/taw-deploy` lại.
-  ```
-  Write `.taw/checkpoint.json`: `{"status": "blocked-by-security", "p0_count": N}`. Do NOT proceed.
-
-P1/P2 findings are reported but **never block** deploy (user decides).
-
-## Step 2 — Pre-flight checks
-
-Run ALL checks. If any fails, stop and emit the matching message — do NOT proceed.
-
-| # | Check | Command | Fail message |
-|---|-------|---------|--------------|
-| 1 | Build passes locally | `npm run build 2>&1` exit 0 | "Build is failing. Run `/taw-fix` first." |
-| 2 | `.env.local` exists | `test -f .env.local` | "`.env.local` is missing. Create it with your Supabase + Polar keys." |
-| 3 | Required env keys present | grep `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local` | "Missing Supabase keys in `.env.local`." |
-| 4 | Config file exists | `test -f next.config.js -o -f next.config.mjs -o -f next.config.ts` | "Next.js config not found. Is this a taw-kit project?" |
-
-(Secrets-in-tracked-files check has moved to Step 1 security gate via `taw-security`.)
-
-Emit progress: "Pre-flight checks... done"
-
-## Step 3 — Pick a deploy target
-
-Parse target from args (`--target=vercel|docker|vps`). If not given:
-
-1. If `.taw/deploy-target.txt` exists, read from it.
-2. Otherwise ask:
+1. Emit (VN default):
    ```
-   Where do you want to deploy?
-     1. vercel  — Free cloud hosting, fastest to set up (recommended)
-     2. docker  — Build a Docker image; run it on any host you own
-     3. vps     — Deploy to your own VPS over SSH (systemd + nginx)
-   Type: vercel / docker / vps
+   Giờ chỉ cần `/taw` thôi nha — em tự hiểu là deploy.
+   Gợi ý lần sau: gõ  /taw deploy  hoặc  /taw đẩy lên vercel
    ```
-3. Save the choice to `.taw/deploy-target.txt`.
-
-## Step 4 — Deploy
-
-Read project name from `package.json` (`$PROJECT_NAME`).
-
-### Target: vercel
-
-```bash
-npx vercel --prod --yes 2>&1
-```
-
-- Parse stdout for a URL matching `https://*.vercel.app` or the user's custom domain.
-- On success: go to Step 4 with the URL.
-- On failure: emit "Deploy failed. Error details below:" + last 15 lines. Write `.taw/checkpoint.json`: `{"status": "deploy-failed", "target": "vercel", "last_error": "..."}`. Stop.
-
-Vercel auth: if `npx vercel` prompts for login, tell the user:
-```
-Vercel needs a one-time login. A browser will open — click "Accept".
-```
-
-### Target: docker
-
-Create a production-ready `Dockerfile` if missing:
-
-```dockerfile
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-Also create `.dockerignore` if missing (`node_modules`, `.next`, `.env*`, `.git`).
-
-Build the image:
-```bash
-docker build -t $PROJECT_NAME:latest .
-```
-
-Then emit:
-```
-Docker image ready: $PROJECT_NAME:latest
-
-Run it locally:
-  docker run --env-file .env.local -p 3000:3000 $PROJECT_NAME:latest
-
-Push to a registry:
-  docker tag $PROJECT_NAME:latest <registry>/$PROJECT_NAME:latest
-  docker push <registry>/$PROJECT_NAME:latest
-
-Then run on your host.
-```
-
-Write `.taw/deploy-url.txt`: `docker://$PROJECT_NAME:latest`.
-
-### Target: vps
-
-Require `.taw/vps.env` with: `VPS_HOST`, `VPS_USER`, `VPS_PATH` (defaults `/var/www/$PROJECT_NAME`), `VPS_PORT` (defaults 22).
-
-If the file is missing, emit:
-```
-VPS config needed. Create .taw/vps.env with:
-  VPS_HOST=your-server.com
-  VPS_USER=deploy
-  VPS_PATH=/var/www/$PROJECT_NAME
-  VPS_PORT=22
-Re-run /taw-deploy --target=vps when ready.
-```
-Stop.
-
-If present:
-
-1. Build locally:
-   ```bash
-   npm run build
+2. Forward to `/taw`:
    ```
-2. Rsync build output + required runtime files:
-   ```bash
-   rsync -az --delete \
-     --exclude node_modules --exclude .env.local --exclude .git \
-     ./ "$VPS_USER@$VPS_HOST:$VPS_PATH/"
+   Skill({ skill: "taw", args: "deploy <user-args>" })
    ```
-3. On the remote, install prod deps and (re)start via systemd:
-   ```bash
-   ssh "$VPS_USER@$VPS_HOST" "cd $VPS_PATH && npm ci --omit=dev && sudo systemctl restart $PROJECT_NAME"
-   ```
-4. If systemd unit is missing, emit the unit content and instructions:
-   ```
-   Add /etc/systemd/system/$PROJECT_NAME.service on your VPS:
+3. `/taw` routes to `@branches/ship.md`.
 
-   [Unit]
-   Description=$PROJECT_NAME (taw-kit)
-   After=network.target
+## Sunset plan
 
-   [Service]
-   Type=simple
-   WorkingDirectory=$VPS_PATH
-   EnvironmentFile=$VPS_PATH/.env.local
-   ExecStart=/usr/bin/node node_modules/.bin/next start -p 3000
-   Restart=always
-   User=$VPS_USER
-
-   [Install]
-   WantedBy=multi-user.target
-
-   Then:
-     sudo systemctl daemon-reload
-     sudo systemctl enable --now $PROJECT_NAME
-   ```
-5. Point a reverse proxy (nginx/Caddy) to `127.0.0.1:3000`. Example nginx snippet written to `.taw/nginx.conf.snippet` for the user to copy.
-
-Write `.taw/deploy-url.txt`: `ssh://$VPS_USER@$VPS_HOST$VPS_PATH` + the public domain the user points at the VPS.
-
-## Step 5 — Capture and persist
-
-```bash
-echo "<url-or-identifier>" > .taw/deploy-url.txt
-```
-
-Update `.taw/checkpoint.json`:
-```json
-{"status": "deployed", "target": "<vercel|docker|vps>", "deploy_url": "<url>", "deployed_at": "<ISO timestamp>"}
-```
-
-## Step 6 — Done
-
-Emit exactly (substitute the relevant line):
-```
-Deploy succeeded! 🎉
-<one of:>
-  Live at: <https://...vercel.app>              # vercel
-  Image ready: $PROJECT_NAME:latest             # docker
-  Deployed to: $VPS_USER@$VPS_HOST:$VPS_PATH    # vps
-
-Want to add a feature? Type: /taw-add <description>
-Something broken? Type: /taw-fix
-```
-
-## Constraints
-
-- NEVER log tokens, SSH keys, or credentials.
-- NEVER skip pre-flight checks, even when called from `/taw` automatically.
-- If called outside a taw-kit project (no `package.json`): emit "I don't see a project here. Cd into the project folder first."
-- Optional `domain-or-host` arg overrides: Vercel → `--prod --scope <domain>`; VPS → `VPS_HOST=<arg>`; Docker → ignored.
-- If Docker CLI is missing on target=docker: emit install hint (`brew install docker` on Mac / Docker Desktop elsewhere) and stop.
-- If `ssh` or `rsync` is missing on target=vps: emit install hint and stop.
+Removed in a future version. Users should switch to `/taw deploy` or `/taw đẩy lên vercel`.
