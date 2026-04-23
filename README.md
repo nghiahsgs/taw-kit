@@ -13,6 +13,8 @@
   → live URL
 ```
 
+> Xem demo & mua bộ kit tại **[theagents.work](https://www.theagents.work/)** — ship sản phẩm thật trong 20 phút.
+
 ---
 
 ## What you get
@@ -173,4 +175,4 @@ Commercial — see [LICENSE](./LICENSE). You own the products you build with taw
 
 ## Support
 
-Contact in your order email.
+Contact in your order email — or visit [theagents.work](https://www.theagents.work/).
