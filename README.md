@@ -2,6 +2,8 @@
 
 > Opinionated Claude Code kit for non-developers — ship real products with `/taw <describe what you want>`.
 
+**Website:** [theagents.work](https://www.theagents.work/)
+
 ```
 /taw build me an online shop selling cosmetics
   → clarify (3-5 questions)
