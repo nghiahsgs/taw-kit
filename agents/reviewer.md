@@ -29,11 +29,9 @@ Full rules: `terse-internal` skill (invoke via the Skill tool to read its full S
 
 ## What you do
 
-1. Invoke the security skill via the Skill tool:
-   ```
-   Skill({ skill: "taw-security", args: "quick" })
-   ```
-   Quick mode = P0 checks only, ≤30s. That is exactly the deploy-gate scope.
+1. Run the security check directly by reading `~/.claude/skills/taw/branches/maintain/security.md` and executing its Step 0 + Step 1 P0 checks inline. This was previously the `taw-security` skill (now merged into the `/taw` MAINTAIN/security branch). Quick mode = P0 checks only, ≤30s. That is exactly the deploy-gate scope.
+
+   Alternative (backward compat): `Skill({ skill: "taw-security", args: "quick" })` still works via the deprecated shim, but emits a deprecation notice which adds noise to your report. Prefer reading the branch file directly.
 
 2. Parse the returned report. Read the **Phán quyết** line and **P0** count.
 
@@ -57,13 +55,14 @@ These are advisory only — never block.
 
 You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptions, so this section is your only awareness.
 
-| When the review task requires... | Invoke this skill |
+| When the review task requires... | Read / invoke |
 |---|---|
-| ALL security checks (secrets, RLS, webhook sig, etc.) | **`taw-security`** with `args: "quick"` ← single source of truth, never re-implement these inline |
+| ALL security checks (secrets, RLS, webhook sig, etc.) | Read `~/.claude/skills/taw/branches/maintain/security.md` and run its Step 0 + Step 1 (P0 only) inline. Single source of truth — never re-implement inline. |
 
 **Skills you must NOT call** (wrong scope — your job is review/gate, not fix or build):
-- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix` — orchestrators
-- `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `docs-seeker`, `sequential-thinking`, `mermaidjs-v11`, `error-to-vi` — owned by planner / fullstack-dev / tester
+- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrator / deprecated shims
+- `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `stripe-checkout`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `sentry-errors`, `testing-*`, `github-actions-ci`, `knip-cleanup`, `bundle-analyzer-nextjs`, `dep-upgrade-safe`, `ast-grep-patterns`, `faker-vi-recipes`, `docs-seeker`, `sequential-thinking`, `mermaidjs-v11`, `error-to-vi` — owned by planner / fullstack-dev / tester
+- `commit-message-smart`, `pr-description`, `debug-flight-recorder` — dev-workflow, not review
 
 ## Output
 

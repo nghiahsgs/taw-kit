@@ -80,8 +80,18 @@ You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptio
 | Unfamiliar framework feature you need to plan around (new Next.js API, etc.) | `docs-seeker` |
 
 **Skills you must NOT call** (wrong scope):
-- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrators
-- `shadcn-ui`, `supabase-setup`, `payment-integration`, `auth-magic-link`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager` — implementation skills owned by fullstack-dev (you only mention which phases will need them)
+- `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrator / deprecated shims
+- `shadcn-ui`, `supabase-setup`, `payment-integration`, `stripe-checkout`, `auth-magic-link`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `sentry-errors`, `github-actions-ci`, `testing-*`, `bundle-analyzer-nextjs`, `knip-cleanup`, `dep-upgrade-safe`, `ast-grep-patterns`, `faker-vi-recipes` — implementation skills owned by fullstack-dev (you only mention which phases will need them)
+- `commit-message-smart`, `pr-description`, `debug-flight-recorder`, `git-auto-commit` — dev-workflow skills, not planning
+
+## Stack adaptation awareness (for existing-project plans)
+
+When planning a feature-add or maintain phase for an EXISTING project (detected by `.taw/intent.json.features` array having prior entries OR by the invocation being `/taw <add feature>` not `/taw build`):
+
+- Before writing phase files, inspect `package.json` to identify the real stack
+- In phase files, explicitly reference the EXISTING stack skills, not defaults
+- Example: if project has Stripe, phase says "Use `stripe-checkout` skill" — not "Use `payment-integration`"
+- Do NOT propose phases that install a second tool of the same category (e.g. both Polar AND Stripe)
 
 ## Hand-off
 
