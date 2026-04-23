@@ -239,6 +239,67 @@ First deploy from WSL opens a Windows browser; the token is stored in WSL's `~/.
 
 ---
 
+## Option B — Copy thủ công (không cần WSL, không cần cài gì thêm)
+
+> **Dành cho ai:** Windows không cho cài WSL (máy công ty khoá, Windows cũ), hoặc chỉ muốn xài `/taw` nhanh mà không cần cả bộ kit.
+>
+> **Cái này chạy được:** `/taw`, tất cả skills, tất cả agents trong Claude Code.
+>
+> **Cái này KHÔNG có:** lệnh `tawkit` (doctor / update / uninstall), hooks auto-commit, installer tự merge settings.
+
+### Bước 1 — Cài Claude Code cho Windows
+
+Tải và cài từ [docs.claude.com/claude-code](https://docs.claude.com/claude-code). Mở 1 lần, login xong là được.
+
+### Bước 2 — Tải taw-kit về máy
+
+Vào [github.com/nghiahsgs/taw-kit](https://github.com/nghiahsgs/taw-kit) → nút xanh **Code** → **Download ZIP**. Giải nén ra 1 chỗ bất kỳ (vd `C:\Users\YourName\Downloads\taw-kit-main\`).
+
+Hoặc nếu có Git:
+
+```powershell
+git clone https://github.com/nghiahsgs/taw-kit.git "%USERPROFILE%\taw-kit"
+```
+
+### Bước 3 — Copy 2 thư mục vào `.claude`
+
+Mở File Explorer, gõ vào thanh địa chỉ:
+
+```
+%USERPROFILE%\.claude
+```
+
+Nhấn Enter. Nếu chưa có thư mục `.claude` thì tạo mới.
+
+Bên trong `.claude`, copy 2 thư mục sau từ taw-kit đã tải về:
+
+| Copy từ | Vào |
+|---------|-----|
+| `taw-kit-main\skills\*` | `%USERPROFILE%\.claude\skills\` |
+| `taw-kit-main\agents\*` | `%USERPROFILE%\.claude\agents\` |
+
+Xong. Không cần cài gì thêm.
+
+### Bước 4 — Mở Claude Code và thử
+
+Mở 1 folder trống bất kỳ trong Claude Code, gõ:
+
+```
+/taw làm landing page bán khoá học online
+```
+
+Nếu thấy agent planner → researcher → fullstack-dev chạy thì đã thành công.
+
+### Giới hạn của cách này
+
+- Không có lệnh `tawkit doctor` để check môi trường — tự đảm bảo máy có **Node.js ≥ 20** và **git** đã cài (tải tại [nodejs.org](https://nodejs.org) và [git-scm.com](https://git-scm.com/download/win))
+- Không có auto-commit hook — bạn tự `git commit` sau mỗi phase
+- Muốn update thì tự tải ZIP mới rồi copy đè 2 thư mục
+
+Khi nào rảnh hoặc cần full feature, quay lại làm Part 1 ở đầu file để cài WSL2.
+
+---
+
 ## Alternative: Git Bash (experimental, NOT recommended)
 
 If you absolutely cannot use WSL2 (corporate lockdown, older Windows), you can try Git Bash. This is untested and likely to break on some scripts. Proceed at your own risk.
