@@ -12,12 +12,12 @@ Lợi ích:
 
 - Cùng script, cùng skill, cùng hành vi như người xài Mac/Linux
 - Dùng được `apt`, `git`, `node`, `brew` (tuỳ chọn), đủ bộ công cụ Unix
-- Claude Code cũng chạy luôn trong WSL, hiệu năng full
+- Claude Code cũng chạy luôn trong WSL, hiệu năng đầy đủ
 - Bạn vẫn sửa file bằng VS Code / editor Windows nào cũng được — đường dẫn `\\wsl$\Ubuntu\home\you\...` truy cập được từ Windows
 
 ---
 
-## Phần 1 — Cài WSL2 + Ubuntu (chỉ làm 1 lần, ~5 phút)
+## Phần 1 — Cài WSL2 + Ubuntu (chỉ làm một lần, ~5 phút)
 
 ### 1.1 Mở PowerShell với quyền Administrator
 
@@ -29,7 +29,7 @@ Bấm `Win + X`, chọn "Windows Terminal (Admin)" hoặc "PowerShell (Admin)".
 wsl --install
 ```
 
-Lệnh này cài WSL2 + Ubuntu 22.04 (mặc định) trong 1 phát. Nếu đã có WSL nhưng chưa có distro:
+Lệnh này cài WSL2 + Ubuntu 22.04 (mặc định) trong một lần. Nếu đã có WSL nhưng chưa có distro:
 
 ```powershell
 wsl --install -d Ubuntu-22.04
@@ -41,10 +41,10 @@ wsl --install -d Ubuntu-22.04
 
 Sau khi reboot, Ubuntu tự mở lên. Nó sẽ hỏi:
 
-- 1 **username** cho tài khoản Linux (đặt gì cũng được, chữ thường, không khoảng trắng — ví dụ `nate`)
-- 1 **password** (chỉ dùng cho `sudo` trong Ubuntu; ít khi phải gõ)
+- Một **username** cho tài khoản Linux (đặt gì cũng được, chữ thường, không khoảng trắng — ví dụ `nate`)
+- Một **password** (chỉ dùng cho `sudo` trong Ubuntu; ít khi phải gõ)
 
-Bạn đã có 1 terminal Linux hoạt động. Từ đây, **mọi lệnh taw-kit đều chạy trong terminal Ubuntu này**, không phải PowerShell.
+Bạn đã có một terminal Linux hoạt động. Từ đây, **mọi lệnh taw-kit đều chạy trong terminal Ubuntu này**, không phải PowerShell.
 
 ### 1.4 Xác nhận WSL2
 
@@ -108,13 +108,13 @@ Trong Ubuntu:
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-Sau khi cài, login 1 lần:
+Sau khi cài, đăng nhập một lần:
 
 ```bash
 claude login
 ```
 
-1 tab trình duyệt Windows sẽ mở — bấm Accept, quay lại Ubuntu. Xong.
+Một tab trình duyệt Windows sẽ mở — bấm Accept, quay lại Ubuntu. Xong.
 
 Xác nhận:
 
@@ -136,7 +136,7 @@ git clone https://github.com/nghiahsgs/taw-kit.git ~/.taw-kit
 bash ~/.taw-kit/scripts/install.sh
 ```
 
-Installer tự nhận WSL và đi theo nhánh Linux. Bạn sẽ thấy output kiểu:
+Trình cài đặt tự nhận WSL và đi theo nhánh Linux. Bạn sẽ thấy output kiểu:
 
 ```
 [info] OS detected: wsl
@@ -235,7 +235,7 @@ WSL2 truy cập file trong filesystem Linux (`~/` hoặc `/home/`) nhanh hơn nh
 
 ### Deploy `vercel` đòi login mỗi lần
 
-Deploy lần đầu từ WSL mở trình duyệt Windows; token lưu trong `~/.vercel/` của WSL. Nếu Vercel cứ hỏi lại, xoá `~/.vercel/` rồi chạy lại 1 lần.
+Deploy lần đầu từ WSL mở trình duyệt Windows; token lưu trong `~/.vercel/` của WSL. Nếu Vercel cứ hỏi lại, xoá `~/.vercel/` rồi chạy lại một lần.
 
 ---
 
@@ -249,11 +249,11 @@ Deploy lần đầu từ WSL mở trình duyệt Windows; token lưu trong `~/.v
 
 ### Bước 1 — Cài Claude Code cho Windows
 
-Tải và cài từ [docs.claude.com/claude-code](https://docs.claude.com/claude-code). Mở 1 lần, login xong là được.
+Tải và cài từ [docs.claude.com/claude-code](https://docs.claude.com/claude-code). Mở một lần, đăng nhập xong là được.
 
 ### Bước 2 — Tải taw-kit về máy
 
-Vào [github.com/nghiahsgs/taw-kit](https://github.com/nghiahsgs/taw-kit) → nút xanh **Code** → **Download ZIP**. Giải nén ra 1 chỗ bất kỳ (vd `C:\Users\YourName\Downloads\taw-kit-main\`).
+Vào [github.com/nghiahsgs/taw-kit](https://github.com/nghiahsgs/taw-kit) → nút xanh **Code** → **Download ZIP**. Giải nén ra một chỗ bất kỳ (vd `C:\Users\YourName\Downloads\taw-kit-main\`).
 
 Hoặc nếu có Git:
 
@@ -282,7 +282,7 @@ Xong. Không cần cài gì thêm.
 
 ### Bước 4 — Mở Claude Code và thử
 
-Mở 1 folder trống bất kỳ trong Claude Code, gõ:
+Mở một thư mục trống bất kỳ trong Claude Code, gõ:
 
 ```
 /taw làm landing page bán khoá học online
