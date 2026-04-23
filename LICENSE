@@ -1,14 +1,35 @@
-taw-kit — Commercial License
+taw-kit — Source-Available License (Public Beta)
 
 Copyright (c) 2026 taw-kit. All rights reserved.
 
-Full EULA: docs/legal/LICENSE.md
+Full terms: docs/legal/LICENSE.md
 
-This kit is licensed for use by the individual purchaser who obtained a license
-via the official distribution channel. Redistribution, resharing of the repo,
-or transfer of access to third parties is prohibited.
+===============================================================================
 
-Products built WITH this kit are owned outright by the purchaser — no
-attribution or royalty required. Only the kit itself is restricted.
+TL;DR — plain English
 
-Contact: namkent1612000@gmail.com
+  ALLOWED (free):
+    - Clone this repo.
+    - Install taw-kit on your own machines.
+    - Use it to build unlimited websites, apps, or services.
+    - Products you build are YOURS 100% — no royalty, no attribution.
+    - Modify skills, agents, hooks, templates for your own use.
+    - Share screenshots, tutorials, reviews.
+
+  NOT ALLOWED:
+    - Redistribute this repo (re-upload, mirror, fork + publish elsewhere,
+      upload to package registries or marketplaces).
+    - Resell taw-kit, or any rebranded / repackaged derivative of it.
+    - Sublicense any part of taw-kit to third parties.
+    - Remove these copyright notices.
+
+Only the kit itself is restricted. The products you build with it are free
+of any claim by this license.
+
+===============================================================================
+
+Author reserves the right to change license terms in future versions
+(for example, introducing a paid tier). Clones obtained under this version
+continue under these terms.
+
+Contact for commercial / redistribution inquiries: namkent1612000@gmail.com
