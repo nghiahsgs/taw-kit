@@ -28,11 +28,7 @@ Licensee receives a **non-exclusive, non-transferable, perpetual license** to us
 
 Products Licensee builds using taw-kit — including websites, apps, databases, and deployed services — are **Licensee's own property** and are not subject to this EULA. Licensee may open-source, sell, or close-source such products at their discretion.
 
-## 5. Refund policy
-
-See [REFUND-POLICY.md](./REFUND-POLICY.md). Upon refund approval, this license terminates immediately and Licensee's repository access will be revoked.
-
-## 6. Warranty disclaimer
+## 5. Warranty disclaimer
 
 The Software is provided **"AS IS"** without warranty of any kind, express or implied. Licensor makes no warranty that the Software will meet Licensee's requirements, operate uninterrupted, or be free of defects.
 
