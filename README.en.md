@@ -147,7 +147,12 @@ The primary docs (quickstart, install-windows) are maintained in Vietnamese — 
 
 ## License
 
-Commercial — see [LICENSE](./LICENSE). You own the products you build with taw-kit 100%. The kit itself cannot be redistributed or resold.
+Source-available — free during public beta. See [LICENSE](./LICENSE) for the full text.
+
+- **You may:** clone it, use taw-kit to build as many products as you want. Products you build are 100% yours, no attribution required.
+- **You may not:** redistribute this repo (mirror, rebranded fork, upload to package registries), or resell taw-kit or any derivative of it.
+
+The author reserves the right to change the license in future versions (e.g. introduce a paid tier). Clones obtained today remain under the current terms.
 
 ## Support
 

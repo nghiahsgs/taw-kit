@@ -149,7 +149,12 @@ Uninstall chỉ đụng vào file do taw-kit cài (nhận diện qua marker `.ta
 
 ## License
 
-License thương mại — xem [LICENSE](./LICENSE). Sản phẩm bạn làm ra bằng taw-kit là của bạn 100%. Bản thân bộ kit thì không được phân phối lại hay bán lại.
+Source-available — free dùng trong public beta. Xem [LICENSE](./LICENSE) cho đầy đủ.
+
+- **Được:** clone, dùng taw-kit làm bao nhiêu sản phẩm cũng được. Sản phẩm bạn làm ra là của bạn 100%, không cần trích dẫn.
+- **Không được:** phân phối lại repo này (mirror, fork đăng chỗ khác, đẩy lên registry), bán lại taw-kit hay bản rebrand của nó.
+
+Tác giả giữ quyền đổi license ở version tương lai (ví dụ mở gói trả phí). Bản anh clone hôm nay vẫn theo điều khoản hiện tại.
 
 ## Hỗ trợ
 
