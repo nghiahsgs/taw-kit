@@ -40,7 +40,7 @@ Only reached when Tier 1 resolved to `ADVISOR`. These are **read-only opinion** 
 | Sub-intent | Load | Signals |
 |---|---|---|
 | `analyze` | `@branches/advisor/analyze.md` | analyze, phân tích, "review code", "đọc code rồi nói", "code quality", "tư vấn feature", "review kiến trúc", "opinion về", "check auth flow" |
-| `suggest` | `@branches/advisor/suggest.md` | suggest, đề xuất, "feature mới", "thêm gì", "nên build gì", "ideas for app", "what next", "recommend feature" |
+| `suggest` | `@branches/advisor/suggest.md` | suggest, đề xuất, gợi ý, "gợi ý tính năng", "feature mới", "tính năng mới", "thêm gì", "nên build gì", "ideas for app", "what next", "recommend feature" |
 | `coverage` | `@branches/advisor/coverage.md` | coverage, "test coverage", "đã test đủ chưa", "code path", "user flow coverage", "gaps in tests" |
 | `adversarial` | `@branches/advisor/adversarial.md` | adversarial, red-team, attack, "tìm lỗ hổng", "break code", "find bugs", "stress test code", "security adversarial" |
 | `scope-check` | `@branches/advisor/scope-check.md` | scope, "scope creep", "built đúng chưa", "intent vs diff", "missing requirement", "check PR scope" |
