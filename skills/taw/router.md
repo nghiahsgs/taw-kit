@@ -2,16 +2,17 @@
 
 You are inside `/taw`. This file maps free-form user prose (EN or VN) to exactly ONE branch. Load the matching branch file and follow it. If the user's intent is ambiguous, ask ONE short clarifying question instead of guessing.
 
-## Tier 1 — 4 top-level intents
+## Tier 1 — 5 top-level intents
 
-Pick exactly one. Keyword lists below are inclusive, not exhaustive — use judgement, but never invent a 5th tier-1 branch.
+Pick exactly one. Keyword lists below are inclusive, not exhaustive — use judgement, but never invent a 6th tier-1 branch.
 
 | Intent | Load | Signals (VN + EN) |
 |---|---|---|
 | `BUILD` | `@branches/build.md` | tạo, làm, lam, xây, xay, build, create, make, scaffold, "cho tôi một", "tao cho toi", "làm cho tui", new project, landing page, shop, blog, crm, dashboard, preset:, thêm tính năng, them tinh nang, add feature, extend with, "thêm trang", "thêm form" |
 | `FIX` | `@branches/fix.md` | lỗi, loi, hỏng, hong, không chạy, khong chay, bể, be, vỡ, vo, sửa, sua, fix, broken, error, crash, doesn't work, build fail, website lỗi |
 | `SHIP` | `@branches/ship.md` | deploy, đẩy lên, day len, publish, go live, live, vercel, docker, vps, lên mạng, len mang, production, prod |
-| `MAINTAIN` | Tier-2 menu below | everything else: test, upgrade, clean, perf, rollback, refactor, types, seed, review, security, audit, swap, migrate |
+| `MAINTAIN` | Tier-2 menu below | test, upgrade, clean, perf, rollback, refactor, types, seed, review, security, audit, swap, migrate, status, dashboard |
+| `ADVISOR` | Tier-2 menu below | analyze, phân tích, review code, "review giùm", đề xuất, suggest, opinion, "review kiến trúc", coverage, adversarial, red-team, scope check, "đọc code rồi tư vấn", "review 1 feature" |
 
 ## Tier 2 — sub-intents inside MAINTAIN
 
@@ -31,6 +32,18 @@ Only reached when Tier 1 resolved to `MAINTAIN`. Try keyword match first. If key
 | `security` | `@branches/maintain/security.md` | bảo mật, bao mat, security, audit, safe, an toàn, an toan, scan, vuln |
 | `stack-swap` | `@branches/maintain/stack-swap.md` | swap, đổi stack, doi stack, thay, replace, "đổi supabase sang", migrate from X to Y |
 | `status` | `@branches/maintain/status.md` | status, dashboard, "trạng thái", "tong quan", "xem tổng quan", health, "du an the nao", "project status", "check status" |
+
+## Tier 2 — sub-intents inside ADVISOR
+
+Only reached when Tier 1 resolved to `ADVISOR`. These are **read-only opinion** branches — never modify code, always output a written report. If keyword matches one row exactly, load that branch. If ambiguous, show menu (VN if user VN), wait for pick.
+
+| Sub-intent | Load | Signals |
+|---|---|---|
+| `analyze` | `@branches/advisor/analyze.md` | analyze, phân tích, "review code", "đọc code rồi nói", "code quality", "tư vấn feature", "review kiến trúc", "opinion về", "check auth flow" |
+| `suggest` | `@branches/advisor/suggest.md` | suggest, đề xuất, "feature mới", "thêm gì", "nên build gì", "ideas for app", "what next", "recommend feature" |
+| `coverage` | `@branches/advisor/coverage.md` | coverage, "test coverage", "đã test đủ chưa", "code path", "user flow coverage", "gaps in tests" |
+| `adversarial` | `@branches/advisor/adversarial.md` | adversarial, red-team, attack, "tìm lỗ hổng", "break code", "find bugs", "stress test code", "security adversarial" |
+| `scope-check` | `@branches/advisor/scope-check.md` | scope, "scope creep", "built đúng chưa", "intent vs diff", "missing requirement", "check PR scope" |
 
 ## Disambiguation — when keywords clash
 

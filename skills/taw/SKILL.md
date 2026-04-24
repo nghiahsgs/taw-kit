@@ -2,10 +2,12 @@
 name: taw
 description: >
   Single entrypoint for taw-kit. User types `/taw <anything in VN or EN>` — this skill
-  classifies the intent (BUILD / FIX / SHIP / MAINTAIN) and loads the matching branch file
-  to execute. Replaces the old one-command-per-task model (/taw-new, /taw-add, /taw-fix,
-  /taw-deploy, /taw-security) with a single unified command. Supports dev workflows out of
-  the box: test, upgrade, clean, perf, rollback, refactor, types, seed, review, stack-swap.
+  classifies the intent (BUILD / FIX / SHIP / MAINTAIN / ADVISOR) and loads the matching
+  branch file to execute. Replaces the old one-command-per-task model (/taw-new, /taw-add,
+  /taw-fix, /taw-deploy, /taw-security) with a single unified command. Supports dev
+  workflows out of the box: test, upgrade, clean, perf, rollback, refactor, types, seed,
+  review, stack-swap, status, and ADVISOR group (analyze, suggest, coverage, adversarial,
+  scope-check) for opinionated review of existing code.
   User-visible strings match the user's input language (Vietnamese by default for VN users).
   Two modes: SAFE (default — clarify + approval, max 1 round-trip) and YOLO (skip gates,
   smart defaults — for demos/power users). YOLO triggers: prose contains `yolo`, `nhanh nha`,
@@ -58,6 +60,17 @@ description: >
   MAINTAIN→STATUS: "status", "dashboard", "health check", "project overview",
     "trang thai", "tong quan", "xem tinh hinh", "du an the nao", "check status",
     "report du an", "/taw status".
+  ADVISOR→ANALYZE: "analyze", "phan tich", "review code", "review feature",
+    "doc code roi noi", "code quality review", "review kien truc", "opinion ve",
+    "check auth flow", "review 1 feature", "feedback ve code".
+  ADVISOR→SUGGEST: "suggest feature", "de xuat tinh nang", "nen build gi tiep",
+    "them gi", "ideas for app", "what should i add", "recommend next feature".
+  ADVISOR→COVERAGE: "coverage", "test coverage", "da test du chua", "code path",
+    "user flow coverage", "gaps in tests", "xem coverage".
+  ADVISOR→ADVERSARIAL: "adversarial", "red team", "attack", "tim lo hong",
+    "break code", "find bugs deeper", "stress test code", "security adversarial".
+  ADVISOR→SCOPE-CHECK: "scope check", "scope creep", "built dung chua",
+    "intent vs diff", "missing requirement", "check PR scope", "PR too big".
 argument-hint: "<mô tả việc cần làm bằng tiếng Việt / describe what you want>"
 allowed-tools: Task, Skill, Read, Write, Edit, Bash, Glob, Grep
 ---
@@ -73,8 +86,9 @@ You are `/taw`. User gives you free-form prose in any language (VN, EN, mixed). 
 Load `@router.md` and follow its classification rules. Output: exactly ONE branch file path to load.
 
 Router handles:
-- Tier 1 classification: `BUILD` | `FIX` | `SHIP` | `MAINTAIN`
-- Tier 2 (when `MAINTAIN`): `test` | `upgrade` | `clean` | `perf` | `rollback` | `refactor` | `types` | `seed` | `review` | `security` | `stack-swap`
+- Tier 1 classification: `BUILD` | `FIX` | `SHIP` | `MAINTAIN` | `ADVISOR`
+- Tier 2 (when `MAINTAIN`): `test` | `upgrade` | `clean` | `perf` | `rollback` | `refactor` | `types` | `seed` | `review` | `security` | `stack-swap` | `status`
+- Tier 2 (when `ADVISOR`): `analyze` | `suggest` | `coverage` | `adversarial` | `scope-check`
 - Mode detection: `safe` (default) vs `yolo`
 - Empty args / ambiguous → ask ONE clarifying question, then re-classify
 
@@ -109,6 +123,11 @@ Branch files live at:
 - `branches/maintain/review.md` — local pre-push review (lint+type+test+security)
 - `branches/maintain/stack-swap.md` — swap payment / db / ui / email / etc
 - `branches/maintain/status.md` — project health dashboard (git + build + deploy + security + tests)
+- `branches/advisor/analyze.md` — deep-read a feature, opinionated review (correctness/security/architecture/quality/UX)
+- `branches/advisor/suggest.md` — propose 2-3 features based on demand evidence (3 forcing questions)
+- `branches/advisor/coverage.md` — ASCII diagram of code paths + user flows + test gaps + unit-vs-E2E recommendations
+- `branches/advisor/adversarial.md` — red-team the branch diff, scope-gated by diff size (skip <50 lines)
+- `branches/advisor/scope-check.md` — compare intent (.taw/intent.json + PR + TODOS.md) vs diff — creep + missing
 
 Between steps inside a branch, emit a short progress line:
 ```
