@@ -3,6 +3,7 @@
 > Opinionated Claude Code kit for non-developers — ship real products with `/taw <describe what you want>`.
 
 **Website:** [theagents.work](https://www.theagents.work/)
+**Discord:** [join the community](https://discord.gg/6nhMhhMV) — questions, bug reports, feature requests
 
 > Bản tiếng Việt: [README.md](./README.md)
 
