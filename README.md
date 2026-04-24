@@ -3,6 +3,7 @@
 > Bộ kit Claude Code cho người không biết code — ra mắt sản phẩm thật chỉ bằng một câu `/taw <mô tả cái bạn muốn>`.
 
 **Website:** [theagents.work](https://www.theagents.work/)
+**Discord:** [tham gia cộng đồng](https://discord.gg/6nhMhhMV) — hỏi đáp, báo lỗi, xin feature
 
 > English version: [README.en.md](./README.en.md)
 
