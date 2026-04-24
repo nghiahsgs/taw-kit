@@ -258,6 +258,27 @@ This rule is **absolute** — every branch and every loaded skill must begin wit
 
 When calling a skill via `Skill({ skill: "<name>", args: "..." })`, pass the detection summary as context so the skill doesn't repeat the detection from scratch.
 
+## Autonomy principle (MUST follow across all branches)
+
+taw-kit defaults to **autonomous action for safe ops**, not "ask before everything". Dev users hate being interrupted with confirmation prompts for trivial things. Treat asking as a token-cost and an attention-cost — only pay it when the action is hard to reverse.
+
+**Action classification:**
+
+| Class | Examples | Behaviour |
+|---|---|---|
+| **AUTO** (do without asking) | commit docs/CLAUDE.md, auto-fix lint, apply codemod, update auto-marker sections, `npm install` declared deps, generate tests, dry-run reports, save state to `.taw/` | Just do it. Report 1-line result. |
+| **CONFIRM ONCE** (ask but commit after answer) | add new dep not in package.json, rewrite working code in refactor, rebuild DB types (overwrites `types/supabase.ts`), regenerate CLAUDE.md markers that would overwrite user sections | Ask ONE question, do the thing, don't re-ask on next step. |
+| **HARD GATE** (ask + require explicit confirmation text) | `git push --force`, `git reset --hard` on pushed commits, `DROP TABLE`, deploy to prod, delete user code, destructive schema migration, overwrite `.env.local` | Require exact text match ("yes, destroy" or similar). Never assume. |
+
+**What this means for branch authors:**
+
+- After a successful `update` / `fix` / `sync` / `gen` step, DO NOT end with "Anh muốn em commit không? Hoặc làm X tiếp?" — auto-commit if change is safe, then output 1-line done.
+- DO NOT pro-actively propose 3-5 next-step options unless user explicitly asks "what next". Let user ask for the next thing.
+- DO NOT re-confirm a decision user already made in the current session.
+- Save proactive suggestions for `/taw status` or the single final "Done" line — never mid-flow.
+
+**Exception — safe-mode approval gate (BUILD branch only):** the Step 4 approval gate in BUILD is a DELIBERATE HARD-GATE because it trades 1 user message for preventing 5 minutes of wrong-direction build. This is the single approved interruption point per BUILD run. Other branches must NOT replicate this pattern.
+
 ## Shell compatibility rule (prevents silent bugs)
 
 Inside Claude Code, `grep` is a shell function that wraps `ugrep` with extra flags. This wrapper has **non-POSIX exit-code semantics in pipelines** — `grep -v <pattern> >/dev/null` can return exit 0 even when output is empty, which silently corrupts boolean checks.
