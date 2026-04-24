@@ -71,12 +71,28 @@ npm run build 2>&1 | tail -30
 4. `no` → "OK em dừng. Dán thêm lỗi em thử tiếp."
 5. Update `.taw/checkpoint.json`: `{"status":"fix-failed","last_error":"<error>"}`
 
+## Step 5.5 — Auto-maintain CLAUDE.md (opt-in, default on)
+
+Read `.taw/config.json` `auto_update_memory` flag. If `true`:
+- Load `@branches/maintain/memory.md` with `update` subcommand
+- Append root cause + prevention hint to `taw:auto:fix-gotchas` section
+
+Format for the entry:
+```
+- {date}: {category} — {1-line root cause}. Prevent by: {1-line hint}.
+```
+
+This builds a growing "known issues" log over time so Claude doesn't repeat the same mistake in future sessions.
+
+Skip if opted out.
+
 ## Step 6 — Done
 
 ```
 taw-kit: xong! Build xanh lại rồi.
-  Đã sửa: <1-line summary>
-  Số lần thử: <N>/3
+  Đã sửa:        <1-line summary>
+  Số lần thử:    <N>/3
+  CLAUDE.md:     ✓ ghi nhận gotcha vào Known issues
 
 Gõ "deploy" để đẩy lên, hoặc tiếp tục làm việc.
 ```

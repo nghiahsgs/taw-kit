@@ -40,6 +40,7 @@
 - **~50 skills, 6 agents, 4 hooks** — cài sẵn vào `~/.claude/`
 - **1 lệnh duy nhất `/taw`** — router 2 tầng tự hiểu tạo mới / thêm / sửa / deploy / test / nâng cấp / dọn code / rollback / refactor / audit bảo mật
 - **Stack adaptation** — mặc định dùng Next.js + Supabase + Polar cho project mới, nhưng TỰ DETECT project hiện tại đang dùng Stripe/Drizzle/Clerk... và respect, không ghi đè
+- **Tự maintain CLAUDE.md** — kit tạo + cập nhật file memory cho Claude Code sau mỗi `/taw` run. Claude đọc lại mỗi session → tiết kiệm token + trả lời chính xác hơn cho repo lớn (100k+ LOC)
 - **Design có gu** — skill `frontend-design` của Anthropic (Apache 2.0) được bundle sẵn, giúp giao diện không bị "AI slop". Xem chi tiết tại [THIRD-PARTY-NOTICES.md](./THIRD-PARTY-NOTICES.md)
 - **Dev workflow skills** — testing (vitest/playwright/rls), CI (GitHub Actions), bundle analyzer, knip dọn code, dep upgrade an toàn, Stripe alt cho Polar, Sentry monitoring, taw-commit, taw-git, debug-flight-recorder, dashboard `/taw status`
 - **CLI `tawkit`** — install, update, doctor, uninstall, scaffold từ preset

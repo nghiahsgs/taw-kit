@@ -32,6 +32,7 @@ Only reached when Tier 1 resolved to `MAINTAIN`. Try keyword match first. If key
 | `security` | `@branches/maintain/security.md` | bảo mật, bao mat, security, audit, safe, an toàn, an toan, scan, vuln |
 | `stack-swap` | `@branches/maintain/stack-swap.md` | swap, đổi stack, doi stack, thay, replace, "đổi supabase sang", migrate from X to Y |
 | `status` | `@branches/maintain/status.md` | status, dashboard, "trạng thái", "tong quan", "xem tổng quan", health, "du an the nao", "project status", "check status" |
+| `memory` | `@branches/maintain/memory.md` | memory, "claude.md", "claude md", "agents.md", "bộ nhớ dự án", "bo nho du an", "gen claude.md", "doc dự án", "lưu context", "init memory", "refresh memory", "nest claude", "update claude.md", "check drift" |
 
 ## Tier 2 — sub-intents inside ADVISOR
 

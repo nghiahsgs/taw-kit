@@ -60,6 +60,10 @@ description: >
   MAINTAIN→STATUS: "status", "dashboard", "health check", "project overview",
     "trang thai", "tong quan", "xem tinh hinh", "du an the nao", "check status",
     "report du an", "/taw status".
+  MAINTAIN→MEMORY: "memory", "claude.md", "claude md", "agents.md", "bo nho",
+    "bộ nhớ dự án", "gen claude.md", "init memory", "refresh memory",
+    "update claude.md", "nest claude", "luu context", "lưu context du an",
+    "nho nghiep vu", "check drift claude".
   ADVISOR→ANALYZE: "analyze", "phan tich", "review code", "review feature",
     "doc code roi noi", "code quality review", "review kien truc", "opinion ve",
     "check auth flow", "review 1 feature", "feedback ve code".
@@ -88,7 +92,7 @@ Load `@router.md` and follow its classification rules. Output: exactly ONE branc
 
 Router handles:
 - Tier 1 classification: `BUILD` | `FIX` | `SHIP` | `MAINTAIN` | `ADVISOR`
-- Tier 2 (when `MAINTAIN`): `test` | `upgrade` | `clean` | `perf` | `rollback` | `refactor` | `types` | `seed` | `review` | `security` | `stack-swap` | `status`
+- Tier 2 (when `MAINTAIN`): `test` | `upgrade` | `clean` | `perf` | `rollback` | `refactor` | `types` | `seed` | `review` | `security` | `stack-swap` | `status` | `memory`
 - Tier 2 (when `ADVISOR`): `analyze` | `suggest` | `coverage` | `adversarial` | `scope-check`
 - Mode detection: `safe` (default) vs `yolo`
 - Empty args / ambiguous → ask ONE clarifying question, then re-classify
@@ -102,6 +106,50 @@ Write the routing decision to `.taw/intent.json`:
   "mode": "safe",
   "branch_loaded": "branches/maintain/test.md"
 }
+```
+
+## Step 1.5 — Memory check (auto-prompt, once per project)
+
+**BEFORE loading any branch**, check if this project should have a `CLAUDE.md` but doesn't. This runs at the very first `/taw` invocation in a new-to-taw project, so non-dev users never have to know the `memory init` command exists.
+
+Conditions ALL must be true to trigger the prompt:
+1. Current dir has `.git/` (it's a real repo, not a random folder)
+2. No `CLAUDE.md` at repo root
+3. No `.taw/memory-declined` marker file exists
+4. Router classified intent is NOT `MAINTAIN/memory` (avoid recursion)
+5. Router classified intent is NOT `FIX` (user is in panic mode — don't interrupt)
+6. Current tier1 is NOT `BUILD` with new-from-prose case (BUILD branch Step 7.5 auto-handles init for newly-scaffolded projects)
+
+If all conditions hit, emit EXACTLY (VN default):
+
+```
+taw-kit: em thấy dự án này chưa có CLAUDE.md.
+  CLAUDE.md là file Claude Code đọc mỗi session để hiểu dự án — giúp tiết kiệm token + trả lời chính xác hơn.
+  Em gen giúp anh (~30s, không đụng code — chỉ tạo file doc).
+
+Tạo không?
+  y  → tạo ngay, rồi tiếp tục việc anh vừa yêu cầu
+  n  → không nhắc lại (đánh dấu đã từ chối)
+  sau → skip lần này, lần sau có thể sẽ hỏi lại
+```
+
+Wait for reply.
+
+- `y` / `yes` / `có` / `ok` → load `@branches/maintain/memory.md` with `init` subcommand. On completion, continue with user's original intent (resume Step 2 with original routing decision).
+- `n` / `no` / `không` → `touch .taw/memory-declined` so next `/taw` doesn't ask again. Continue.
+- `sau` / `later` / `skip` → Continue without marker (will re-prompt next session).
+- Any other reply treated as `sau`.
+
+For English users, emit:
+```
+taw-kit: this repo has no CLAUDE.md.
+  CLAUDE.md gives Claude Code persistent memory across sessions — saves tokens + sharper answers.
+  Generate it now (~30s, docs-only, no code changes).
+
+Create it?
+  y      → yes, then continue with your original request
+  n      → never ask again
+  later  → skip this time, may re-ask next session
 ```
 
 ## Step 2 — Load + execute the branch
@@ -124,6 +172,7 @@ Branch files live at:
 - `branches/maintain/review.md` — local pre-push review (lint+type+test+security)
 - `branches/maintain/stack-swap.md` — swap payment / db / ui / email / etc
 - `branches/maintain/status.md` — project health dashboard (git + build + deploy + security + tests)
+- `branches/maintain/memory.md` — create + auto-maintain CLAUDE.md (root + nested per-module) so Claude has persistent repo memory across sessions. Marker-based so user edits are preserved. Auto-hooks into BUILD/FIX/ADD-FEATURE Done steps.
 - `branches/advisor/analyze.md` — deep-read a feature, opinionated review (correctness/security/architecture/quality/UX)
 - `branches/advisor/suggest.md` — propose 2-3 features based on demand evidence (3 forcing questions)
 - `branches/advisor/coverage.md` — ASCII diagram of code paths + user flows + test gaps + unit-vs-E2E recommendations

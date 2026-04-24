@@ -108,6 +108,16 @@ On Step 5 success, load `@branches/ship.md` (same `/taw` skill, internal branch 
 
 If SHIP branch fails, emit: "Build xong rồi nhưng deploy lỗi. Gõ `/taw deploy` để thử lại." Stop — code still usable locally.
 
+### Step 7.5 — Auto-maintain CLAUDE.md (opt-in, default on)
+
+Read `.taw/config.json` `auto_update_memory` flag (default `true`). If `true`:
+- If CLAUDE.md does not exist → load `@branches/maintain/memory.md` with `init` subcommand
+- If CLAUDE.md exists → load `@branches/maintain/memory.md` with `update` subcommand
+
+User can opt out once per project: `.taw/config.json` → `{"auto_update_memory": false}`.
+
+Skip silently if user opted out.
+
 ### Step 8 — Done
 
 Emit EXACTLY:
@@ -115,6 +125,7 @@ Emit EXACTLY:
 taw-kit: build xong! 🎉
   Live URL:      <live-url>
   Project files: <project-path>
+  CLAUDE.md:     ✓ đã cập nhật (giúp Claude nhớ dự án lần sau)
 
 Bước tiếp (anh nói bằng tiếng Việt, không cần gõ /taw nữa):
   → "thêm tính năng <mô tả>"    (add feature)
@@ -203,12 +214,23 @@ type=feat, scope=<inferred>, subject=<feature slug in simple EN>
 (no [P<n>] tag — add-feature is out-of-phase)
 ```
 
+### Step A7 — Auto-maintain CLAUDE.md (opt-in, default on)
+
+Read `.taw/config.json` `auto_update_memory` flag. If `true` (default):
+- Load `@branches/maintain/memory.md` with `update` subcommand
+- This appends to `taw:auto:features` section (feature log) + refreshes `taw:auto:architecture` if new folders added
+
+Skip if opted out.
+
 Emit:
 ```
-Đã thêm: <feature name>
-Files changed: <git diff --stat HEAD~1>
-Want to deploy? Type: /taw deploy
-Want to add more? Type: /taw <description>
+taw-kit: đã thêm <feature name>
+  Files changed: <git diff --stat HEAD~1>
+  CLAUDE.md:     ✓ đã cập nhật
+  
+Tiếp theo:
+  → "deploy"                (đẩy lên prod)
+  → "thêm <tính năng>"      (add nữa)
 ```
 
 Append to `.taw/intent.json` → `features[]`: `{"feature":"...","status":"done"}`.
