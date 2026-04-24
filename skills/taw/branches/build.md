@@ -112,10 +112,14 @@ If SHIP branch fails, emit: "Build xong rồi nhưng deploy lỗi. Gõ `/taw dep
 
 Emit EXACTLY:
 ```
-Done! 🎉 Open: <live-url>
-Project files: <project-path>
-Want to add a feature? Type: /taw <feature description>
-Something broken? Type: /taw fix
+taw-kit: build xong! 🎉
+  Live URL:      <live-url>
+  Project files: <project-path>
+
+Bước tiếp (anh nói bằng tiếng Việt, không cần gõ /taw nữa):
+  → "thêm tính năng <mô tả>"    (add feature)
+  → "fix"                        (nếu có lỗi)
+  → "/taw status"                (xem tổng quan dự án)
 ```
 
 ---

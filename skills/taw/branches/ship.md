@@ -168,14 +168,16 @@ Update `.taw/checkpoint.json`:
 ## Step 6 — Done
 
 ```
-Deploy xong! 🎉
+taw-kit: deploy xong! 🎉
 <one of:>
-  Live at: <https://...vercel.app>              # vercel
-  Image ready: $PROJECT_NAME:latest             # docker
-  Deployed to: $VPS_USER@$VPS_HOST:$VPS_PATH    # vps
+  Live at:       https://...vercel.app               # vercel
+  Image ready:   $PROJECT_NAME:latest                 # docker
+  Deployed to:   $VPS_USER@$VPS_HOST:$VPS_PATH        # vps
 
-Want to add a feature? Type: /taw <description>
-Something broken? Type: /taw fix
+Tiếp theo:
+  → "thêm <tính năng>"     (mở rộng dự án)
+  → "fix"                   (nếu prod có vấn đề)
+  → "status"                (xem health của dự án vừa deploy)
 ```
 
 ## Constraints

@@ -74,9 +74,11 @@ npm run build 2>&1 | tail -30
 ## Step 6 — Done
 
 ```
-Xong! Build xanh trở lại rồi.
-Đã sửa: <1-line summary>
-Want to deploy? Type: /taw deploy
+taw-kit: xong! Build xanh lại rồi.
+  Đã sửa: <1-line summary>
+  Số lần thử: <N>/3
+
+Gõ "deploy" để đẩy lên, hoặc tiếp tục làm việc.
 ```
 
 Update `.taw/checkpoint.json`: `{"status":"running","last_fix":"<category>"}`.

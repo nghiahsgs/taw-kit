@@ -116,7 +116,7 @@ wait
 ## Step 2 — Read all files, render dashboard (VN default)
 
 ```
-📊 Trạng thái dự án — {name} v{version}
+📊 taw-kit dashboard — {name} v{version}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  Git
