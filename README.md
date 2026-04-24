@@ -161,6 +161,40 @@ Lệnh gỡ chỉ động vào file do taw-kit tạo (nhận diện qua marker `
 
 ---
 
+## CLAUDE.md — bộ nhớ dự án (tự maintain)
+
+Từ phiên bản này, taw-kit **tự tạo + cập nhật `CLAUDE.md`** ở root repo của bạn. Đây là file Claude Code đọc mỗi session, giúp:
+
+- **Tiết kiệm token**: Claude không phải scan lại folder structure, conventions, scripts mỗi lần
+- **Trả lời chính xác hơn**: Claude nhớ quy tắc, invariants, gotchas đã gặp
+- **Hữu ích cực cho repo lớn**: 100k+ LOC → CLAUDE.md 200 dòng = context tốt gấp 10 lần scan mò
+
+### Cơ chế hoạt động
+
+```
+Lần đầu /taw trong dự án CHƯA CÓ CLAUDE.md:
+  → Kit hỏi 1 lần: "Tạo CLAUDE.md không? (y/n/sau)"
+  → Chọn "y" → generate ~30s → tiếp tục việc bạn yêu cầu
+  → Chọn "n" → không nhắc lại (ghi nhớ qua .taw/memory-declined)
+  → Chọn "sau" → skip lần này, lần sau có thể hỏi lại
+
+Sau mỗi /taw build / add-feature / fix / upgrade:
+  → Kit tự update CLAUDE.md các section liên quan
+  → User edit bên ngoài marker `<!-- taw:auto:* -->` → an toàn, không bị ghi đè
+
+Manual:
+  /taw memory init      — tạo từ scratch
+  /taw memory update    — refresh auto sections
+  /taw memory check     — kiểm tra drift giữa code và doc
+  /taw memory nest src/billing  — tạo nested CLAUDE.md cho module
+```
+
+CLAUDE.md được commit vào git, team-share. `.taw/memory-declined` gitignored (preference per-dev).
+
+Tắt auto-maintain: tạo file `.taw/config.json` với `{"auto_update_memory": false}`.
+
+---
+
 ## Skills dành cho dev (không chỉ non-dev)
 
 Ngoài flow `/taw` cho non-dev, bộ kit cung cấp các skill chuyên dụng cho dev daily workflow:
