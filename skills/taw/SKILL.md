@@ -63,8 +63,9 @@ description: >
   ADVISOR→ANALYZE: "analyze", "phan tich", "review code", "review feature",
     "doc code roi noi", "code quality review", "review kien truc", "opinion ve",
     "check auth flow", "review 1 feature", "feedback ve code".
-  ADVISOR→SUGGEST: "suggest feature", "de xuat tinh nang", "nen build gi tiep",
-    "them gi", "ideas for app", "what should i add", "recommend next feature".
+  ADVISOR→SUGGEST: "suggest feature", "de xuat tinh nang", "goi y tinh nang",
+    "goi y feature", "nen build gi tiep", "them gi", "ideas for app",
+    "what should i add", "recommend next feature", "feature mới", "tính năng mới".
   ADVISOR→COVERAGE: "coverage", "test coverage", "da test du chua", "code path",
     "user flow coverage", "gaps in tests", "xem coverage".
   ADVISOR→ADVERSARIAL: "adversarial", "red team", "attack", "tim lo hong",
