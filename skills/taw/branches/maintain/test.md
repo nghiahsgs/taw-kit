@@ -123,7 +123,7 @@ If any test fails, show the failure block + ask "Fix bằng cách sửa test hay
 
 ## Step 6 — Commit
 
-Invoke `git-auto-commit`:
+Invoke `taw-commit`:
 ```
 type=test, scope=<inferred>, subject="add tests for <files>"
 ```

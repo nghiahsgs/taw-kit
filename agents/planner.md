@@ -82,7 +82,7 @@ You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptio
 **Skills you must NOT call** (wrong scope):
 - `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrator / deprecated shims
 - `shadcn-ui`, `supabase-setup`, `payment-integration`, `stripe-checkout`, `auth-magic-link`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `sentry-errors`, `github-actions-ci`, `testing-*`, `bundle-analyzer-nextjs`, `knip-cleanup`, `dep-upgrade-safe`, `ast-grep-patterns`, `faker-vi-recipes` — implementation skills owned by fullstack-dev (you only mention which phases will need them)
-- `commit-message-smart`, `pr-description`, `debug-flight-recorder`, `git-auto-commit` — dev-workflow skills, not planning
+- `taw-commit`, `taw-git`, `debug-flight-recorder`, `taw-commit` — dev-workflow skills, not planning
 
 ## Stack adaptation awareness (for existing-project plans)
 

@@ -112,7 +112,7 @@ You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptio
 - `building-native-ui`, `expo-tailwind-setup`, `expo-dev-client`, `expo-deployment`, `taw-rn-supabase` — **mobile-only**, owned by `mobile-dev` agent (you are the WEB agent)
 - `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — user-facing orchestrator / deprecated shims; you are invoked BY `/taw`, not the other way around
 - `preview-tunnel` — separate flow
-- `git-pro`, `git-trace`, `git-auto-commit`, `commit-message-smart`, `pr-description` — git is owned by the orchestrator/user
+- `taw-git`, `taw-trace`, `taw-commit`, `taw-commit`, `taw-git` — git is owned by the orchestrator/user
 - `approval-plan` — approval gating is the orchestrator's job
 - `tiktok-shop-embed` — only invoke when phase explicitly asks for TikTok Shop integration (not for general product listings)
 

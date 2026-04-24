@@ -160,7 +160,7 @@ Chạy app: npm run dev → data đã sẵn.
 If user wants the seed script committed:
 ```
 git add scripts/seed.ts
-git-auto-commit: type=chore, scope=seed, subject="add seed script"
+taw-commit: type=chore, scope=seed, subject="add seed script"
 ```
 
 Data itself is NOT committed (it's in DB, not repo).

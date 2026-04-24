@@ -46,7 +46,7 @@ You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptio
 - `taw`, `taw-fix`, `taw-deploy`, `taw-security` — orchestrator / deprecated shims
 - `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `stripe-checkout`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `sentry-errors`, `github-actions-ci`, `bundle-analyzer-nextjs`, `knip-cleanup`, `dep-upgrade-safe`, `ast-grep-patterns`, `faker-vi-recipes`, `docs-seeker`, `sequential-thinking`, `mermaidjs-v11` — implementation/research, owned by other agents
 - `testing-vitest`, `testing-playwright`, `testing-rls-pgtap` — these are used by fullstack-dev when GEN'ing tests; you only RUN tests. If phase file mentions these, fullstack-dev has already set them up.
-- `commit-message-smart`, `pr-description`, `debug-flight-recorder` — dev-workflow
+- `taw-commit`, `taw-git`, `debug-flight-recorder` — dev-workflow
 
 ## Output
 

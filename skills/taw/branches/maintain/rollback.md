@@ -159,7 +159,7 @@ Update `.taw/checkpoint.json`:
 {"status":"rolled-back","target":"<vercel/vps/docker>","from":"<new>","to":"<old>","at":"<ISO>"}
 ```
 
-`git-auto-commit` if code was reverted:
+`taw-commit` if code was reverted:
 ```
 type=revert, scope=<inferred>, subject="revert to <short-SHA>"
 ```

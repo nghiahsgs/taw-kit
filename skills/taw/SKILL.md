@@ -139,7 +139,7 @@ Between steps inside a branch, emit a short progress line:
 
 After a branch completes its main work, before emitting the final "Done" message:
 
-1. **Commit** — if the branch made code changes, invoke the `git-auto-commit` skill with the appropriate `type` (feat/fix/chore/refactor/perf/test/revert) that the branch specifies. Phase-less branches (add-feature, maintain/*) omit the `[P<n>]` tag.
+1. **Commit** — if the branch made code changes, invoke the `taw-commit` skill with the appropriate `type` (feat/fix/chore/refactor/perf/test/revert) that the branch specifies. Phase-less branches (add-feature, maintain/*) omit the `[P<n>]` tag.
 2. **Update checkpoint** — write `.taw/checkpoint.json` with `{status, last_branch, last_error?, deploy_url?}` so subsequent `/taw` invocations know the state.
 3. **Next-step hints** — in the final "Done" message, always suggest 2-3 relevant next commands. Always in the form `/taw <verb>`:
    - After BUILD → `/taw deploy`, `/taw <new feature description>`

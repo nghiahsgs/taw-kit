@@ -113,7 +113,7 @@ git restore --staged . && git checkout .
 ```
 Emit: "Phát hiện dọn nhầm. Đã revert. Thử lại với scope hẹp hơn."
 
-All green → `git-auto-commit`:
+All green → `taw-commit`:
 ```
 type=chore, scope=cleanup, subject="remove {N} unused exports + {M} deps"
 ```

@@ -62,7 +62,7 @@ You have access to the `Skill` tool. Subagents do NOT auto-load skill descriptio
 **Skills you must NOT call** (wrong scope — your job is review/gate, not fix or build):
 - `taw`, `taw-add`, `taw-new`, `taw-deploy`, `taw-fix`, `taw-security` — orchestrator / deprecated shims
 - `frontend-design`, `shadcn-ui`, `nextjs-app-router`, `supabase-setup`, `auth-magic-link`, `payment-integration`, `stripe-checkout`, `form-builder`, `seo-basic`, `vietnamese-copy`, `tiktok-shop-embed`, `env-manager`, `sentry-errors`, `testing-*`, `github-actions-ci`, `knip-cleanup`, `bundle-analyzer-nextjs`, `dep-upgrade-safe`, `ast-grep-patterns`, `faker-vi-recipes`, `docs-seeker`, `sequential-thinking`, `mermaidjs-v11`, `error-to-vi` — owned by planner / fullstack-dev / tester
-- `commit-message-smart`, `pr-description`, `debug-flight-recorder` — dev-workflow, not review
+- `taw-commit`, `taw-git`, `debug-flight-recorder` — dev-workflow, not review
 
 ## Output
 

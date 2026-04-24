@@ -193,7 +193,7 @@ npm run build 2>&1 | tail -20
 
 ### Step A6 — Commit and done
 
-Invoke `git-auto-commit` skill:
+Invoke `taw-commit` skill:
 ```
 type=feat, scope=<inferred>, subject=<feature slug in simple EN>
 (no [P<n>] tag — add-feature is out-of-phase)

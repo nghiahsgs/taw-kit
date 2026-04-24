@@ -150,7 +150,7 @@ Re-run bundle analyze, diff sizes:
 (lighthouse cần chạy lại trên prod deploy để so chính xác)
 ```
 
-`git-auto-commit` per category: `type=perf, scope=<area>, subject="..."`
+`taw-commit` per category: `type=perf, scope=<area>, subject="..."`
 
 ## Constraints
 

@@ -51,7 +51,7 @@ Common overlaps and how to resolve:
 
 - "sửa giùm" (fix/refactor) — prefer FIX if there's a current error; else ask: "Anh bị lỗi cụ thể hay muốn dọn/đổi tên code?"
 - "thêm test" (build/test) — always → `maintain/test` (adding tests, not a product feature)
-- "đẩy code lên github" → this is NOT SHIP (which means deploy). Ask: "Anh muốn deploy lên hosting hay chỉ push code lên git?" → if git-only, load `@branches/maintain/review.md` (git-pro skill flow)
+- "đẩy code lên github" → this is NOT SHIP (which means deploy). Ask: "Anh muốn deploy lên hosting hay chỉ push code lên git?" → if git-only, load `@branches/maintain/review.md` (taw-git skill flow)
 - "tối ưu" (perf/clean) — prefer PERF if user mentions speed/size; CLEAN if they mention unused/dead
 - "nâng cấp" (upgrade/stack-swap) — UPGRADE = bump versions of same deps; STACK-SWAP = replace one lib with another
 - no match at all → ask: "Anh muốn em làm gì? Ví dụ: tạo mới / thêm tính năng / sửa lỗi / deploy / test / nâng cấp / dọn code."
@@ -61,13 +61,16 @@ Common overlaps and how to resolve:
 If `/taw` is invoked with empty args, emit (VN default):
 
 ```
-Anh muốn làm gì? Ví dụ:
-  /taw làm cho tôi một shop bán cà phê
-  /taw thêm trang liên hệ
-  /taw website lỗi, fix giùm
-  /taw deploy lên vercel
-  /taw test cái login
-  /taw nâng cấp next lên 15
+taw-kit: anh muốn làm gì? Ví dụ:
+  /taw làm cho tôi một shop bán cà phê     (tạo dự án mới)
+  /taw thêm trang liên hệ                   (thêm tính năng)
+  /taw website lỗi, fix giùm                (auto-fix)
+  /taw deploy lên vercel                    (ship)
+  /taw test cái login                       (gen test)
+  /taw phân tích code auth                  (advisor — review)
+  /taw gợi ý tính năng mới                  (advisor — suggest)
+  /taw status                               (dashboard)
+  /taw nâng cấp next lên 15                 (upgrade deps)
 ```
 
 Then wait for reply and re-run classification.

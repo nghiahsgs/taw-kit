@@ -149,7 +149,7 @@ Chọn:
 
 ## Step 7 — Commit
 
-`git-auto-commit`:
+`taw-commit`:
 ```
 type=refactor, scope=<inferred>, subject="<refactor type>: <from> → <to>"
 ```

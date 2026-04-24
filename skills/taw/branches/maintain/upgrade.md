@@ -116,7 +116,7 @@ npx tsc --noEmit 2>/dev/null || echo "(no tsc)"
 Build xanh, tests pass.
 ```
 
-Then `git-auto-commit`: `type=chore, scope=deps, subject="upgrade {main pkg} to vX"`
+Then `taw-commit`: `type=chore, scope=deps, subject="upgrade {main pkg} to vX"`
 
 **Anything red:**
 ```

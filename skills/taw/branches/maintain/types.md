@@ -123,7 +123,7 @@ Chọn:
 
 ## Step 6 — Commit
 
-`git-auto-commit`:
+`taw-commit`:
 ```
 type=chore, scope=types, subject="sync types (supabase + api + env)"
 ```

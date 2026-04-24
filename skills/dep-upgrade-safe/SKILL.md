@@ -27,7 +27,7 @@ Match versions. Map to the relevant section below.
 3. Run upgrade.
 4. Run `npm run build && npm test 2>/dev/null || true && npx tsc --noEmit 2>/dev/null || true`.
 5. Red → `git reset --hard $(cat .taw/upgrade-sha.txt) && npm install` to revert.
-6. Green → `git-auto-commit` with `type=chore, scope=deps`.
+6. Green → `taw-commit` with `type=chore, scope=deps`.
 
 ## Next.js
 
